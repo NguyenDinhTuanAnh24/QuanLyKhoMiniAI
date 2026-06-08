@@ -1,0 +1,520 @@
+﻿order_id,order_code,customer_name,total_amount,payment_method,created_at,created_by
+ORD00001,ORD00001,Khách lẻ 652,94000,Chuyển khoản,2025-01-01,Nhân viên bán hàng
+ORD00002,ORD00002,Khách lẻ 530,30000,Ví điện tử,2025-01-01,Nhân viên bán hàng
+ORD00003,ORD00003,Khách lẻ 498,660000,Ví điện tử,2025-01-01,Nhân viên bán hàng
+ORD00004,ORD00004,Khách lẻ 159,136000,Ví điện tử,2025-01-01,Nhân viên bán hàng
+ORD00005,ORD00005,Khách lẻ 226,120000,Tiền mặt,2025-01-02,Nhân viên bán hàng
+ORD00006,ORD00006,Khách lẻ 021,178000,Chuyển khoản,2025-01-02,Nhân viên bán hàng
+ORD00007,ORD00007,Khách lẻ 530,60000,Tiền mặt,2025-01-02,Nhân viên bán hàng
+ORD00008,ORD00008,Khách lẻ 724,255000,Chuyển khoản,2025-01-02,Nhân viên bán hàng
+ORD00009,ORD00009,Khách lẻ 142,28000,Tiền mặt,2025-01-02,Nhân viên bán hàng
+ORD00010,ORD00010,Khách lẻ 740,169000,Tiền mặt,2025-01-02,Nhân viên bán hàng
+ORD00011,ORD00011,Khách lẻ 690,15000,Tiền mặt,2025-01-02,Nhân viên bán hàng
+ORD00012,ORD00012,Khách lẻ 025,57000,Tiền mặt,2025-01-03,Nhân viên bán hàng
+ORD00013,ORD00013,Khách lẻ 458,42000,Tiền mặt,2025-01-03,Nhân viên bán hàng
+ORD00014,ORD00014,Khách lẻ 827,93000,Tiền mặt,2025-01-03,Nhân viên bán hàng
+ORD00015,ORD00015,Khách lẻ 886,66000,Tiền mặt,2025-01-03,Nhân viên bán hàng
+ORD00016,ORD00016,Khách lẻ 766,60000,Chuyển khoản,2025-01-03,Nhân viên bán hàng
+ORD00017,ORD00017,Khách lẻ 568,76000,Chuyển khoản,2025-01-03,Nhân viên bán hàng
+ORD00018,ORD00018,Khách lẻ 210,84000,Chuyển khoản,2025-01-03,Nhân viên bán hàng
+ORD00019,ORD00019,Khách lẻ 532,150000,Chuyển khoản,2025-01-03,Nhân viên bán hàng
+ORD00020,ORD00020,Khách lẻ 751,178000,Tiền mặt,2025-01-04,Nhân viên bán hàng
+ORD00021,ORD00021,Khách lẻ 648,44000,Tiền mặt,2025-01-04,Nhân viên bán hàng
+ORD00022,ORD00022,Khách lẻ 779,50000,Tiền mặt,2025-01-04,Nhân viên bán hàng
+ORD00023,ORD00023,Khách lẻ 680,84000,Tiền mặt,2025-01-04,Nhân viên bán hàng
+ORD00024,ORD00024,Khách lẻ 949,242000,Tiền mặt,2025-01-05,Nhân viên bán hàng
+ORD00025,ORD00025,Khách lẻ 775,609000,Tiền mặt,2025-01-05,Nhân viên bán hàng
+ORD00026,ORD00026,Khách lẻ 894,140000,Tiền mặt,2025-01-05,Nhân viên bán hàng
+ORD00027,ORD00027,Khách lẻ 235,18000,Tiền mặt,2025-01-05,Nhân viên bán hàng
+ORD00028,ORD00028,Khách lẻ 655,287000,Ví điện tử,2025-01-05,Nhân viên bán hàng
+ORD00029,ORD00029,Khách lẻ 762,89000,Ví điện tử,2025-01-05,Nhân viên bán hàng
+ORD00030,ORD00030,Khách lẻ 585,34000,Ví điện tử,2025-01-06,Nhân viên bán hàng
+ORD00031,ORD00031,Khách lẻ 657,64000,Tiền mặt,2025-01-06,Nhân viên bán hàng
+ORD00032,ORD00032,Khách lẻ 456,600000,Ví điện tử,2025-01-06,Nhân viên bán hàng
+ORD00033,ORD00033,Khách lẻ 344,60000,Chuyển khoản,2025-01-06,Nhân viên bán hàng
+ORD00034,ORD00034,Khách lẻ 120,40000,Ví điện tử,2025-01-06,Nhân viên bán hàng
+ORD00035,ORD00035,Khách lẻ 680,499000,Ví điện tử,2025-01-07,Nhân viên bán hàng
+ORD00036,ORD00036,Khách lẻ 851,270000,Tiền mặt,2025-01-07,Nhân viên bán hàng
+ORD00037,ORD00037,Khách lẻ 510,64000,Tiền mặt,2025-01-07,Nhân viên bán hàng
+ORD00038,ORD00038,Khách lẻ 043,723000,Tiền mặt,2025-01-07,Nhân viên bán hàng
+ORD00039,ORD00039,Khách lẻ 489,34000,Tiền mặt,2025-01-07,Nhân viên bán hàng
+ORD00040,ORD00040,Khách lẻ 889,189000,Tiền mặt,2025-01-07,Nhân viên bán hàng
+ORD00041,ORD00041,Khách lẻ 434,50000,Chuyển khoản,2025-01-07,Nhân viên bán hàng
+ORD00042,ORD00042,Khách lẻ 115,82000,Ví điện tử,2025-01-08,Nhân viên bán hàng
+ORD00043,ORD00043,Khách lẻ 746,220000,Tiền mặt,2025-01-08,Nhân viên bán hàng
+ORD00044,ORD00044,Khách lẻ 527,285000,Ví điện tử,2025-01-08,Nhân viên bán hàng
+ORD00045,ORD00045,Khách lẻ 896,160000,Tiền mặt,2025-01-08,Nhân viên bán hàng
+ORD00046,ORD00046,Khách lẻ 169,270000,Tiền mặt,2025-01-08,Nhân viên bán hàng
+ORD00047,ORD00047,Khách lẻ 841,142000,Tiền mặt,2025-01-08,Nhân viên bán hàng
+ORD00048,ORD00048,Khách lẻ 716,235000,Ví điện tử,2025-01-08,Nhân viên bán hàng
+ORD00049,ORD00049,Khách lẻ 997,100000,Chuyển khoản,2025-01-08,Nhân viên bán hàng
+ORD00050,ORD00050,Khách lẻ 119,83000,Ví điện tử,2025-01-09,Nhân viên bán hàng
+ORD00051,ORD00051,Khách lẻ 774,48000,Ví điện tử,2025-01-09,Nhân viên bán hàng
+ORD00052,ORD00052,Khách lẻ 482,144000,Ví điện tử,2025-01-09,Nhân viên bán hàng
+ORD00053,ORD00053,Khách lẻ 981,137000,Ví điện tử,2025-01-09,Nhân viên bán hàng
+ORD00054,ORD00054,Khách lẻ 376,90000,Ví điện tử,2025-01-09,Nhân viên bán hàng
+ORD00055,ORD00055,Khách lẻ 849,54000,Tiền mặt,2025-01-10,Nhân viên bán hàng
+ORD00056,ORD00056,Khách lẻ 131,109000,Chuyển khoản,2025-01-10,Nhân viên bán hàng
+ORD00057,ORD00057,Khách lẻ 457,213000,Chuyển khoản,2025-01-10,Nhân viên bán hàng
+ORD00058,ORD00058,Khách lẻ 693,5000,Chuyển khoản,2025-01-10,Nhân viên bán hàng
+ORD00059,ORD00059,Khách lẻ 194,65000,Tiền mặt,2025-01-10,Nhân viên bán hàng
+ORD00060,ORD00060,Khách lẻ 318,245000,Chuyển khoản,2025-01-10,Nhân viên bán hàng
+ORD00061,ORD00061,Khách lẻ 270,366000,Tiền mặt,2025-01-11,Nhân viên bán hàng
+ORD00062,ORD00062,Khách lẻ 847,144000,Chuyển khoản,2025-01-11,Nhân viên bán hàng
+ORD00063,ORD00063,Khách lẻ 618,161000,Chuyển khoản,2025-01-11,Nhân viên bán hàng
+ORD00064,ORD00064,Khách lẻ 810,30000,Ví điện tử,2025-01-11,Nhân viên bán hàng
+ORD00065,ORD00065,Khách lẻ 837,135000,Ví điện tử,2025-01-12,Nhân viên bán hàng
+ORD00066,ORD00066,Khách lẻ 355,320000,Ví điện tử,2025-01-12,Nhân viên bán hàng
+ORD00067,ORD00067,Khách lẻ 396,150000,Tiền mặt,2025-01-12,Nhân viên bán hàng
+ORD00068,ORD00068,Khách lẻ 880,85000,Ví điện tử,2025-01-12,Nhân viên bán hàng
+ORD00069,ORD00069,Khách lẻ 187,66000,Tiền mặt,2025-01-12,Nhân viên bán hàng
+ORD00070,ORD00070,Khách lẻ 926,176000,Ví điện tử,2025-01-12,Nhân viên bán hàng
+ORD00071,ORD00071,Khách lẻ 320,45000,Chuyển khoản,2025-01-13,Nhân viên bán hàng
+ORD00072,ORD00072,Khách lẻ 308,63000,Chuyển khoản,2025-01-13,Nhân viên bán hàng
+ORD00073,ORD00073,Khách lẻ 024,69000,Tiền mặt,2025-01-13,Nhân viên bán hàng
+ORD00074,ORD00074,Khách lẻ 299,118000,Ví điện tử,2025-01-13,Nhân viên bán hàng
+ORD00075,ORD00075,Khách lẻ 147,324000,Ví điện tử,2025-01-13,Nhân viên bán hàng
+ORD00076,ORD00076,Khách lẻ 251,150000,Ví điện tử,2025-01-13,Nhân viên bán hàng
+ORD00077,ORD00077,Khách lẻ 182,15000,Tiền mặt,2025-01-13,Nhân viên bán hàng
+ORD00078,ORD00078,Khách lẻ 279,178000,Chuyển khoản,2025-01-13,Nhân viên bán hàng
+ORD00079,ORD00079,Khách lẻ 109,170000,Chuyển khoản,2025-01-14,Nhân viên bán hàng
+ORD00080,ORD00080,Khách lẻ 200,32000,Chuyển khoản,2025-01-14,Nhân viên bán hàng
+ORD00081,ORD00081,Khách lẻ 107,174000,Ví điện tử,2025-01-14,Nhân viên bán hàng
+ORD00082,ORD00082,Khách lẻ 345,175000,Tiền mặt,2025-01-14,Nhân viên bán hàng
+ORD00083,ORD00083,Khách lẻ 323,324000,Ví điện tử,2025-01-14,Nhân viên bán hàng
+ORD00084,ORD00084,Khách lẻ 129,314000,Ví điện tử,2025-01-14,Nhân viên bán hàng
+ORD00085,ORD00085,Khách lẻ 371,100000,Chuyển khoản,2025-01-14,Nhân viên bán hàng
+ORD00086,ORD00086,Khách lẻ 393,80000,Ví điện tử,2025-01-14,Nhân viên bán hàng
+ORD00087,ORD00087,Khách lẻ 078,758000,Ví điện tử,2025-01-15,Nhân viên bán hàng
+ORD00088,ORD00088,Khách lẻ 752,12000,Ví điện tử,2025-01-15,Nhân viên bán hàng
+ORD00089,ORD00089,Khách lẻ 926,150000,Ví điện tử,2025-01-15,Nhân viên bán hàng
+ORD00090,ORD00090,Khách lẻ 374,263000,Ví điện tử,2025-01-15,Nhân viên bán hàng
+ORD00091,ORD00091,Khách lẻ 251,139000,Chuyển khoản,2025-01-15,Nhân viên bán hàng
+ORD00092,ORD00092,Khách lẻ 886,197000,Ví điện tử,2025-01-15,Nhân viên bán hàng
+ORD00093,ORD00093,Khách lẻ 896,388000,Tiền mặt,2025-01-16,Nhân viên bán hàng
+ORD00094,ORD00094,Khách lẻ 002,300000,Chuyển khoản,2025-01-16,Nhân viên bán hàng
+ORD00095,ORD00095,Khách lẻ 083,153000,Chuyển khoản,2025-01-16,Nhân viên bán hàng
+ORD00096,ORD00096,Khách lẻ 493,99000,Chuyển khoản,2025-01-16,Nhân viên bán hàng
+ORD00097,ORD00097,Khách lẻ 391,145000,Tiền mặt,2025-01-17,Nhân viên bán hàng
+ORD00098,ORD00098,Khách lẻ 844,65000,Tiền mặt,2025-01-17,Nhân viên bán hàng
+ORD00099,ORD00099,Khách lẻ 113,60000,Chuyển khoản,2025-01-17,Nhân viên bán hàng
+ORD00100,ORD00100,Khách lẻ 885,60000,Chuyển khoản,2025-01-17,Nhân viên bán hàng
+ORD00101,ORD00101,Khách lẻ 797,44000,Tiền mặt,2025-01-17,Nhân viên bán hàng
+ORD00102,ORD00102,Khách lẻ 227,30000,Tiền mặt,2025-01-17,Nhân viên bán hàng
+ORD00103,ORD00103,Khách lẻ 278,55000,Ví điện tử,2025-01-17,Nhân viên bán hàng
+ORD00104,ORD00104,Khách lẻ 495,60000,Chuyển khoản,2025-01-18,Nhân viên bán hàng
+ORD00105,ORD00105,Khách lẻ 624,72000,Tiền mặt,2025-01-18,Nhân viên bán hàng
+ORD00106,ORD00106,Khách lẻ 892,15000,Chuyển khoản,2025-01-18,Nhân viên bán hàng
+ORD00107,ORD00107,Khách lẻ 160,9000,Chuyển khoản,2025-01-18,Nhân viên bán hàng
+ORD00108,ORD00108,Khách lẻ 737,150000,Chuyển khoản,2025-01-19,Nhân viên bán hàng
+ORD00109,ORD00109,Khách lẻ 739,100000,Chuyển khoản,2025-01-19,Nhân viên bán hàng
+ORD00110,ORD00110,Khách lẻ 974,24000,Ví điện tử,2025-01-19,Nhân viên bán hàng
+ORD00111,ORD00111,Khách lẻ 829,10000,Ví điện tử,2025-01-19,Nhân viên bán hàng
+ORD00112,ORD00112,Khách lẻ 897,23000,Ví điện tử,2025-01-19,Nhân viên bán hàng
+ORD00113,ORD00113,Khách lẻ 699,95000,Tiền mặt,2025-01-20,Nhân viên bán hàng
+ORD00114,ORD00114,Khách lẻ 899,110000,Chuyển khoản,2025-01-20,Nhân viên bán hàng
+ORD00115,ORD00115,Khách lẻ 038,140000,Chuyển khoản,2025-01-20,Nhân viên bán hàng
+ORD00116,ORD00116,Khách lẻ 288,270000,Ví điện tử,2025-01-20,Nhân viên bán hàng
+ORD00117,ORD00117,Khách lẻ 409,70000,Chuyển khoản,2025-01-20,Nhân viên bán hàng
+ORD00118,ORD00118,Khách lẻ 654,168000,Ví điện tử,2025-01-21,Nhân viên bán hàng
+ORD00119,ORD00119,Khách lẻ 772,690000,Ví điện tử,2025-01-21,Nhân viên bán hàng
+ORD00120,ORD00120,Khách lẻ 264,48000,Chuyển khoản,2025-01-21,Nhân viên bán hàng
+ORD00121,ORD00121,Khách lẻ 425,36000,Tiền mặt,2025-01-21,Nhân viên bán hàng
+ORD00122,ORD00122,Khách lẻ 517,280000,Ví điện tử,2025-01-21,Nhân viên bán hàng
+ORD00123,ORD00123,Khách lẻ 195,24000,Chuyển khoản,2025-01-22,Nhân viên bán hàng
+ORD00124,ORD00124,Khách lẻ 354,149000,Chuyển khoản,2025-01-22,Nhân viên bán hàng
+ORD00125,ORD00125,Khách lẻ 564,80000,Tiền mặt,2025-01-22,Nhân viên bán hàng
+ORD00126,ORD00126,Khách lẻ 308,80000,Ví điện tử,2025-01-22,Nhân viên bán hàng
+ORD00127,ORD00127,Khách lẻ 261,230000,Ví điện tử,2025-01-22,Nhân viên bán hàng
+ORD00128,ORD00128,Khách lẻ 002,24000,Tiền mặt,2025-01-23,Nhân viên bán hàng
+ORD00129,ORD00129,Khách lẻ 344,95000,Ví điện tử,2025-01-23,Nhân viên bán hàng
+ORD00130,ORD00130,Khách lẻ 053,168000,Tiền mặt,2025-01-23,Nhân viên bán hàng
+ORD00131,ORD00131,Khách lẻ 312,35000,Chuyển khoản,2025-01-23,Nhân viên bán hàng
+ORD00132,ORD00132,Khách lẻ 935,60000,Tiền mặt,2025-01-23,Nhân viên bán hàng
+ORD00133,ORD00133,Khách lẻ 689,375000,Ví điện tử,2025-01-23,Nhân viên bán hàng
+ORD00134,ORD00134,Khách lẻ 692,129000,Ví điện tử,2025-01-24,Nhân viên bán hàng
+ORD00135,ORD00135,Khách lẻ 335,59000,Chuyển khoản,2025-01-24,Nhân viên bán hàng
+ORD00136,ORD00136,Khách lẻ 334,44000,Tiền mặt,2025-01-24,Nhân viên bán hàng
+ORD00137,ORD00137,Khách lẻ 705,24000,Chuyển khoản,2025-01-24,Nhân viên bán hàng
+ORD00138,ORD00138,Khách lẻ 716,262000,Chuyển khoản,2025-01-24,Nhân viên bán hàng
+ORD00139,ORD00139,Khách lẻ 977,112000,Chuyển khoản,2025-01-24,Nhân viên bán hàng
+ORD00140,ORD00140,Khách lẻ 830,307000,Chuyển khoản,2025-01-25,Nhân viên bán hàng
+ORD00141,ORD00141,Khách lẻ 597,324000,Ví điện tử,2025-01-25,Nhân viên bán hàng
+ORD00142,ORD00142,Khách lẻ 441,180000,Chuyển khoản,2025-01-25,Nhân viên bán hàng
+ORD00143,ORD00143,Khách lẻ 402,126000,Chuyển khoản,2025-01-25,Nhân viên bán hàng
+ORD00144,ORD00144,Khách lẻ 018,150000,Ví điện tử,2025-01-25,Nhân viên bán hàng
+ORD00145,ORD00145,Khách lẻ 555,136000,Ví điện tử,2025-01-25,Nhân viên bán hàng
+ORD00146,ORD00146,Khách lẻ 968,344000,Tiền mặt,2025-01-26,Nhân viên bán hàng
+ORD00147,ORD00147,Khách lẻ 985,194000,Tiền mặt,2025-01-26,Nhân viên bán hàng
+ORD00148,ORD00148,Khách lẻ 739,8000,Ví điện tử,2025-01-26,Nhân viên bán hàng
+ORD00149,ORD00149,Khách lẻ 814,250000,Chuyển khoản,2025-01-26,Nhân viên bán hàng
+ORD00150,ORD00150,Khách lẻ 509,40000,Tiền mặt,2025-01-26,Nhân viên bán hàng
+ORD00151,ORD00151,Khách lẻ 084,516000,Ví điện tử,2025-01-27,Nhân viên bán hàng
+ORD00152,ORD00152,Khách lẻ 632,98000,Ví điện tử,2025-01-27,Nhân viên bán hàng
+ORD00153,ORD00153,Khách lẻ 701,205000,Ví điện tử,2025-01-27,Nhân viên bán hàng
+ORD00154,ORD00154,Khách lẻ 260,300000,Ví điện tử,2025-01-27,Nhân viên bán hàng
+ORD00155,ORD00155,Khách lẻ 022,179000,Tiền mặt,2025-01-27,Nhân viên bán hàng
+ORD00156,ORD00156,Khách lẻ 047,225000,Chuyển khoản,2025-01-27,Nhân viên bán hàng
+ORD00157,ORD00157,Khách lẻ 079,25000,Ví điện tử,2025-01-27,Nhân viên bán hàng
+ORD00158,ORD00158,Khách lẻ 602,60000,Chuyển khoản,2025-01-28,Nhân viên bán hàng
+ORD00159,ORD00159,Khách lẻ 018,130000,Chuyển khoản,2025-01-28,Nhân viên bán hàng
+ORD00160,ORD00160,Khách lẻ 489,142000,Chuyển khoản,2025-01-28,Nhân viên bán hàng
+ORD00161,ORD00161,Khách lẻ 990,264000,Ví điện tử,2025-01-28,Nhân viên bán hàng
+ORD00162,ORD00162,Khách lẻ 133,12000,Ví điện tử,2025-01-28,Nhân viên bán hàng
+ORD00163,ORD00163,Khách lẻ 070,238000,Ví điện tử,2025-01-29,Nhân viên bán hàng
+ORD00164,ORD00164,Khách lẻ 095,173000,Chuyển khoản,2025-01-29,Nhân viên bán hàng
+ORD00165,ORD00165,Khách lẻ 461,180000,Tiền mặt,2025-01-29,Nhân viên bán hàng
+ORD00166,ORD00166,Khách lẻ 865,132000,Tiền mặt,2025-01-29,Nhân viên bán hàng
+ORD00167,ORD00167,Khách lẻ 069,271000,Chuyển khoản,2025-01-30,Nhân viên bán hàng
+ORD00168,ORD00168,Khách lẻ 058,193000,Ví điện tử,2025-01-30,Nhân viên bán hàng
+ORD00169,ORD00169,Khách lẻ 335,120000,Chuyển khoản,2025-01-30,Nhân viên bán hàng
+ORD00170,ORD00170,Khách lẻ 198,125000,Ví điện tử,2025-01-30,Nhân viên bán hàng
+ORD00171,ORD00171,Khách lẻ 670,83000,Tiền mặt,2025-01-30,Nhân viên bán hàng
+ORD00172,ORD00172,Khách lẻ 478,58000,Tiền mặt,2025-01-31,Nhân viên bán hàng
+ORD00173,ORD00173,Khách lẻ 832,5000,Tiền mặt,2025-01-31,Nhân viên bán hàng
+ORD00174,ORD00174,Khách lẻ 197,81000,Tiền mặt,2025-01-31,Nhân viên bán hàng
+ORD00175,ORD00175,Khách lẻ 323,240000,Ví điện tử,2025-01-31,Nhân viên bán hàng
+ORD00176,ORD00176,Khách lẻ 961,60000,Chuyển khoản,2025-01-31,Nhân viên bán hàng
+ORD00177,ORD00177,Khách lẻ 759,60000,Tiền mặt,2025-01-31,Nhân viên bán hàng
+ORD00178,ORD00178,Khách lẻ 110,22000,Chuyển khoản,2025-01-31,Nhân viên bán hàng
+ORD00179,ORD00179,Khách lẻ 641,194000,Tiền mặt,2025-01-31,Nhân viên bán hàng
+ORD00180,ORD00180,Khách lẻ 679,125000,Ví điện tử,2025-02-01,Nhân viên bán hàng
+ORD00181,ORD00181,Khách lẻ 771,134000,Chuyển khoản,2025-02-01,Nhân viên bán hàng
+ORD00182,ORD00182,Khách lẻ 325,64000,Tiền mặt,2025-02-01,Nhân viên bán hàng
+ORD00183,ORD00183,Khách lẻ 718,103000,Ví điện tử,2025-02-01,Nhân viên bán hàng
+ORD00184,ORD00184,Khách lẻ 383,50000,Ví điện tử,2025-02-01,Nhân viên bán hàng
+ORD00185,ORD00185,Khách lẻ 463,100000,Tiền mặt,2025-02-01,Nhân viên bán hàng
+ORD00186,ORD00186,Khách lẻ 973,80000,Ví điện tử,2025-02-01,Nhân viên bán hàng
+ORD00187,ORD00187,Khách lẻ 153,369000,Tiền mặt,2025-02-01,Nhân viên bán hàng
+ORD00188,ORD00188,Khách lẻ 463,63000,Chuyển khoản,2025-02-02,Nhân viên bán hàng
+ORD00189,ORD00189,Khách lẻ 557,129000,Chuyển khoản,2025-02-02,Nhân viên bán hàng
+ORD00190,ORD00190,Khách lẻ 770,52000,Tiền mặt,2025-02-02,Nhân viên bán hàng
+ORD00191,ORD00191,Khách lẻ 082,48000,Tiền mặt,2025-02-02,Nhân viên bán hàng
+ORD00192,ORD00192,Khách lẻ 004,346000,Ví điện tử,2025-02-02,Nhân viên bán hàng
+ORD00193,ORD00193,Khách lẻ 423,20000,Chuyển khoản,2025-02-02,Nhân viên bán hàng
+ORD00194,ORD00194,Khách lẻ 742,105000,Tiền mặt,2025-02-02,Nhân viên bán hàng
+ORD00195,ORD00195,Khách lẻ 004,61000,Chuyển khoản,2025-02-03,Nhân viên bán hàng
+ORD00196,ORD00196,Khách lẻ 475,220000,Tiền mặt,2025-02-03,Nhân viên bán hàng
+ORD00197,ORD00197,Khách lẻ 462,16000,Ví điện tử,2025-02-03,Nhân viên bán hàng
+ORD00198,ORD00198,Khách lẻ 834,62000,Chuyển khoản,2025-02-03,Nhân viên bán hàng
+ORD00199,ORD00199,Khách lẻ 203,147000,Ví điện tử,2025-02-04,Nhân viên bán hàng
+ORD00200,ORD00200,Khách lẻ 770,71000,Chuyển khoản,2025-02-04,Nhân viên bán hàng
+ORD00201,ORD00201,Khách lẻ 553,86000,Ví điện tử,2025-02-04,Nhân viên bán hàng
+ORD00202,ORD00202,Khách lẻ 258,378000,Chuyển khoản,2025-02-04,Nhân viên bán hàng
+ORD00203,ORD00203,Khách lẻ 779,210000,Ví điện tử,2025-02-04,Nhân viên bán hàng
+ORD00204,ORD00204,Khách lẻ 098,50000,Tiền mặt,2025-02-05,Nhân viên bán hàng
+ORD00205,ORD00205,Khách lẻ 868,54000,Tiền mặt,2025-02-05,Nhân viên bán hàng
+ORD00206,ORD00206,Khách lẻ 351,110000,Tiền mặt,2025-02-05,Nhân viên bán hàng
+ORD00207,ORD00207,Khách lẻ 493,168000,Tiền mặt,2025-02-05,Nhân viên bán hàng
+ORD00208,ORD00208,Khách lẻ 118,50000,Chuyển khoản,2025-02-05,Nhân viên bán hàng
+ORD00209,ORD00209,Khách lẻ 374,60000,Chuyển khoản,2025-02-05,Nhân viên bán hàng
+ORD00210,ORD00210,Khách lẻ 607,653000,Ví điện tử,2025-02-06,Nhân viên bán hàng
+ORD00211,ORD00211,Khách lẻ 287,84000,Chuyển khoản,2025-02-06,Nhân viên bán hàng
+ORD00212,ORD00212,Khách lẻ 593,120000,Tiền mặt,2025-02-06,Nhân viên bán hàng
+ORD00213,ORD00213,Khách lẻ 830,498000,Tiền mặt,2025-02-06,Nhân viên bán hàng
+ORD00214,ORD00214,Khách lẻ 388,179000,Ví điện tử,2025-02-06,Nhân viên bán hàng
+ORD00215,ORD00215,Khách lẻ 989,213000,Chuyển khoản,2025-02-07,Nhân viên bán hàng
+ORD00216,ORD00216,Khách lẻ 464,45000,Ví điện tử,2025-02-07,Nhân viên bán hàng
+ORD00217,ORD00217,Khách lẻ 876,167000,Ví điện tử,2025-02-07,Nhân viên bán hàng
+ORD00218,ORD00218,Khách lẻ 474,154000,Tiền mặt,2025-02-07,Nhân viên bán hàng
+ORD00219,ORD00219,Khách lẻ 497,126000,Tiền mặt,2025-02-07,Nhân viên bán hàng
+ORD00220,ORD00220,Khách lẻ 105,250000,Tiền mặt,2025-02-08,Nhân viên bán hàng
+ORD00221,ORD00221,Khách lẻ 924,126000,Chuyển khoản,2025-02-08,Nhân viên bán hàng
+ORD00222,ORD00222,Khách lẻ 787,144000,Ví điện tử,2025-02-08,Nhân viên bán hàng
+ORD00223,ORD00223,Khách lẻ 958,60000,Tiền mặt,2025-02-08,Nhân viên bán hàng
+ORD00224,ORD00224,Khách lẻ 933,243000,Tiền mặt,2025-02-08,Nhân viên bán hàng
+ORD00225,ORD00225,Khách lẻ 297,238000,Ví điện tử,2025-02-08,Nhân viên bán hàng
+ORD00226,ORD00226,Khách lẻ 463,5000,Tiền mặt,2025-02-08,Nhân viên bán hàng
+ORD00227,ORD00227,Khách lẻ 469,75000,Chuyển khoản,2025-02-08,Nhân viên bán hàng
+ORD00228,ORD00228,Khách lẻ 978,61000,Chuyển khoản,2025-02-09,Nhân viên bán hàng
+ORD00229,ORD00229,Khách lẻ 813,134000,Tiền mặt,2025-02-09,Nhân viên bán hàng
+ORD00230,ORD00230,Khách lẻ 451,50000,Ví điện tử,2025-02-09,Nhân viên bán hàng
+ORD00231,ORD00231,Khách lẻ 726,54000,Tiền mặt,2025-02-09,Nhân viên bán hàng
+ORD00232,ORD00232,Khách lẻ 047,75000,Ví điện tử,2025-02-10,Nhân viên bán hàng
+ORD00233,ORD00233,Khách lẻ 249,257000,Chuyển khoản,2025-02-10,Nhân viên bán hàng
+ORD00234,ORD00234,Khách lẻ 185,180000,Tiền mặt,2025-02-10,Nhân viên bán hàng
+ORD00235,ORD00235,Khách lẻ 139,30000,Ví điện tử,2025-02-10,Nhân viên bán hàng
+ORD00236,ORD00236,Khách lẻ 070,290000,Ví điện tử,2025-02-11,Nhân viên bán hàng
+ORD00237,ORD00237,Khách lẻ 430,184000,Ví điện tử,2025-02-11,Nhân viên bán hàng
+ORD00238,ORD00238,Khách lẻ 258,131000,Chuyển khoản,2025-02-11,Nhân viên bán hàng
+ORD00239,ORD00239,Khách lẻ 665,112000,Chuyển khoản,2025-02-11,Nhân viên bán hàng
+ORD00240,ORD00240,Khách lẻ 204,85000,Tiền mặt,2025-02-11,Nhân viên bán hàng
+ORD00241,ORD00241,Khách lẻ 393,240000,Tiền mặt,2025-02-11,Nhân viên bán hàng
+ORD00242,ORD00242,Khách lẻ 153,96000,Tiền mặt,2025-02-11,Nhân viên bán hàng
+ORD00243,ORD00243,Khách lẻ 946,377000,Tiền mặt,2025-02-12,Nhân viên bán hàng
+ORD00244,ORD00244,Khách lẻ 587,150000,Tiền mặt,2025-02-12,Nhân viên bán hàng
+ORD00245,ORD00245,Khách lẻ 595,116000,Ví điện tử,2025-02-12,Nhân viên bán hàng
+ORD00246,ORD00246,Khách lẻ 207,184000,Chuyển khoản,2025-02-12,Nhân viên bán hàng
+ORD00247,ORD00247,Khách lẻ 458,184000,Tiền mặt,2025-02-12,Nhân viên bán hàng
+ORD00248,ORD00248,Khách lẻ 660,30000,Ví điện tử,2025-02-12,Nhân viên bán hàng
+ORD00249,ORD00249,Khách lẻ 128,83000,Ví điện tử,2025-02-13,Nhân viên bán hàng
+ORD00250,ORD00250,Khách lẻ 425,84000,Chuyển khoản,2025-02-13,Nhân viên bán hàng
+ORD00251,ORD00251,Khách lẻ 028,260000,Ví điện tử,2025-02-13,Nhân viên bán hàng
+ORD00252,ORD00252,Khách lẻ 857,240000,Ví điện tử,2025-02-13,Nhân viên bán hàng
+ORD00253,ORD00253,Khách lẻ 993,218000,Ví điện tử,2025-02-13,Nhân viên bán hàng
+ORD00254,ORD00254,Khách lẻ 892,280000,Ví điện tử,2025-02-13,Nhân viên bán hàng
+ORD00255,ORD00255,Khách lẻ 146,27000,Tiền mặt,2025-02-13,Nhân viên bán hàng
+ORD00256,ORD00256,Khách lẻ 923,20000,Ví điện tử,2025-02-14,Nhân viên bán hàng
+ORD00257,ORD00257,Khách lẻ 234,259000,Chuyển khoản,2025-02-14,Nhân viên bán hàng
+ORD00258,ORD00258,Khách lẻ 675,270000,Ví điện tử,2025-02-14,Nhân viên bán hàng
+ORD00259,ORD00259,Khách lẻ 606,25000,Chuyển khoản,2025-02-14,Nhân viên bán hàng
+ORD00260,ORD00260,Khách lẻ 932,51000,Tiền mặt,2025-02-14,Nhân viên bán hàng
+ORD00261,ORD00261,Khách lẻ 011,135000,Ví điện tử,2025-02-15,Nhân viên bán hàng
+ORD00262,ORD00262,Khách lẻ 254,33000,Tiền mặt,2025-02-15,Nhân viên bán hàng
+ORD00263,ORD00263,Khách lẻ 451,415000,Ví điện tử,2025-02-15,Nhân viên bán hàng
+ORD00264,ORD00264,Khách lẻ 340,81000,Ví điện tử,2025-02-15,Nhân viên bán hàng
+ORD00265,ORD00265,Khách lẻ 789,18000,Chuyển khoản,2025-02-16,Nhân viên bán hàng
+ORD00266,ORD00266,Khách lẻ 529,24000,Ví điện tử,2025-02-16,Nhân viên bán hàng
+ORD00267,ORD00267,Khách lẻ 571,184000,Ví điện tử,2025-02-16,Nhân viên bán hàng
+ORD00268,ORD00268,Khách lẻ 694,27000,Ví điện tử,2025-02-16,Nhân viên bán hàng
+ORD00269,ORD00269,Khách lẻ 448,95000,Tiền mặt,2025-02-16,Nhân viên bán hàng
+ORD00270,ORD00270,Khách lẻ 328,320000,Ví điện tử,2025-02-16,Nhân viên bán hàng
+ORD00271,ORD00271,Khách lẻ 453,141000,Tiền mặt,2025-02-16,Nhân viên bán hàng
+ORD00272,ORD00272,Khách lẻ 690,102000,Tiền mặt,2025-02-16,Nhân viên bán hàng
+ORD00273,ORD00273,Khách lẻ 327,370000,Tiền mặt,2025-02-17,Nhân viên bán hàng
+ORD00274,ORD00274,Khách lẻ 720,165000,Chuyển khoản,2025-02-17,Nhân viên bán hàng
+ORD00275,ORD00275,Khách lẻ 794,217000,Tiền mặt,2025-02-17,Nhân viên bán hàng
+ORD00276,ORD00276,Khách lẻ 110,149000,Chuyển khoản,2025-02-17,Nhân viên bán hàng
+ORD00277,ORD00277,Khách lẻ 043,142000,Chuyển khoản,2025-02-17,Nhân viên bán hàng
+ORD00278,ORD00278,Khách lẻ 846,370000,Ví điện tử,2025-02-17,Nhân viên bán hàng
+ORD00279,ORD00279,Khách lẻ 074,32000,Chuyển khoản,2025-02-18,Nhân viên bán hàng
+ORD00280,ORD00280,Khách lẻ 996,158000,Tiền mặt,2025-02-18,Nhân viên bán hàng
+ORD00281,ORD00281,Khách lẻ 345,72000,Tiền mặt,2025-02-18,Nhân viên bán hàng
+ORD00282,ORD00282,Khách lẻ 264,210000,Tiền mặt,2025-02-18,Nhân viên bán hàng
+ORD00283,ORD00283,Khách lẻ 954,18000,Tiền mặt,2025-02-18,Nhân viên bán hàng
+ORD00284,ORD00284,Khách lẻ 552,171000,Tiền mặt,2025-02-18,Nhân viên bán hàng
+ORD00285,ORD00285,Khách lẻ 571,210000,Ví điện tử,2025-02-19,Nhân viên bán hàng
+ORD00286,ORD00286,Khách lẻ 683,67000,Tiền mặt,2025-02-19,Nhân viên bán hàng
+ORD00287,ORD00287,Khách lẻ 317,42000,Tiền mặt,2025-02-19,Nhân viên bán hàng
+ORD00288,ORD00288,Khách lẻ 521,279000,Chuyển khoản,2025-02-19,Nhân viên bán hàng
+ORD00289,ORD00289,Khách lẻ 314,50000,Tiền mặt,2025-02-19,Nhân viên bán hàng
+ORD00290,ORD00290,Khách lẻ 072,40000,Tiền mặt,2025-02-19,Nhân viên bán hàng
+ORD00291,ORD00291,Khách lẻ 140,239000,Ví điện tử,2025-02-19,Nhân viên bán hàng
+ORD00292,ORD00292,Khách lẻ 524,98000,Tiền mặt,2025-02-20,Nhân viên bán hàng
+ORD00293,ORD00293,Khách lẻ 827,127000,Ví điện tử,2025-02-20,Nhân viên bán hàng
+ORD00294,ORD00294,Khách lẻ 978,310000,Chuyển khoản,2025-02-20,Nhân viên bán hàng
+ORD00295,ORD00295,Khách lẻ 631,75000,Tiền mặt,2025-02-20,Nhân viên bán hàng
+ORD00296,ORD00296,Khách lẻ 668,222000,Chuyển khoản,2025-02-20,Nhân viên bán hàng
+ORD00297,ORD00297,Khách lẻ 866,66000,Ví điện tử,2025-02-20,Nhân viên bán hàng
+ORD00298,ORD00298,Khách lẻ 999,180000,Tiền mặt,2025-02-21,Nhân viên bán hàng
+ORD00299,ORD00299,Khách lẻ 466,239000,Tiền mặt,2025-02-21,Nhân viên bán hàng
+ORD00300,ORD00300,Khách lẻ 245,112000,Tiền mặt,2025-02-21,Nhân viên bán hàng
+ORD00301,ORD00301,Khách lẻ 103,63000,Chuyển khoản,2025-02-21,Nhân viên bán hàng
+ORD00302,ORD00302,Khách lẻ 955,375000,Chuyển khoản,2025-02-22,Nhân viên bán hàng
+ORD00303,ORD00303,Khách lẻ 196,8000,Ví điện tử,2025-02-22,Nhân viên bán hàng
+ORD00304,ORD00304,Khách lẻ 592,244000,Chuyển khoản,2025-02-22,Nhân viên bán hàng
+ORD00305,ORD00305,Khách lẻ 451,190000,Ví điện tử,2025-02-22,Nhân viên bán hàng
+ORD00306,ORD00306,Khách lẻ 622,66000,Chuyển khoản,2025-02-22,Nhân viên bán hàng
+ORD00307,ORD00307,Khách lẻ 415,182000,Tiền mặt,2025-02-22,Nhân viên bán hàng
+ORD00308,ORD00308,Khách lẻ 060,135000,Chuyển khoản,2025-02-22,Nhân viên bán hàng
+ORD00309,ORD00309,Khách lẻ 056,188000,Ví điện tử,2025-02-23,Nhân viên bán hàng
+ORD00310,ORD00310,Khách lẻ 700,8000,Chuyển khoản,2025-02-23,Nhân viên bán hàng
+ORD00311,ORD00311,Khách lẻ 205,44000,Ví điện tử,2025-02-23,Nhân viên bán hàng
+ORD00312,ORD00312,Khách lẻ 631,112000,Chuyển khoản,2025-02-23,Nhân viên bán hàng
+ORD00313,ORD00313,Khách lẻ 254,92000,Ví điện tử,2025-02-23,Nhân viên bán hàng
+ORD00314,ORD00314,Khách lẻ 704,122000,Ví điện tử,2025-02-23,Nhân viên bán hàng
+ORD00315,ORD00315,Khách lẻ 293,148000,Tiền mặt,2025-02-23,Nhân viên bán hàng
+ORD00316,ORD00316,Khách lẻ 710,120000,Tiền mặt,2025-02-24,Nhân viên bán hàng
+ORD00317,ORD00317,Khách lẻ 230,48000,Ví điện tử,2025-02-24,Nhân viên bán hàng
+ORD00318,ORD00318,Khách lẻ 647,87000,Tiền mặt,2025-02-24,Nhân viên bán hàng
+ORD00319,ORD00319,Khách lẻ 664,188000,Ví điện tử,2025-02-24,Nhân viên bán hàng
+ORD00320,ORD00320,Khách lẻ 125,95000,Ví điện tử,2025-02-24,Nhân viên bán hàng
+ORD00321,ORD00321,Khách lẻ 208,155000,Tiền mặt,2025-02-24,Nhân viên bán hàng
+ORD00322,ORD00322,Khách lẻ 453,135000,Chuyển khoản,2025-02-25,Nhân viên bán hàng
+ORD00323,ORD00323,Khách lẻ 689,245000,Tiền mặt,2025-02-25,Nhân viên bán hàng
+ORD00324,ORD00324,Khách lẻ 387,76000,Tiền mặt,2025-02-25,Nhân viên bán hàng
+ORD00325,ORD00325,Khách lẻ 152,77000,Ví điện tử,2025-02-25,Nhân viên bán hàng
+ORD00326,ORD00326,Khách lẻ 235,70000,Chuyển khoản,2025-02-25,Nhân viên bán hàng
+ORD00327,ORD00327,Khách lẻ 782,125000,Chuyển khoản,2025-02-25,Nhân viên bán hàng
+ORD00328,ORD00328,Khách lẻ 353,401000,Tiền mặt,2025-02-26,Nhân viên bán hàng
+ORD00329,ORD00329,Khách lẻ 333,30000,Tiền mặt,2025-02-26,Nhân viên bán hàng
+ORD00330,ORD00330,Khách lẻ 734,170000,Tiền mặt,2025-02-26,Nhân viên bán hàng
+ORD00331,ORD00331,Khách lẻ 720,24000,Tiền mặt,2025-02-26,Nhân viên bán hàng
+ORD00332,ORD00332,Khách lẻ 867,66000,Tiền mặt,2025-02-26,Nhân viên bán hàng
+ORD00333,ORD00333,Khách lẻ 909,220000,Ví điện tử,2025-02-26,Nhân viên bán hàng
+ORD00334,ORD00334,Khách lẻ 361,226000,Chuyển khoản,2025-02-26,Nhân viên bán hàng
+ORD00335,ORD00335,Khách lẻ 112,220000,Chuyển khoản,2025-02-26,Nhân viên bán hàng
+ORD00336,ORD00336,Khách lẻ 436,56000,Ví điện tử,2025-02-27,Nhân viên bán hàng
+ORD00337,ORD00337,Khách lẻ 039,125000,Chuyển khoản,2025-02-27,Nhân viên bán hàng
+ORD00338,ORD00338,Khách lẻ 226,465000,Tiền mặt,2025-02-27,Nhân viên bán hàng
+ORD00339,ORD00339,Khách lẻ 266,235000,Ví điện tử,2025-02-27,Nhân viên bán hàng
+ORD00340,ORD00340,Khách lẻ 154,90000,Tiền mặt,2025-02-27,Nhân viên bán hàng
+ORD00341,ORD00341,Khách lẻ 042,150000,Tiền mặt,2025-02-28,Nhân viên bán hàng
+ORD00342,ORD00342,Khách lẻ 773,54000,Tiền mặt,2025-02-28,Nhân viên bán hàng
+ORD00343,ORD00343,Khách lẻ 405,75000,Ví điện tử,2025-02-28,Nhân viên bán hàng
+ORD00344,ORD00344,Khách lẻ 282,129000,Ví điện tử,2025-02-28,Nhân viên bán hàng
+ORD00345,ORD00345,Khách lẻ 105,162000,Ví điện tử,2025-02-28,Nhân viên bán hàng
+ORD00346,ORD00346,Khách lẻ 196,150000,Chuyển khoản,2025-02-28,Nhân viên bán hàng
+ORD00347,ORD00347,Khách lẻ 085,95000,Tiền mặt,2025-02-28,Nhân viên bán hàng
+ORD00348,ORD00348,Khách lẻ 215,290000,Tiền mặt,2025-03-01,Nhân viên bán hàng
+ORD00349,ORD00349,Khách lẻ 148,44000,Ví điện tử,2025-03-01,Nhân viên bán hàng
+ORD00350,ORD00350,Khách lẻ 416,171000,Chuyển khoản,2025-03-01,Nhân viên bán hàng
+ORD00351,ORD00351,Khách lẻ 470,40000,Tiền mặt,2025-03-01,Nhân viên bán hàng
+ORD00352,ORD00352,Khách lẻ 464,15000,Chuyển khoản,2025-03-01,Nhân viên bán hàng
+ORD00353,ORD00353,Khách lẻ 190,159000,Ví điện tử,2025-03-01,Nhân viên bán hàng
+ORD00354,ORD00354,Khách lẻ 705,10000,Ví điện tử,2025-03-02,Nhân viên bán hàng
+ORD00355,ORD00355,Khách lẻ 662,77000,Chuyển khoản,2025-03-02,Nhân viên bán hàng
+ORD00356,ORD00356,Khách lẻ 373,78000,Ví điện tử,2025-03-02,Nhân viên bán hàng
+ORD00357,ORD00357,Khách lẻ 796,126000,Chuyển khoản,2025-03-02,Nhân viên bán hàng
+ORD00358,ORD00358,Khách lẻ 919,75000,Chuyển khoản,2025-03-02,Nhân viên bán hàng
+ORD00359,ORD00359,Khách lẻ 467,22000,Ví điện tử,2025-03-02,Nhân viên bán hàng
+ORD00360,ORD00360,Khách lẻ 512,167000,Chuyển khoản,2025-03-02,Nhân viên bán hàng
+ORD00361,ORD00361,Khách lẻ 979,88000,Ví điện tử,2025-03-03,Nhân viên bán hàng
+ORD00362,ORD00362,Khách lẻ 240,158000,Ví điện tử,2025-03-03,Nhân viên bán hàng
+ORD00363,ORD00363,Khách lẻ 504,94000,Chuyển khoản,2025-03-03,Nhân viên bán hàng
+ORD00364,ORD00364,Khách lẻ 372,35000,Ví điện tử,2025-03-03,Nhân viên bán hàng
+ORD00365,ORD00365,Khách lẻ 431,189000,Chuyển khoản,2025-03-04,Nhân viên bán hàng
+ORD00366,ORD00366,Khách lẻ 393,199000,Ví điện tử,2025-03-04,Nhân viên bán hàng
+ORD00367,ORD00367,Khách lẻ 943,10000,Chuyển khoản,2025-03-04,Nhân viên bán hàng
+ORD00368,ORD00368,Khách lẻ 662,90000,Chuyển khoản,2025-03-04,Nhân viên bán hàng
+ORD00369,ORD00369,Khách lẻ 556,150000,Ví điện tử,2025-03-04,Nhân viên bán hàng
+ORD00370,ORD00370,Khách lẻ 347,289000,Ví điện tử,2025-03-05,Nhân viên bán hàng
+ORD00371,ORD00371,Khách lẻ 802,18000,Tiền mặt,2025-03-05,Nhân viên bán hàng
+ORD00372,ORD00372,Khách lẻ 086,300000,Ví điện tử,2025-03-05,Nhân viên bán hàng
+ORD00373,ORD00373,Khách lẻ 043,435000,Chuyển khoản,2025-03-05,Nhân viên bán hàng
+ORD00374,ORD00374,Khách lẻ 119,399000,Ví điện tử,2025-03-05,Nhân viên bán hàng
+ORD00375,ORD00375,Khách lẻ 351,119000,Tiền mặt,2025-03-05,Nhân viên bán hàng
+ORD00376,ORD00376,Khách lẻ 170,65000,Ví điện tử,2025-03-06,Nhân viên bán hàng
+ORD00377,ORD00377,Khách lẻ 018,114000,Chuyển khoản,2025-03-06,Nhân viên bán hàng
+ORD00378,ORD00378,Khách lẻ 135,305000,Tiền mặt,2025-03-06,Nhân viên bán hàng
+ORD00379,ORD00379,Khách lẻ 865,62000,Ví điện tử,2025-03-06,Nhân viên bán hàng
+ORD00380,ORD00380,Khách lẻ 747,50000,Ví điện tử,2025-03-06,Nhân viên bán hàng
+ORD00381,ORD00381,Khách lẻ 859,40000,Chuyển khoản,2025-03-07,Nhân viên bán hàng
+ORD00382,ORD00382,Khách lẻ 807,22000,Chuyển khoản,2025-03-07,Nhân viên bán hàng
+ORD00383,ORD00383,Khách lẻ 780,125000,Chuyển khoản,2025-03-07,Nhân viên bán hàng
+ORD00384,ORD00384,Khách lẻ 267,78000,Ví điện tử,2025-03-07,Nhân viên bán hàng
+ORD00385,ORD00385,Khách lẻ 623,100000,Ví điện tử,2025-03-07,Nhân viên bán hàng
+ORD00386,ORD00386,Khách lẻ 993,244000,Chuyển khoản,2025-03-07,Nhân viên bán hàng
+ORD00387,ORD00387,Khách lẻ 618,128000,Chuyển khoản,2025-03-07,Nhân viên bán hàng
+ORD00388,ORD00388,Khách lẻ 472,316000,Ví điện tử,2025-03-08,Nhân viên bán hàng
+ORD00389,ORD00389,Khách lẻ 426,206000,Ví điện tử,2025-03-08,Nhân viên bán hàng
+ORD00390,ORD00390,Khách lẻ 719,139000,Chuyển khoản,2025-03-08,Nhân viên bán hàng
+ORD00391,ORD00391,Khách lẻ 370,30000,Chuyển khoản,2025-03-08,Nhân viên bán hàng
+ORD00392,ORD00392,Khách lẻ 740,116000,Chuyển khoản,2025-03-08,Nhân viên bán hàng
+ORD00393,ORD00393,Khách lẻ 773,175000,Tiền mặt,2025-03-09,Nhân viên bán hàng
+ORD00394,ORD00394,Khách lẻ 479,275000,Ví điện tử,2025-03-09,Nhân viên bán hàng
+ORD00395,ORD00395,Khách lẻ 463,101000,Ví điện tử,2025-03-09,Nhân viên bán hàng
+ORD00396,ORD00396,Khách lẻ 309,126000,Ví điện tử,2025-03-09,Nhân viên bán hàng
+ORD00397,ORD00397,Khách lẻ 362,522000,Chuyển khoản,2025-03-09,Nhân viên bán hàng
+ORD00398,ORD00398,Khách lẻ 697,235000,Tiền mặt,2025-03-10,Nhân viên bán hàng
+ORD00399,ORD00399,Khách lẻ 758,46000,Ví điện tử,2025-03-10,Nhân viên bán hàng
+ORD00400,ORD00400,Khách lẻ 925,110000,Tiền mặt,2025-03-10,Nhân viên bán hàng
+ORD00401,ORD00401,Khách lẻ 572,595000,Ví điện tử,2025-03-10,Nhân viên bán hàng
+ORD00402,ORD00402,Khách lẻ 822,60000,Ví điện tử,2025-03-10,Nhân viên bán hàng
+ORD00403,ORD00403,Khách lẻ 649,20000,Ví điện tử,2025-03-10,Nhân viên bán hàng
+ORD00404,ORD00404,Khách lẻ 752,70000,Chuyển khoản,2025-03-11,Nhân viên bán hàng
+ORD00405,ORD00405,Khách lẻ 410,317000,Ví điện tử,2025-03-11,Nhân viên bán hàng
+ORD00406,ORD00406,Khách lẻ 132,70000,Tiền mặt,2025-03-11,Nhân viên bán hàng
+ORD00407,ORD00407,Khách lẻ 496,375000,Chuyển khoản,2025-03-11,Nhân viên bán hàng
+ORD00408,ORD00408,Khách lẻ 512,114000,Ví điện tử,2025-03-12,Nhân viên bán hàng
+ORD00409,ORD00409,Khách lẻ 040,360000,Tiền mặt,2025-03-12,Nhân viên bán hàng
+ORD00410,ORD00410,Khách lẻ 559,98000,Chuyển khoản,2025-03-12,Nhân viên bán hàng
+ORD00411,ORD00411,Khách lẻ 982,78000,Chuyển khoản,2025-03-12,Nhân viên bán hàng
+ORD00412,ORD00412,Khách lẻ 319,152000,Ví điện tử,2025-03-12,Nhân viên bán hàng
+ORD00413,ORD00413,Khách lẻ 270,75000,Ví điện tử,2025-03-12,Nhân viên bán hàng
+ORD00414,ORD00414,Khách lẻ 651,129000,Chuyển khoản,2025-03-13,Nhân viên bán hàng
+ORD00415,ORD00415,Khách lẻ 989,122000,Chuyển khoản,2025-03-13,Nhân viên bán hàng
+ORD00416,ORD00416,Khách lẻ 861,289000,Ví điện tử,2025-03-13,Nhân viên bán hàng
+ORD00417,ORD00417,Khách lẻ 812,438000,Ví điện tử,2025-03-13,Nhân viên bán hàng
+ORD00418,ORD00418,Khách lẻ 876,113000,Tiền mặt,2025-03-14,Nhân viên bán hàng
+ORD00419,ORD00419,Khách lẻ 336,15000,Chuyển khoản,2025-03-14,Nhân viên bán hàng
+ORD00420,ORD00420,Khách lẻ 355,104000,Chuyển khoản,2025-03-14,Nhân viên bán hàng
+ORD00421,ORD00421,Khách lẻ 060,36000,Chuyển khoản,2025-03-14,Nhân viên bán hàng
+ORD00422,ORD00422,Khách lẻ 484,279000,Chuyển khoản,2025-03-14,Nhân viên bán hàng
+ORD00423,ORD00423,Khách lẻ 348,235000,Chuyển khoản,2025-03-14,Nhân viên bán hàng
+ORD00424,ORD00424,Khách lẻ 798,158000,Chuyển khoản,2025-03-15,Nhân viên bán hàng
+ORD00425,ORD00425,Khách lẻ 897,135000,Chuyển khoản,2025-03-15,Nhân viên bán hàng
+ORD00426,ORD00426,Khách lẻ 856,96000,Ví điện tử,2025-03-15,Nhân viên bán hàng
+ORD00427,ORD00427,Khách lẻ 462,694000,Tiền mặt,2025-03-15,Nhân viên bán hàng
+ORD00428,ORD00428,Khách lẻ 652,186000,Tiền mặt,2025-03-16,Nhân viên bán hàng
+ORD00429,ORD00429,Khách lẻ 129,24000,Chuyển khoản,2025-03-16,Nhân viên bán hàng
+ORD00430,ORD00430,Khách lẻ 027,83000,Chuyển khoản,2025-03-16,Nhân viên bán hàng
+ORD00431,ORD00431,Khách lẻ 270,72000,Tiền mặt,2025-03-16,Nhân viên bán hàng
+ORD00432,ORD00432,Khách lẻ 185,180000,Tiền mặt,2025-03-16,Nhân viên bán hàng
+ORD00433,ORD00433,Khách lẻ 964,200000,Tiền mặt,2025-03-17,Nhân viên bán hàng
+ORD00434,ORD00434,Khách lẻ 060,128000,Tiền mặt,2025-03-17,Nhân viên bán hàng
+ORD00435,ORD00435,Khách lẻ 882,455000,Tiền mặt,2025-03-17,Nhân viên bán hàng
+ORD00436,ORD00436,Khách lẻ 086,224000,Ví điện tử,2025-03-17,Nhân viên bán hàng
+ORD00437,ORD00437,Khách lẻ 422,210000,Tiền mặt,2025-03-18,Nhân viên bán hàng
+ORD00438,ORD00438,Khách lẻ 573,68000,Ví điện tử,2025-03-18,Nhân viên bán hàng
+ORD00439,ORD00439,Khách lẻ 523,172000,Ví điện tử,2025-03-18,Nhân viên bán hàng
+ORD00440,ORD00440,Khách lẻ 561,100000,Chuyển khoản,2025-03-18,Nhân viên bán hàng
+ORD00441,ORD00441,Khách lẻ 950,76000,Tiền mặt,2025-03-18,Nhân viên bán hàng
+ORD00442,ORD00442,Khách lẻ 195,10000,Ví điện tử,2025-03-18,Nhân viên bán hàng
+ORD00443,ORD00443,Khách lẻ 764,380000,Chuyển khoản,2025-03-19,Nhân viên bán hàng
+ORD00444,ORD00444,Khách lẻ 779,117000,Ví điện tử,2025-03-19,Nhân viên bán hàng
+ORD00445,ORD00445,Khách lẻ 840,702000,Ví điện tử,2025-03-19,Nhân viên bán hàng
+ORD00446,ORD00446,Khách lẻ 551,84000,Tiền mặt,2025-03-19,Nhân viên bán hàng
+ORD00447,ORD00447,Khách lẻ 757,90000,Chuyển khoản,2025-03-19,Nhân viên bán hàng
+ORD00448,ORD00448,Khách lẻ 956,156000,Chuyển khoản,2025-03-20,Nhân viên bán hàng
+ORD00449,ORD00449,Khách lẻ 698,159000,Tiền mặt,2025-03-20,Nhân viên bán hàng
+ORD00450,ORD00450,Khách lẻ 276,9000,Tiền mặt,2025-03-20,Nhân viên bán hàng
+ORD00451,ORD00451,Khách lẻ 174,93000,Chuyển khoản,2025-03-20,Nhân viên bán hàng
+ORD00452,ORD00452,Khách lẻ 914,149000,Ví điện tử,2025-03-20,Nhân viên bán hàng
+ORD00453,ORD00453,Khách lẻ 692,62000,Ví điện tử,2025-03-20,Nhân viên bán hàng
+ORD00454,ORD00454,Khách lẻ 400,502000,Chuyển khoản,2025-03-20,Nhân viên bán hàng
+ORD00455,ORD00455,Khách lẻ 752,62000,Ví điện tử,2025-03-21,Nhân viên bán hàng
+ORD00456,ORD00456,Khách lẻ 379,168000,Tiền mặt,2025-03-21,Nhân viên bán hàng
+ORD00457,ORD00457,Khách lẻ 846,234000,Ví điện tử,2025-03-21,Nhân viên bán hàng
+ORD00458,ORD00458,Khách lẻ 844,43000,Chuyển khoản,2025-03-21,Nhân viên bán hàng
+ORD00459,ORD00459,Khách lẻ 674,80000,Ví điện tử,2025-03-21,Nhân viên bán hàng
+ORD00460,ORD00460,Khách lẻ 724,38000,Tiền mặt,2025-03-21,Nhân viên bán hàng
+ORD00461,ORD00461,Khách lẻ 417,98000,Tiền mặt,2025-03-21,Nhân viên bán hàng
+ORD00462,ORD00462,Khách lẻ 789,601000,Tiền mặt,2025-03-22,Nhân viên bán hàng
+ORD00463,ORD00463,Khách lẻ 842,72000,Ví điện tử,2025-03-22,Nhân viên bán hàng
+ORD00464,ORD00464,Khách lẻ 259,102000,Chuyển khoản,2025-03-22,Nhân viên bán hàng
+ORD00465,ORD00465,Khách lẻ 422,145000,Chuyển khoản,2025-03-22,Nhân viên bán hàng
+ORD00466,ORD00466,Khách lẻ 097,184000,Ví điện tử,2025-03-22,Nhân viên bán hàng
+ORD00467,ORD00467,Khách lẻ 038,217000,Tiền mặt,2025-03-22,Nhân viên bán hàng
+ORD00468,ORD00468,Khách lẻ 270,90000,Chuyển khoản,2025-03-23,Nhân viên bán hàng
+ORD00469,ORD00469,Khách lẻ 595,80000,Chuyển khoản,2025-03-23,Nhân viên bán hàng
+ORD00470,ORD00470,Khách lẻ 508,138000,Ví điện tử,2025-03-23,Nhân viên bán hàng
+ORD00471,ORD00471,Khách lẻ 727,30000,Tiền mặt,2025-03-23,Nhân viên bán hàng
+ORD00472,ORD00472,Khách lẻ 495,165000,Ví điện tử,2025-03-23,Nhân viên bán hàng
+ORD00473,ORD00473,Khách lẻ 760,97000,Tiền mặt,2025-03-23,Nhân viên bán hàng
+ORD00474,ORD00474,Khách lẻ 563,135000,Ví điện tử,2025-03-23,Nhân viên bán hàng
+ORD00475,ORD00475,Khách lẻ 308,95000,Tiền mặt,2025-03-24,Nhân viên bán hàng
+ORD00476,ORD00476,Khách lẻ 930,215000,Tiền mặt,2025-03-24,Nhân viên bán hàng
+ORD00477,ORD00477,Khách lẻ 616,70000,Chuyển khoản,2025-03-24,Nhân viên bán hàng
+ORD00478,ORD00478,Khách lẻ 514,69000,Tiền mặt,2025-03-24,Nhân viên bán hàng
+ORD00479,ORD00479,Khách lẻ 985,106000,Chuyển khoản,2025-03-24,Nhân viên bán hàng
+ORD00480,ORD00480,Khách lẻ 916,15000,Ví điện tử,2025-03-24,Nhân viên bán hàng
+ORD00481,ORD00481,Khách lẻ 682,82000,Ví điện tử,2025-03-24,Nhân viên bán hàng
+ORD00482,ORD00482,Khách lẻ 026,138000,Ví điện tử,2025-03-24,Nhân viên bán hàng
+ORD00483,ORD00483,Khách lẻ 371,147000,Tiền mặt,2025-03-25,Nhân viên bán hàng
+ORD00484,ORD00484,Khách lẻ 435,5000,Ví điện tử,2025-03-25,Nhân viên bán hàng
+ORD00485,ORD00485,Khách lẻ 723,220000,Ví điện tử,2025-03-25,Nhân viên bán hàng
+ORD00486,ORD00486,Khách lẻ 538,206000,Chuyển khoản,2025-03-25,Nhân viên bán hàng
+ORD00487,ORD00487,Khách lẻ 040,280000,Chuyển khoản,2025-03-26,Nhân viên bán hàng
+ORD00488,ORD00488,Khách lẻ 932,30000,Tiền mặt,2025-03-26,Nhân viên bán hàng
+ORD00489,ORD00489,Khách lẻ 496,144000,Chuyển khoản,2025-03-26,Nhân viên bán hàng
+ORD00490,ORD00490,Khách lẻ 615,155000,Chuyển khoản,2025-03-26,Nhân viên bán hàng
+ORD00491,ORD00491,Khách lẻ 468,50000,Chuyển khoản,2025-03-27,Nhân viên bán hàng
+ORD00492,ORD00492,Khách lẻ 444,154000,Chuyển khoản,2025-03-27,Nhân viên bán hàng
+ORD00493,ORD00493,Khách lẻ 366,153000,Chuyển khoản,2025-03-27,Nhân viên bán hàng
+ORD00494,ORD00494,Khách lẻ 081,48000,Chuyển khoản,2025-03-27,Nhân viên bán hàng
+ORD00495,ORD00495,Khách lẻ 717,25000,Tiền mặt,2025-03-27,Nhân viên bán hàng
+ORD00496,ORD00496,Khách lẻ 561,84000,Tiền mặt,2025-03-27,Nhân viên bán hàng
+ORD00497,ORD00497,Khách lẻ 367,15000,Chuyển khoản,2025-03-27,Nhân viên bán hàng
+ORD00498,ORD00498,Khách lẻ 600,19000,Chuyển khoản,2025-03-27,Nhân viên bán hàng
+ORD00499,ORD00499,Khách lẻ 652,57000,Chuyển khoản,2025-03-28,Nhân viên bán hàng
+ORD00500,ORD00500,Khách lẻ 060,66000,Ví điện tử,2025-03-28,Nhân viên bán hàng
+ORD00501,ORD00501,Khách lẻ 369,77000,Chuyển khoản,2025-03-28,Nhân viên bán hàng
+ORD00502,ORD00502,Khách lẻ 181,10000,Ví điện tử,2025-03-28,Nhân viên bán hàng
+ORD00503,ORD00503,Khách lẻ 534,499000,Chuyển khoản,2025-03-28,Nhân viên bán hàng
+ORD00504,ORD00504,Khách lẻ 975,110000,Chuyển khoản,2025-03-29,Nhân viên bán hàng
+ORD00505,ORD00505,Khách lẻ 675,50000,Ví điện tử,2025-03-29,Nhân viên bán hàng
+ORD00506,ORD00506,Khách lẻ 795,70000,Tiền mặt,2025-03-29,Nhân viên bán hàng
+ORD00507,ORD00507,Khách lẻ 224,321000,Chuyển khoản,2025-03-29,Nhân viên bán hàng
+ORD00508,ORD00508,Khách lẻ 128,99000,Ví điện tử,2025-03-29,Nhân viên bán hàng
+ORD00509,ORD00509,Khách lẻ 581,450000,Chuyển khoản,2025-03-30,Nhân viên bán hàng
+ORD00510,ORD00510,Khách lẻ 593,50000,Tiền mặt,2025-03-30,Nhân viên bán hàng
+ORD00511,ORD00511,Khách lẻ 768,181000,Chuyển khoản,2025-03-30,Nhân viên bán hàng
+ORD00512,ORD00512,Khách lẻ 529,490000,Tiền mặt,2025-03-30,Nhân viên bán hàng
+ORD00513,ORD00513,Khách lẻ 741,60000,Ví điện tử,2025-03-30,Nhân viên bán hàng
+ORD00514,ORD00514,Khách lẻ 208,215000,Tiền mặt,2025-03-30,Nhân viên bán hàng
+ORD00515,ORD00515,Khách lẻ 246,187000,Tiền mặt,2025-03-31,Nhân viên bán hàng
+ORD00516,ORD00516,Khách lẻ 870,740000,Tiền mặt,2025-03-31,Nhân viên bán hàng
+ORD00517,ORD00517,Khách lẻ 346,102000,Tiền mặt,2025-03-31,Nhân viên bán hàng
+ORD00518,ORD00518,Khách lẻ 170,122000,Tiền mặt,2025-03-31,Nhân viên bán hàng
+ORD00519,ORD00519,Khách lẻ 844,74000,Ví điện tử,2025-03-31,Nhân viên bán hàng

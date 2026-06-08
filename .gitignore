@@ -1,0 +1,161 @@
+# =========================
+
+# Dependencies
+
+# =========================
+
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# =========================
+
+# Environment variables
+
+# =========================
+
+.env
+.env.*
+!.env.example
+
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# =========================
+
+# Build outputs
+
+# =========================
+
+dist/
+build/
+frontend/dist/
+frontend/build/
+backend/dist/
+backend/build/
+
+# =========================
+
+# Logs
+
+# =========================
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+
+# Runtime / cache
+
+# =========================
+
+.cache/
+.temp/
+tmp/
+.vite/
+frontend/.vite/
+backend/.cache/
+
+# =========================
+
+# OS files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+
+# IDE / Editor
+
+# =========================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Nếu muốn giữ setting VS Code chung cho nhóm thì bỏ comment dòng dưới:
+
+# !.vscode/settings.json
+
+# =========================
+
+# Test coverage
+
+# =========================
+
+coverage/
+frontend/coverage/
+backend/coverage/
+
+# =========================
+
+# Supabase / Database secrets
+
+# =========================
+
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+
+# Uploads / generated files
+
+# =========================
+
+uploads/
+frontend/uploads/
+backend/uploads/
+
+# =========================
+
+# Local generated reports
+
+# =========================
+
+reports/generated/
+exports/
+*.tmp
+
+# =========================
+
+# Package manager
+
+# =========================
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Nếu nhóm muốn khóa version package thì có thể KHÔNG ignore lock file.
+
+# Khi đó hãy xóa 3 dòng package-lock/yarn/pnpm ở trên.
+
+# =========================
+
+# Project data note
+
+# =========================
+
+# Giữ lại database/schema.sql và database/seed/*.csv
+
+# vì đây là dữ liệu mẫu phục vụ đồ án.
+
+# Không ignore:
+
+# database/schema.sql
+
+# database/seed/*.csv

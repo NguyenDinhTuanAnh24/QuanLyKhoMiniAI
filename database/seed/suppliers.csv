@@ -1,0 +1,13 @@
+﻿supplier_id,supplier_name,phone,email,address,note
+SUP001,Nhà phân phối Minh Anh,0901001001,minhanh.food@example.com,Hà Nội,Nhà cung cấp mẫu đã chuẩn hóa
+SUP002,Công ty Nông sản Đà Lạt,0901001002,dalat.agri@example.com,Lâm Đồng,Nhà cung cấp mẫu đã chuẩn hóa
+SUP003,Vinamilk Distribution,0901001003,sales@vinamilk.example.com,TP. Hồ Chí Minh,Nhà cung cấp mẫu đã chuẩn hóa
+SUP004,TH True Milk Distribution,0901001004,sales@thmilk.example.com,Nghệ An,Nhà cung cấp mẫu đã chuẩn hóa
+SUP005,Tường An Food,0901001005,tuongan@example.com,TP. Hồ Chí Minh,Nhà cung cấp mẫu đã chuẩn hóa
+SUP006,Nhà phân phối Cái Lân,0901001006,cailan@example.com,Quảng Ninh,Nhà cung cấp mẫu đã chuẩn hóa
+SUP007,Trung Nguyên Legend,0901001007,trungnguyen@example.com,TP. Hồ Chí Minh,Nhà cung cấp mẫu đã chuẩn hóa
+SUP008,Phúc Long Distribution,0901001008,phuclong@example.com,TP. Hồ Chí Minh,Nhà cung cấp mẫu đã chuẩn hóa
+SUP009,Kinh Đô Mondelez,0901001009,kinhdo@example.com,Bình Dương,Nhà cung cấp mẫu đã chuẩn hóa
+SUP010,Hải sản Biển Đông,0901001010,biendong.seafood@example.com,Đà Nẵng,Nhà cung cấp mẫu đã chuẩn hóa
+SUP011,Vinafood Retail,0901001011,vinafood@example.com,Cần Thơ,Nhà cung cấp mẫu đã chuẩn hóa
+SUP012,MM Mega Market Wholesale,0901001012,mm.wholesale@example.com,TP. Hồ Chí Minh,Nhà cung cấp mẫu đã chuẩn hóa
