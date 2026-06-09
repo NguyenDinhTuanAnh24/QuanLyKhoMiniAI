@@ -5,6 +5,7 @@ import UnitDashboard from './components/UnitDashboard';
 import SupplierDashboard from './components/SupplierDashboard';
 import ProductFormPage from './components/ProductFormPage';
 import MainLayout from './components/MainLayout';
+import SalesPage from './pages/SalesPage';
 
 function App() {
   const [activePage, setActivePage] = useState('products');
@@ -22,6 +23,7 @@ function App() {
       case 'categories': return <CategoryDashboard onNavigate={handleNavigate} />;
       case 'units': return <UnitDashboard onNavigate={handleNavigate} />;
       case 'suppliers': return <SupplierDashboard onNavigate={handleNavigate} />;
+      case 'sales': return <SalesPage onNavigate={handleNavigate} />;
       default: return <ProductDashboard onNavigate={handleNavigate} />;
     }
   };

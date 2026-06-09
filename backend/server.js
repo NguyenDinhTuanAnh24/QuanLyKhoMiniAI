@@ -6,6 +6,7 @@ const productRoutes = require('./src/routes/productRoutes');
 const categoryRoutes = require('./src/routes/categoryRoutes');
 const unitRoutes = require('./src/routes/unitRoutes');
 const supplierRoutes = require('./src/routes/supplierRoutes');
+const orderRoutes = require('./src/routes/orderRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/units', unitRoutes);
 app.use('/api/suppliers', supplierRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error Handling Middleware
 app.use(GlobalExceptionHandler);
