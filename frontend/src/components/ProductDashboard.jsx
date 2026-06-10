@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Plus, Filter, Upload, Download, MoreHorizontal, LayoutGrid, List, Package, CheckCircle2, AlertTriangle, DollarSign, Eye, Pencil, Trash2, X, RefreshCw, AlertCircle } from 'lucide-react';
-import { getProducts, deleteProduct } from '../services/productService';
+import { Search, Plus, Filter, Upload, Download, MoreHorizontal, LayoutGrid, List, Package, CheckCircle2, AlertTriangle, DollarSign, Eye, Pencil, Trash2, X, RefreshCw, AlertCircle, FileSpreadsheet } from 'lucide-react';
+import { getProducts, deleteProduct, createProduct } from '../services/productService';
+import { getCategories } from '../services/categoryService';
+import { getUnits } from '../services/unitService';
+import { getSuppliers } from '../services/supplierService';
+import { exportProductsToExcel, parseExcelFile, downloadTemplate } from '../utils/excelUtils';
 import StatCard from './StatCard';
 import ProductFormModal from './ProductFormPage';
 import { useToast } from '../contexts/ToastContext';
@@ -19,6 +23,13 @@ export default function ProductDashboard({ onNavigate }) {
   // Confirm Delete state
   const [productToDelete, setProductToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Import states
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importData, setImportData] = useState([]);
+  const [importErrors, setImportErrors] = useState([]);
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = React.useRef(null);
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -178,6 +189,136 @@ export default function ProductDashboard({ onNavigate }) {
     }
   };
 
+  const handleExportClick = async () => {
+    try {
+      if (filteredProducts.length === 0) {
+        showToast({ type: 'warning', title: 'Cảnh báo', message: 'Không có dữ liệu để xuất' });
+        return;
+      }
+      await exportProductsToExcel(filteredProducts);
+      showToast({ type: 'success', title: 'Thành công', message: 'Xuất Excel thành công' });
+    } catch (error) {
+      console.error(error);
+      showToast({ type: 'error', title: 'Lỗi', message: 'Không thể xuất Excel' });
+    }
+  };
+
+  const handleImportClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+      showToast({ type: 'error', title: 'Lỗi', message: 'File không đúng định dạng Excel' });
+      e.target.value = '';
+      return;
+    }
+
+    try {
+      const data = await parseExcelFile(file);
+      await processImportData(data);
+      e.target.value = '';
+    } catch (error) {
+      console.error(error);
+      showToast({ type: 'error', title: 'Lỗi', message: 'File có dữ liệu lỗi, vui lòng kiểm tra lại.' });
+      e.target.value = '';
+    }
+  };
+
+  const processImportData = async (data) => {
+    try {
+      const [catRes, unitRes, supRes] = await Promise.all([
+        getCategories(), getUnits(), getSuppliers()
+      ]);
+      const categoryMap = new Map((catRes.data || []).map(c => [c.category_name.toLowerCase(), c.category_id]));
+      const unitMap = new Map((unitRes.data || []).map(u => [u.unit_name.toLowerCase(), u.unit_id]));
+      const supMap = new Map((supRes.data || []).map(s => [s.supplier_name.toLowerCase(), s.supplier_id]));
+      const skuSet = new Set(products.map(p => p.sku.toLowerCase()));
+
+      const processedData = [];
+      const errors = [];
+
+      data.forEach((row, index) => {
+        const rowNum = index + 2; // +1 for 0-index, +1 for header
+        const sku = row['SKU']?.toString().trim();
+        const name = row['Tên sản phẩm']?.toString().trim();
+        const catName = row['Danh mục']?.toString().trim();
+        const unitName = row['ĐVT']?.toString().trim();
+        const supName = row['Nhà cung cấp']?.toString().trim();
+        const importPrice = parseFloat(row['Giá nhập']);
+        const sellingPrice = parseFloat(row['Giá bán']);
+        const stock = parseInt(row['Tồn kho'], 10);
+        const reorderLevel = parseInt(row['Mức tối thiểu'], 10) || 0;
+        const reorderQty = parseInt(row['Đề xuất nhập'], 10) || 0;
+        
+        let rowError = null;
+
+        if (!sku) rowError = 'SKU bị trống';
+        else if (!name) rowError = 'Tên sản phẩm bị trống';
+        else if (!catName) rowError = 'Danh mục bị trống';
+        else if (!unitName) rowError = 'ĐVT bị trống';
+        else if (!supName) rowError = 'Nhà cung cấp bị trống';
+        else if (isNaN(importPrice) || importPrice < 0) rowError = 'Giá nhập không hợp lệ';
+        else if (isNaN(sellingPrice) || sellingPrice < 0) rowError = 'Giá bán không hợp lệ';
+        else if (isNaN(stock) || stock < 0) rowError = 'Tồn kho không hợp lệ';
+        else if (skuSet.has(sku.toLowerCase())) rowError = `SKU ${sku} đã tồn tại`;
+        else if (!categoryMap.has(catName.toLowerCase())) rowError = `Không tìm thấy danh mục: ${catName}`;
+        else if (!unitMap.has(unitName.toLowerCase())) rowError = `Không tìm thấy ĐVT: ${unitName}`;
+        else if (!supMap.has(supName.toLowerCase())) rowError = `Không tìm thấy Nhà cung cấp: ${supName}`;
+
+        if (rowError) {
+          errors.push(`Dòng ${rowNum}: ${rowError}`);
+        } else {
+          processedData.push({
+            sku,
+            product_name: name,
+            product_name_en: row['Tên tiếng Anh']?.toString() || null,
+            category_id: categoryMap.get(catName.toLowerCase()),
+            unit_id: unitMap.get(unitName.toLowerCase()),
+            supplier_id: supMap.get(supName.toLowerCase()),
+            import_price: importPrice,
+            selling_price: sellingPrice,
+            stock_quantity: stock,
+            reorder_level: reorderLevel,
+            reorder_quantity: reorderQty,
+            date_received: row['Ngày nhập (YYYY-MM-DD)']?.toString() || null,
+            expiration_date: row['Ngày hết hạn (YYYY-MM-DD)']?.toString() || null,
+            warehouse_location: row['Vị trí']?.toString() || null,
+            status: row['Trạng thái']?.toString() || 'Đang bán'
+          });
+          skuSet.add(sku.toLowerCase());
+        }
+      });
+
+      setImportData(processedData);
+      setImportErrors(errors);
+      setImportModalOpen(true);
+    } catch (error) {
+      console.error(error);
+      showToast({ type: 'error', title: 'Lỗi', message: 'Không thể xử lý dữ liệu Excel' });
+    }
+  };
+
+  const handleConfirmImport = async () => {
+    setIsImporting(true);
+    try {
+      for (const product of importData) {
+        await createProduct(product);
+      }
+      showToast({ type: 'success', title: 'Thành công', message: 'Nhập Excel thành công' });
+      setImportModalOpen(false);
+      loadProducts();
+    } catch (error) {
+      console.error(error);
+      showToast({ type: 'error', title: 'Lỗi', message: 'Không thể nhập Excel. Vui lòng kiểm tra lại file.' });
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   // Tính toán thống kê toàn bộ (không bị ảnh hưởng bởi filter để tránh giật)
   const totalProducts = products.length;
   const activeProducts = products.filter(p => (p.stock_quantity || 0) > (p.reorder_level || 0)).length;
@@ -215,11 +356,18 @@ export default function ProductDashboard({ onNavigate }) {
           <p className="text-slate-500 text-sm mt-1">Quản lý toàn bộ sản phẩm trong hệ thống</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors shadow-sm">
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleFileChange} 
+            accept=".xlsx, .xls" 
+            className="hidden" 
+          />
+          <button onClick={handleImportClick} className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors shadow-sm">
             <Upload className="w-4 h-4" />
             Nhập Excel
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors shadow-sm">
+          <button onClick={handleExportClick} className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors shadow-sm">
             <Download className="w-4 h-4" />
             Xuất Excel
           </button>
@@ -748,6 +896,120 @@ export default function ProductDashboard({ onNavigate }) {
                 disabled={isDeleting}
               >
                 {isDeleting ? 'Đang xử lý...' : 'Xác nhận xóa'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import Preview Modal */}
+      {importModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-slate-100 shrink-0 bg-slate-50">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                  <FileSpreadsheet className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Xem trước dữ liệu nhập</h3>
+                  <p className="text-sm text-slate-500">Kiểm tra thông tin trước khi ghi vào hệ thống</p>
+                </div>
+              </div>
+              <button onClick={() => setImportModalOpen(false)} className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-4 overflow-y-auto flex-1 space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                  <div className="text-sm text-slate-500">Tổng số dòng</div>
+                  <div className="text-xl font-bold text-slate-900">{importData.length + importErrors.length}</div>
+                </div>
+                <div className="bg-green-50 p-3 rounded-lg border border-green-100">
+                  <div className="text-sm text-green-600">Hợp lệ</div>
+                  <div className="text-xl font-bold text-green-700">{importData.length}</div>
+                </div>
+                <div className="bg-red-50 p-3 rounded-lg border border-red-100">
+                  <div className="text-sm text-red-600">Lỗi</div>
+                  <div className="text-xl font-bold text-red-700">{importErrors.length}</div>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                  <div className="text-sm text-blue-600">Thêm mới</div>
+                  <div className="text-xl font-bold text-blue-700">{importData.length}</div>
+                </div>
+              </div>
+
+              {importErrors.length > 0 && (
+                <div className="bg-red-50 p-4 rounded-xl border border-red-200">
+                  <div className="flex items-center gap-2 mb-2 text-red-800 font-medium">
+                    <AlertCircle className="w-5 h-5" />
+                    <span>Danh sách lỗi ({importErrors.length})</span>
+                  </div>
+                  <ul className="list-disc list-inside text-sm text-red-600 space-y-1 max-h-32 overflow-y-auto bg-white p-3 rounded-lg border border-red-100">
+                    {importErrors.map((err, i) => (
+                      <li key={i}>{err}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {importData.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-slate-900 mb-2">Dữ liệu hợp lệ (Preview 5 dòng đầu)</h4>
+                  <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                    <table className="w-full text-left text-sm text-slate-600">
+                      <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                          <th className="p-3 font-medium text-slate-700">SKU</th>
+                          <th className="p-3 font-medium text-slate-700">Tên sản phẩm</th>
+                          <th className="p-3 font-medium text-slate-700">Giá nhập</th>
+                          <th className="p-3 font-medium text-slate-700">Giá bán</th>
+                          <th className="p-3 font-medium text-slate-700">Tồn kho</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 bg-white">
+                        {importData.slice(0, 5).map((row, i) => (
+                          <tr key={i}>
+                            <td className="p-3">{row.sku}</td>
+                            <td className="p-3">{row.product_name}</td>
+                            <td className="p-3">{formatCurrency(row.import_price)}</td>
+                            <td className="p-3">{formatCurrency(row.selling_price)}</td>
+                            <td className="p-3">{row.stock_quantity}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-white shrink-0">
+              <button 
+                onClick={() => setImportModalOpen(false)} 
+                className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
+                disabled={isImporting}
+              >
+                Hủy
+              </button>
+              <button 
+                onClick={handleConfirmImport} 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                disabled={isImporting || importData.length === 0 || importErrors.length > 0}
+              >
+                {isImporting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" />
+                    Xác nhận nhập
+                  </>
+                )}
               </button>
             </div>
           </div>

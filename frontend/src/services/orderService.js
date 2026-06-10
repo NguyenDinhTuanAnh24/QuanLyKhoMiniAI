@@ -9,3 +9,8 @@ export const getRecentOrders = async (limit = 10) => {
   const response = await api.get(`/orders?limit=${limit}`);
   return response.data;
 };
+
+export const getProductConsumption = async (limit = 10) => {
+  const response = await api.get(`/orders/statistics/product-consumption?limit=${limit}`);
+  return response.data;
+};

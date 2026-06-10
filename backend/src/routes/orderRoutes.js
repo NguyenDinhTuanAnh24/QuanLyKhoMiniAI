@@ -4,5 +4,6 @@ const OrderController = require('../controllers/OrderController');
 
 router.post('/', OrderController.createOrder);
 router.get('/', OrderController.getRecentOrders);
+router.get('/statistics/product-consumption', OrderController.getProductConsumption);
 
 module.exports = router;
