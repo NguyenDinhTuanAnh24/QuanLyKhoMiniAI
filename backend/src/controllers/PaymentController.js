@@ -1,4 +1,4 @@
-const OrderService = require('../services/orderService');
+const OrderService = require('../services/OrderService');
 const PayOSService = require('../services/PayOSService');
 const { z } = require('zod');
 
@@ -22,7 +22,7 @@ class PaymentController {
   async createPayOSPayment(req, res, next) {
     try {
       const validatedData = createOrderSchema.parse(req.body);
-      
+
       // Create pending order
       const { order, items } = await OrderService.createOrder(validatedData);
 

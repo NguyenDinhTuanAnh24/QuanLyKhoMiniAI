@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Trash2, RefreshCcw, CheckCircle2, ShoppingCart, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, AlertTriangle, X, Lightbulb, Minus } from 'lucide-react';
 import { getProducts } from '../services/productService';
+import ConfirmModal from '../components/ConfirmModal';
 import { getCategories } from '../services/categoryService';
 import { createOrder, getRecentOrders, createPayosPayment, getOrderPaymentStatus } from '../services/orderService';
 import { QRCodeSVG } from 'qrcode.react';
@@ -47,6 +48,7 @@ export default function SalesPage({ onNavigate }) {
   
   // New Confirm Modal State
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
   
   const [showQRModal, setShowQRModal] = useState(false);
   const [payosData, setPayosData] = useState(null);
@@ -799,7 +801,7 @@ export default function SalesPage({ onNavigate }) {
             
             <div className="pt-2">
               <button
-                onClick={() => setShowQRModal(false)}
+                onClick={() => setShowCancelConfirmModal(true)}
                 className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
               >
                 Hủy
@@ -808,6 +810,19 @@ export default function SalesPage({ onNavigate }) {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={showCancelConfirmModal}
+        onClose={() => setShowCancelConfirmModal(false)}
+        onConfirm={() => {
+          setShowQRModal(false);
+        }}
+        title="Xác nhận hủy thanh toán"
+        message="Bạn có chắc chắn muốn hủy thanh toán qua mã QR? Đơn hàng sẽ không được hoàn tất."
+        confirmText="Hủy thanh toán"
+        cancelText="Đóng"
+        isDanger={true}
+      />
 
       {/* Product Selection Modal */}
       {showProductModal && (
