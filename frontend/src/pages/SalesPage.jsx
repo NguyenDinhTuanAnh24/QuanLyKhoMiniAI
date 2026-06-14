@@ -757,7 +757,7 @@ export default function SalesPage({ onNavigate }) {
               <div className="flex justify-center mb-6 bg-slate-50 rounded-xl py-6 border border-slate-100">
                 {payosData ? (
                   <div className="flex flex-col items-center">
-                    <QRCodeSVG value={payosData.qrCode} size={256} className="bg-white p-2 rounded-xl shadow-sm border border-slate-200" />
+                    <QRCodeSVG value={payosData.qr_code} size={256} className="bg-white p-2 rounded-xl shadow-sm border border-slate-200" />
                     <p className="text-slate-500 text-sm mt-4 text-center">Quét mã bằng ứng dụng ngân hàng</p>
                   </div>
                 ) : (
@@ -775,41 +775,34 @@ export default function SalesPage({ onNavigate }) {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Ngân hàng:</span>
-                    <span className="font-medium text-slate-800">{payosData.bin}</span>
+                    <span className="font-medium text-slate-800">{BANK_ID}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Số tài khoản:</span>
-                    <span className="font-medium text-slate-800">{payosData.accountNumber}</span>
+                    <span className="font-medium text-slate-800">{ACCOUNT_NO}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Chủ tài khoản:</span>
-                    <span className="font-medium text-slate-800 uppercase">{payosData.accountName}</span>
+                    <span className="font-medium text-slate-800 uppercase">{ACCOUNT_NAME}</span>
                   </div>
                   <div className="flex justify-between border-t border-slate-200 pt-3 mt-3">
                     <span className="text-slate-500">Mã đơn hàng:</span>
-                    <span className="font-medium text-slate-800">{payosData.orderCode}</span>
+                    <span className="font-medium text-slate-800">{payosData.order_code}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Nội dung:</span>
-                    <span className="font-medium text-slate-800">{payosData.description}</span>
+                    <span className="font-medium text-slate-800">{payosData.transfer_content}</span>
                   </div>
                 </div>
               )}
             </div>
             
-            <div className="flex gap-3 pt-2">
+            <div className="pt-2">
               <button
                 onClick={() => setShowQRModal(false)}
-                className="flex-1 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors"
+                className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
               >
                 Hủy
-              </button>
-              <button
-                onClick={executeOrder}
-                disabled={isSubmitting}
-                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? 'Đang xử lý...' : 'Thanh toán thành công'}
               </button>
             </div>
           </div>
