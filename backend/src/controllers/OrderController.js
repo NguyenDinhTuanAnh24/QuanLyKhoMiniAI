@@ -23,8 +23,8 @@ class OrderController {
   async createOrder(req, res, next) {
     try {
       const validatedData = createOrderSchema.parse(req.body);
-      const order = await OrderService.createOrder(validatedData);
-      res.status(201).json({ success: true, data: order });
+      const result = await OrderService.createOrder(validatedData);
+      res.status(201).json({ success: true, data: result.order });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ success: false, message: 'Validation error', errors: error.errors });
@@ -38,6 +38,15 @@ class OrderController {
       const limit = parseInt(req.query.limit) || 10;
       const orders = await OrderService.getRecentOrders(limit);
       res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPaymentStatus(req, res, next) {
+    try {
+      const statusData = await OrderService.getOrderPaymentStatus(req.params.orderId);
+      res.status(200).json({ success: true, data: statusData });
     } catch (error) {
       next(error);
     }

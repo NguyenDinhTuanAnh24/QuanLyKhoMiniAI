@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Plus, Trash2, RefreshCcw, CheckCircle2, ShoppingCart, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { getProducts } from '../services/productService';
-import { createOrder, getRecentOrders } from '../services/orderService';
+import { createOrder, getRecentOrders, createPayosPayment, getOrderPaymentStatus } from '../services/orderService';
 import { VALIDATION_ERRORS } from '../constants/errorMessages';
 import ErrorText from '../components/ErrorText';
-
-const BANK_ID = "MB";
-const ACCOUNT_NO = "0967733713";
-const ACCOUNT_NAME = "DINH HA NAM";
-const TEMPLATE = "compact2";
 
 export default function SalesPage({ onNavigate }) {
   const [products, setProducts] = useState([]);
@@ -34,8 +30,14 @@ export default function SalesPage({ onNavigate }) {
   const [customerGivenAmount, setCustomerGivenAmount] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successOrderData, setSuccessOrderData] = useState(null);
+  
+  // PayOS states
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
-  const [qrImageUrl, setQrImageUrl] = useState('');
+  const [payosData, setPayosData] = useState(null);
+  
+  const pollingIntervalRef = useRef(null);
+  const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
     loadProducts();
@@ -43,7 +45,20 @@ export default function SalesPage({ onNavigate }) {
 
   useEffect(() => {
     loadRecentOrders();
+    return () => clearPolling(); // cleanup on unmount
   }, []);
+
+  const clearPolling = () => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
+  };
+
+  const showToast = (text, type = 'success') => {
+    setToastMessage({ text, type });
+    setTimeout(() => setToastMessage(null), 4000);
+  };
 
   const loadRecentOrders = async () => {
     try {
@@ -75,7 +90,7 @@ export default function SalesPage({ onNavigate }) {
     const existing = cart.find(item => item.product_id === product.product_id);
     if (existing) {
       if (existing.quantity + 1 > product.stock_quantity) {
-        setErrorMessage('Số lượng vượt quá tồn kho!');
+        showToast('Số lượng bán vượt quá tồn kho hiện tại.', 'error');
         return;
       }
       setCart(cart.map(item =>
@@ -85,7 +100,7 @@ export default function SalesPage({ onNavigate }) {
       ));
     } else {
       if (product.stock_quantity < 1) {
-        setErrorMessage('Sản phẩm đã hết hàng!');
+        showToast('Số lượng bán vượt quá tồn kho hiện tại.', 'error');
         return;
       }
       setCart([...cart, { ...product, quantity: 1 }]);
@@ -97,16 +112,16 @@ export default function SalesPage({ onNavigate }) {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + item.quantity * item.selling_price, 0);
-  const discount = 0; // Fixed for now
+  const discount = 0; 
   const total = subtotal - discount;
 
-  const handleSubmitOrder = async () => {
+  const validateOrder = () => {
     setErrorMessage('');
     setFormErrors({});
 
     if (cart.length === 0) {
-      setErrorMessage('Vui lòng chọn ít nhất 1 sản phẩm vào giỏ hàng.');
-      return;
+      showToast('Vui lòng thêm ít nhất một sản phẩm vào hóa đơn.', 'error');
+      return false;
     }
 
     let hasError = false;
@@ -124,22 +139,26 @@ export default function SalesPage({ onNavigate }) {
 
     if (hasError) {
       setFormErrors(newErrors);
-      return;
+      return false;
     }
+    
+    return true;
+  };
+
+  const handleSubmitOrder = async () => {
+    if (!validateOrder()) return;
 
     if (customerInfo.paymentMethod === 'Chuyển khoản') {
-      const url = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-${TEMPLATE}.png?amount=${total}&addInfo=Thanh%20toan%20don%20hang&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
-      setQrImageUrl(url);
-      setShowQRModal(true);
+      setShowConfirmModal(true);
       return;
     }
 
+    // Cash flow
     executeOrder();
   };
 
   const executeOrder = async () => {
     setIsSubmitting(true);
-    setShowQRModal(false);
     try {
       const orderData = {
         customer_name: customerInfo.name.trim(),
@@ -169,10 +188,76 @@ export default function SalesPage({ onNavigate }) {
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage(error.response?.data?.message || error.message || 'Có lỗi xảy ra khi tạo hóa đơn.');
+      const msg = error.response?.data?.message || error.message || 'Có lỗi xảy ra khi tạo hóa đơn.';
+      showToast(msg, 'error');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleConfirmBankTransfer = async () => {
+    setIsSubmitting(true);
+    setShowConfirmModal(false);
+
+    try {
+      const orderData = {
+        customer_name: customerInfo.name.trim(),
+        customer_phone: customerInfo.phone.trim() || null,
+        payment_method: 'Chuyển khoản',
+        total_amount: total,
+        items: cart.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          unit_price: item.selling_price
+        }))
+      };
+
+      const response = await createPayosPayment(orderData);
+      
+      if (response.success) {
+        setPayosData(response.data);
+        setShowQRModal(true);
+        showToast('Đã tạo mã QR thanh toán', 'success');
+        startPolling(response.data.order_id);
+      }
+    } catch (error) {
+      console.error(error);
+      showToast('Không thể tạo mã QR thanh toán. Vui lòng thử lại.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const startPolling = (orderId) => {
+    clearPolling();
+    pollingIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await getOrderPaymentStatus(orderId);
+        if (res.success && res.data.payment_status === 'PAID') {
+          clearPolling();
+          setShowQRModal(false);
+          showToast('Thanh toán thành công. Hóa đơn đã được tạo.', 'success');
+          
+          setSuccessOrderData({
+            order_code: res.data.order_code,
+            total_amount: total,
+            given_amount: total,
+            change: 0
+          });
+          setShowSuccessModal(true);
+          loadRecentOrders();
+          loadProducts(); // reload stock
+        }
+      } catch (err) {
+        console.error('Polling error:', err);
+      }
+    }, 2500); // 2.5 seconds
+  };
+
+  const handleCancelBankTransfer = () => {
+    clearPolling();
+    setShowQRModal(false);
+    setPayosData(null);
   };
 
   const resetAfterSuccess = () => {
@@ -192,17 +277,20 @@ export default function SalesPage({ onNavigate }) {
   const isSubmitDisabled = isSubmitting || cart.length === 0 || (isCash && givenAmountNum < total);
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <div className="max-w-[1600px] mx-auto space-y-6 relative">
+      {/* Custom Toast */}
+      {toastMessage && (
+        <div className={`fixed top-4 right-4 z-[9999] px-6 py-3 rounded-lg shadow-lg text-sm font-medium animate-in slide-in-from-top-2 fade-in duration-300 ${
+          toastMessage.type === 'error' ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'
+        }`}>
+          {toastMessage.text}
+        </div>
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Bán hàng</h1>
         <p className="text-slate-500 text-sm mt-1">Tạo hóa đơn và tự động cập nhật tồn kho</p>
       </div>
-
-      {errorMessage && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm font-medium animate-in fade-in">
-          {errorMessage}
-        </div>
-      )}
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 space-y-6">
@@ -241,7 +329,7 @@ export default function SalesPage({ onNavigate }) {
               >
                 <option>Tiền mặt</option>
                 <option>Chuyển khoản</option>
-                <option>Thẻ</option>
+                <option disabled>Thẻ</option>
               </select>
 
               {isCash && (
@@ -438,11 +526,14 @@ export default function SalesPage({ onNavigate }) {
                 {['Tiền mặt', 'Chuyển khoản', 'Thẻ'].map(method => (
                   <button
                     key={method}
+                    disabled={method === 'Thẻ'}
                     onClick={() => setCustomerInfo({ ...customerInfo, paymentMethod: method })}
-                    className={`flex-1 py-1.5 px-2 text-xs rounded-full font-medium transition-colors border ${customerInfo.paymentMethod === method
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                      }`}
+                    className={`flex-1 py-1.5 px-2 text-xs rounded-full font-medium transition-colors border ${
+                      customerInfo.paymentMethod === method
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : method === 'Thẻ' ? 'bg-slate-50 text-slate-400 border-slate-200 opacity-50 cursor-not-allowed'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    }`}
                   >
                     {method}
                   </button>
@@ -511,6 +602,7 @@ export default function SalesPage({ onNavigate }) {
         </div>
       </div>
 
+      {/* SUCCESS MODAL */}
       {showSuccessModal && successOrderData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl animate-in fade-in zoom-in duration-200">
@@ -550,46 +642,89 @@ export default function SalesPage({ onNavigate }) {
           </div>
         </div>
       )}
-      {showQRModal && (
+
+      {/* CONFIRM BANK TRANSFER MODAL */}
+      {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl animate-in fade-in zoom-in duration-200">
-            <h2 className="text-xl font-bold text-slate-800 text-center mb-4">Quét mã để thanh toán</h2>
-            <div className="flex justify-center mb-4">
-              {qrImageUrl && <img src={qrImageUrl} alt="VietQR" className="w-64 h-64 object-contain rounded-xl border border-slate-200 p-2" />}
-            </div>
+            <h2 className="text-xl font-bold text-slate-800 text-center mb-4">Xác nhận thanh toán chuyển khoản</h2>
+            <p className="text-slate-600 text-sm text-center mb-6">Bạn có chắc chắn muốn tạo mã QR thanh toán cho hóa đơn này không?</p>
+            
             <div className="bg-slate-50 p-4 rounded-xl text-sm space-y-2 mb-6">
               <div className="flex justify-between">
-                <span className="text-slate-500">Số tiền:</span>
+                <span className="text-slate-500">Khách hàng:</span>
+                <span className="font-medium text-slate-800">{customerInfo.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Số điện thoại:</span>
+                <span className="font-medium text-slate-800">{customerInfo.phone || '---'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Số sản phẩm:</span>
+                <span className="font-medium text-slate-800">{cart.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Tổng thanh toán:</span>
                 <span className="font-bold text-blue-600 text-base">{formatCurrency(total)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Ngân hàng:</span>
-                <span className="font-medium text-slate-800">{BANK_ID}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Số tài khoản:</span>
-                <span className="font-medium text-slate-800">{ACCOUNT_NO}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Chủ tài khoản:</span>
-                <span className="font-medium text-slate-800 uppercase">{ACCOUNT_NAME}</span>
-              </div>
             </div>
+
             <div className="flex gap-3">
               <button
-                onClick={() => setShowQRModal(false)}
+                onClick={() => setShowConfirmModal(false)}
                 className="flex-1 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors"
               >
                 Hủy
               </button>
               <button
-                onClick={executeOrder}
+                onClick={handleConfirmBankTransfer}
                 disabled={isSubmitting}
                 className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                {isSubmitting ? 'Đang xử lý...' : 'Thanh toán thành công'}
+                {isSubmitting ? 'Đang xử lý...' : 'Tạo mã QR'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR MODAL */}
+      {showQRModal && payosData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl animate-in fade-in zoom-in duration-200">
+            <h2 className="text-xl font-bold text-slate-800 text-center mb-2">Quét mã để thanh toán</h2>
+            <div className="flex items-center justify-center gap-2 mb-6 text-blue-600 bg-blue-50 py-2 rounded-lg">
+              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
+              <span className="text-sm font-medium">Đang chờ thanh toán...</span>
+            </div>
+            
+            <div className="flex justify-center mb-6">
+              <div className="p-3 border-2 border-slate-100 rounded-xl bg-white shadow-sm">
+                 <QRCodeSVG value={payosData.qr_code} size={220} level={"M"} />
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-xl text-sm space-y-3 mb-6">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
+                <span className="text-slate-500">Số tiền:</span>
+                <span className="font-bold text-blue-600 text-lg">{formatCurrency(payosData.amount)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Mã đơn hàng:</span>
+                <span className="font-medium text-slate-800">{payosData.order_code}</span>
+              </div>
+              <div className="flex justify-between items-start gap-4">
+                <span className="text-slate-500 whitespace-nowrap">Nội dung CK:</span>
+                <span className="font-medium text-slate-800 text-right uppercase">{payosData.transfer_content}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleCancelBankTransfer}
+              className="w-full py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors"
+            >
+              Hủy
+            </button>
           </div>
         </div>
       )}

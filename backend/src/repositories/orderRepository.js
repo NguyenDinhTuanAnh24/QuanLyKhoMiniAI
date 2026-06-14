@@ -108,6 +108,37 @@ class OrderRepository {
     if (error) throw error;
     return data;
   }
+
+  async getOrderById(orderId) {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('order_id', orderId)
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async getOrderByPayosCode(payosOrderCode) {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*, order_items(*)')
+      .eq('payos_order_code', payosOrderCode)
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async updateOrder(orderId, updateData) {
+    const { data, error } = await supabase
+      .from('orders')
+      .update(updateData)
+      .eq('order_id', orderId)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  }
 }
 
 module.exports = new OrderRepository();
