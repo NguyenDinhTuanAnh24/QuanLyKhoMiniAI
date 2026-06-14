@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import ProductDashboard from './components/ProductDashboard';
 import CategoryDashboard from './components/CategoryDashboard';
 import UnitDashboard from './components/UnitDashboard';
@@ -6,32 +7,52 @@ import SupplierDashboard from './components/SupplierDashboard';
 import ProductFormPage from './components/ProductFormPage';
 import MainLayout from './components/MainLayout';
 import SalesPage from './pages/SalesPage';
+import InventoryOpsDashboard from './components/InventoryOpsDashboard';
+import { ToastProvider } from './contexts/ToastContext';
 
 function App() {
-  const [activePage, setActivePage] = useState('products');
-  const [activePayload, setActivePayload] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Define activePage based on current URL path
+  const path = location.pathname.split('/')[1];
+  const activePage = path || 'dashboard';
 
   const handleNavigate = (page, payload = null) => {
-    setActivePage(page);
-    setActivePayload(payload);
-  };
-
-  const renderContent = () => {
-    switch (activePage) {
-      case 'products': return <ProductDashboard onNavigate={handleNavigate} />;
-      case 'product-form': return <ProductFormPage payload={activePayload} onNavigate={handleNavigate} />;
-      case 'categories': return <CategoryDashboard onNavigate={handleNavigate} />;
-      case 'units': return <UnitDashboard onNavigate={handleNavigate} />;
-      case 'suppliers': return <SupplierDashboard onNavigate={handleNavigate} />;
-      case 'sales': return <SalesPage onNavigate={handleNavigate} />;
-      default: return <ProductDashboard onNavigate={handleNavigate} />;
-    }
+    navigate(`/${page}`);
+    // payload would be passed via state if needed: navigate(`/${page}`, { state: payload })
   };
 
   return (
-    <MainLayout activePage={activePage} onNavigate={handleNavigate}>
-      {renderContent()}
-    </MainLayout>
+    <ToastProvider>
+      <MainLayout activePage={activePage} onNavigate={handleNavigate}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">Tổng quan</h2><p>Tính năng đang phát triển...</p></div>} />
+          
+          <Route path="/products" element={<ProductDashboard onNavigate={handleNavigate} />} />
+          <Route path="/categories" element={<CategoryDashboard onNavigate={handleNavigate} />} />
+          <Route path="/units" element={<UnitDashboard onNavigate={handleNavigate} />} />
+          <Route path="/suppliers" element={<SupplierDashboard onNavigate={handleNavigate} />} />
+          <Route path="/sales" element={<SalesPage onNavigate={handleNavigate} />} />
+          
+          {/* Inventory Ops Routes */}
+          <Route path="/inventory-ops" element={<InventoryOpsDashboard onNavigate={handleNavigate} />} />
+          <Route path="/warehouse" element={<Navigate to="/inventory-ops" replace />} />
+          <Route path="/stock" element={<Navigate to="/inventory-ops" replace />} />
+          <Route path="/import" element={<Navigate to="/inventory-ops" replace />} />
+          <Route path="/export" element={<Navigate to="/inventory-ops" replace />} />
+
+          {/* Placeholders for other main routes */}
+          <Route path="/reports" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">Báo cáo</h2><p>Tính năng đang phát triển...</p></div>} />
+          <Route path="/ai-insights" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">AI Dự báo</h2><p>Tính năng đang phát triển...</p></div>} />
+          <Route path="/alerts" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">Cảnh báo tồn kho</h2><p>Tính năng đang phát triển...</p></div>} />
+
+          {/* Default fallback for undefined routes */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </MainLayout>
+    </ToastProvider>
   );
 }
 

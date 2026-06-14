@@ -139,6 +139,48 @@ class OrderRepository {
     if (error) throw error;
     return data;
   }
+
+  async getProductConsumption(limit = 10) {
+    const { data: orderItems, error } = await supabase
+      .from('order_items')
+      .select('product_id, quantity, unit_price');
+
+    if (error) throw error;
+
+    const { data: products, error: prodError } = await supabase
+      .from('products')
+      .select('product_id, product_name, sku');
+
+    if (prodError) throw prodError;
+
+    const productMap = {};
+    products.forEach(p => {
+      productMap[p.product_id] = p;
+    });
+
+    const consumptionMap = {};
+    orderItems.forEach(item => {
+      const pid = item.product_id;
+      const product = productMap[pid] || {};
+      if (!consumptionMap[pid]) {
+        consumptionMap[pid] = {
+          product_id: pid,
+          product_name: product.product_name || pid,
+          sku: product.sku || '',
+          quantity_sold: 0,
+          total_revenue: 0
+        };
+      }
+      consumptionMap[pid].quantity_sold += Number(item.quantity || 0);
+      consumptionMap[pid].total_revenue += Number(item.quantity || 0) * Number(item.unit_price || 0);
+    });
+
+    const result = Object.values(consumptionMap)
+      .sort((a, b) => b.quantity_sold - a.quantity_sold)
+      .slice(0, limit);
+
+    return result;
+  }
 }
 
 module.exports = new OrderRepository();

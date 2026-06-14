@@ -8,6 +8,7 @@ const orderItemSchema = z.object({
 });
 
 const createOrderSchema = z.object({
+  order_code: z.string().optional(),
   customer_name: z.string().min(1, 'Tên khách hàng không được để trống'),
   customer_phone: z.string()
     .regex(/^0\d{9}$/, 'Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số')
@@ -47,6 +48,16 @@ class OrderController {
     try {
       const statusData = await OrderService.getOrderPaymentStatus(req.params.orderId);
       res.status(200).json({ success: true, data: statusData });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getProductConsumption(req, res, next) {
+    try {
+      const limit = parseInt(req.query.limit) || 10;
+      const data = await OrderService.getProductConsumption(limit);
+      res.status(200).json({ success: true, data });
     } catch (error) {
       next(error);
     }

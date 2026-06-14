@@ -19,6 +19,10 @@ class OrderService {
     };
   }
 
+  async getProductConsumption(limit = 10) {
+    return await orderRepository.getProductConsumption(limit);
+  }
+
   async createOrder(data) {
     // 1. Check stock for all items first
     for (const item of data.items) {
@@ -46,7 +50,7 @@ class OrderService {
 
     // Generate order_code and IDs
     const timestampStr = Date.now().toString().slice(-6);
-    const order_code = `DH${timestampStr}${Math.floor(Math.random() * 100)}`;
+    const order_code = data.order_code || `DH${timestampStr}${Math.floor(Math.random() * 100)}`;
     const order_id = order_code;
     const payos_order_code = parseInt(`${timestampStr}${Math.floor(Math.random() * 9000) + 1000}`, 10);
 

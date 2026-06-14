@@ -19,3 +19,8 @@ export const getOrderPaymentStatus = async (orderId) => {
   const response = await api.get(`/orders/${orderId}/payment-status`);
   return response.data;
 };
+
+export const getProductConsumption = async (limit = 10) => {
+  const response = await api.get(`/orders/statistics/product-consumption?limit=${limit}`);
+  return response.data;
+};

@@ -1,18 +1,32 @@
 import React from 'react';
 import { Search, Bell, Menu } from 'lucide-react';
 
-export default function Topbar({ activePage }) {
-  const getBreadcrumbs = () => {
+export default function Topbar({ activePage, activePayload, onNavigate }) {
+  const getPageTitle = () => {
     switch (activePage) {
-      case 'product-form': return ['Sản phẩm', 'Thêm / Sửa sản phẩm'];
-      case 'categories': return ['Danh mục'];
-      case 'units': return ['Đơn vị tính'];
-      case 'suppliers': return ['Nhà cung cấp'];
-      default: return ['Sản phẩm'];
+      case 'dashboard': return 'Tổng quan';
+      case 'products': return 'Quản lý sản phẩm';
+      case 'categories': return 'Quản lý danh mục';
+      case 'units': return 'Quản lý đơn vị tính';
+      case 'suppliers': return 'Quản lý nhà cung cấp';
+      case 'stock-movements': 
+      case 'warehouse':
+      case 'import-stock':
+      case 'inventory-ops': return 'Nhập / Xuất kho';
+      case 'orders':
+      case 'sales': return 'Đơn bán hàng';
+      case 'inventory':
+      case 'stock-alerts': return 'Cảnh báo tồn kho';
+      case 'ai-insights':
+      case 'ai-forecast': return 'AI Dự báo & Gợi ý';
+      case 'reports': return 'Báo cáo & Phân tích';
+      case 'users': return 'Quản lý người dùng';
+      case 'settings': return 'Cài đặt hệ thống';
+      default: return 'Smart Retail Inventory AI';
     }
   };
 
-  const breadcrumbs = getBreadcrumbs();
+  const pageTitle = getPageTitle();
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
@@ -20,14 +34,8 @@ export default function Topbar({ activePage }) {
         <button className="text-slate-500 hover:text-slate-700 md:hidden">
           <Menu className="w-5 h-5" />
         </button>
-        <div className="hidden md:flex text-sm text-slate-500">
-          <span>Dashboard</span>
-          {breadcrumbs.map((b, idx) => (
-            <React.Fragment key={idx}>
-              <span className="mx-2">/</span>
-              <span className={idx === breadcrumbs.length - 1 ? "text-slate-900 font-medium" : ""}>{b}</span>
-            </React.Fragment>
-          ))}
+        <div className="hidden md:block">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{pageTitle}</h1>
         </div>
       </div>
 
