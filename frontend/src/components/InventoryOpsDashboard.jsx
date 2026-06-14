@@ -410,9 +410,11 @@ export default function InventoryOpsDashboard() {
             </div>
 
             {/* History Import */}
-            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4 max-h-[800px] overflow-y-auto">
-              <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2 sticky top-0 bg-white">Lịch sử nhập kho gần đây</h3>
-              <div className="space-y-3">
+            <div className="rounded-xl border border-slate-200 bg-white shadow-sm h-[520px] flex flex-col overflow-hidden">
+              <div className="shrink-0 border-b border-slate-100 px-5 py-4 bg-white z-10">
+                <h3 className="font-bold text-slate-900">Lịch sử nhập kho gần đây</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto bg-white p-4 pr-2 space-y-3">
                 {movements.filter(m => m.type === 'IMPORT').slice(0, 10).map((m, idx) => (
                   <div key={idx} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg hover:bg-slate-50">
                     <div>
@@ -427,7 +429,9 @@ export default function InventoryOpsDashboard() {
                   </div>
                 ))}
                 {movements.filter(m => m.type === 'IMPORT').length === 0 && (
-                  <div className="text-sm text-slate-500 text-center py-4">Chưa có dữ liệu</div>
+                  <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm py-10">
+                    Chưa có dữ liệu
+                  </div>
                 )}
               </div>
             </div>
@@ -563,9 +567,11 @@ export default function InventoryOpsDashboard() {
             </div>
 
             {/* History Export */}
-            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4 max-h-[800px] overflow-y-auto">
-              <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2 sticky top-0 bg-white">Lịch sử xuất kho gần đây</h3>
-              <div className="space-y-3">
+            <div className="rounded-xl border border-slate-200 bg-white shadow-sm h-[520px] flex flex-col overflow-hidden">
+              <div className="shrink-0 border-b border-slate-100 px-5 py-4 bg-white z-10">
+                <h3 className="font-bold text-slate-900">Lịch sử xuất kho gần đây</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto bg-white p-4 pr-2 space-y-3">
                 {movements.filter(m => m.type === 'EXPORT' || m.type === 'SALE').slice(0, 10).map((m, idx) => (
                   <div key={idx} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg hover:bg-slate-50">
                     <div>
@@ -579,7 +585,9 @@ export default function InventoryOpsDashboard() {
                   </div>
                 ))}
                 {movements.filter(m => m.type === 'EXPORT' || m.type === 'SALE').length === 0 && (
-                  <div className="text-sm text-slate-500 text-center py-4">Chưa có dữ liệu</div>
+                  <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm py-10">
+                    Chưa có dữ liệu
+                  </div>
                 )}
               </div>
             </div>

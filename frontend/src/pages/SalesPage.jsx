@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Trash2, RefreshCcw, CheckCircle2, ShoppingCart, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, AlertTriangle, X, Lightbulb, Minus } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { getProducts } from '../services/productService';
 import { getCategories } from '../services/categoryService';
-import { createOrder, getRecentOrders, getProductConsumption } from '../services/orderService';
+import { createOrder, getRecentOrders } from '../services/orderService';
 import { VALIDATION_ERRORS } from '../constants/errorMessages';
 import ErrorText from '../components/ErrorText';
 import { useToast } from '../contexts/ToastContext';
@@ -22,19 +21,6 @@ const normalizeTransferText = (text) => {
     .replace(/[^a-zA-Z0-9\s-]/g, "")
     .replace(/\s+/g, " ")
     .trim();
-};
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
-
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
-      <p className="font-semibold text-slate-900">{label}</p>
-      <p className="mt-1 text-sm text-slate-600">
-        Đã tiêu thụ: <span className="font-semibold text-slate-900">{payload[0].value}</span> sản phẩm
-      </p>
-    </div>
-  );
 };
 
 export default function SalesPage({ onNavigate }) {
@@ -68,8 +54,6 @@ export default function SalesPage({ onNavigate }) {
   const [pendingOrderCode, setPendingOrderCode] = useState(null);
   const [transferContent, setTransferContent] = useState("");
   
-  const [consumptionData, setConsumptionData] = useState([]);
-  
   // Product Modal State
   const [showProductModal, setShowProductModal] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
@@ -83,7 +67,6 @@ export default function SalesPage({ onNavigate }) {
   useEffect(() => {
     loadAllProductsAndCategories();
     loadRecentOrders();
-    loadConsumptionData();
   }, []);
 
   const loadAllProductsAndCategories = async () => {
@@ -141,20 +124,6 @@ export default function SalesPage({ onNavigate }) {
   const filteredProducts = getFilteredProducts();
   const modalTotalPages = Math.ceil(filteredProducts.length / 8) || 1;
   const paginatedProducts = filteredProducts.slice((modalPage - 1) * 8, modalPage * 8);
-
-  const loadConsumptionData = async () => {
-    try {
-      const res = await getProductConsumption(10);
-      if (res && res.success) {
-        setConsumptionData(Array.isArray(res.data) ? res.data : []);
-      } else {
-        setConsumptionData([]);
-      }
-    } catch (error) {
-      console.error("Failed to load product consumption:", error);
-      setConsumptionData([]);
-    }
-  };
 
   const loadRecentOrders = async () => {
     try {
@@ -312,7 +281,6 @@ export default function SalesPage({ onNavigate }) {
         setShowSuccessModal(true);
         loadRecentOrders();
         loadProducts(); // reload stock
-        loadConsumptionData(); // reload chart
       }
     } catch (error) {
       console.error(error);
@@ -608,51 +576,6 @@ export default function SalesPage({ onNavigate }) {
             </tbody>
           </table>
         </div>
-      </div>
-
-      {/* Chart: Phân tích tiêu thụ theo sản phẩm */}
-      <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mt-6">
-        <h2 className="font-bold text-slate-800 mb-4">Phân tích tiêu thụ theo sản phẩm</h2>
-        {consumptionData.length === 0 ? (
-          <div className="flex items-center justify-center h-64 text-slate-500">
-            Chưa có dữ liệu tiêu thụ để phân tích.
-          </div>
-        ) : (
-          <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={consumptionData}
-                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-              >
-                <XAxis 
-                  dataKey="product_name" 
-                  tick={{ fontSize: 12, fill: '#64748b' }} 
-                  tickLine={false} 
-                  axisLine={{ stroke: '#e2e8f0' }} 
-                />
-                <YAxis 
-                  allowDecimals={false}
-                  tick={{ fontSize: 12, fill: '#64748b' }} 
-                  tickLine={false} 
-                  axisLine={{ stroke: '#e2e8f0' }} 
-                />
-                <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: '#f1f5f9' }} />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: '13px', paddingTop: '10px' }} />
-                <Bar 
-                  dataKey="quantity_sold" 
-                  name="Số lượng tiêu thụ" 
-                  fill="#2563eb" 
-                  radius={[4, 4, 0, 0]}
-                  barSize={40}
-                >
-                  {consumptionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill="#2563eb" className="hover:opacity-80 transition-opacity" />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
       </div>
 
       {showSuccessModal && successOrderData && (
