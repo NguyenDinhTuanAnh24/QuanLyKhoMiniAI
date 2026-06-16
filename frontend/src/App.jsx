@@ -8,6 +8,7 @@ import ProductFormPage from './components/ProductFormPage';
 import MainLayout from './components/MainLayout';
 import SalesPage from './pages/SalesPage';
 import InventoryOpsDashboard from './components/InventoryOpsDashboard';
+import LowStockAlertDashboard from './components/LowStockAlertDashboard';
 import { ToastProvider } from './contexts/ToastContext';
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
           {/* Placeholders for other main routes */}
           <Route path="/reports" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">Báo cáo</h2><p>Tính năng đang phát triển...</p></div>} />
           <Route path="/ai-insights" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">AI Dự báo</h2><p>Tính năng đang phát triển...</p></div>} />
-          <Route path="/alerts" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">Cảnh báo tồn kho</h2><p>Tính năng đang phát triển...</p></div>} />
+          <Route path="/alerts" element={<LowStockAlertDashboard onNavigate={handleNavigate} />} />
 
           {/* Default fallback for undefined routes */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
