@@ -504,8 +504,12 @@ export default function ProductDashboard({ onNavigate }) {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                            <List className="w-5 h-5" />
+                          <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 overflow-hidden">
+                            {product.image_url ? (
+                              <img src={product.image_url} alt={product.product_name} className="w-full h-full object-cover" />
+                            ) : (
+                              <List className="w-5 h-5" />
+                            )}
                           </div>
                           <div>
                             <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
@@ -556,8 +560,12 @@ export default function ProductDashboard({ onNavigate }) {
               
               return (
                 <div key={product.product_id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                  <div className="h-32 bg-slate-100 flex items-center justify-center shrink-0 relative">
-                    <Package className="w-10 h-10 text-slate-300" />
+                  <div className="h-32 bg-slate-100 flex items-center justify-center shrink-0 relative overflow-hidden">
+                    {product.image_url ? (
+                      <img src={product.image_url} alt={product.product_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Package className="w-10 h-10 text-slate-300" />
+                    )}
                     <div className="absolute top-2 right-2">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border shadow-sm bg-white/90 backdrop-blur-sm ${badge.class.replace('bg-', 'text-').replace('text-', 'text-')}`}>
                         {badge.text}
@@ -654,7 +662,17 @@ export default function ProductDashboard({ onNavigate }) {
             </div>
             
             <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="w-full md:w-1/3 lg:w-1/4 shrink-0">
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center justify-center aspect-square overflow-hidden relative">
+                    {viewingProduct.image_url ? (
+                      <img src={viewingProduct.image_url} alt={viewingProduct.product_name} className="w-full h-full object-cover rounded-lg" />
+                    ) : (
+                      <Package className="w-20 h-20 text-slate-300" />
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
                   <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2">Thông tin cơ bản</h3>
                   <div className="space-y-3">
@@ -814,6 +832,7 @@ export default function ProductDashboard({ onNavigate }) {
                   })()}
                 </div>
               </div>
+            </div>
 
               {viewingProduct.description && (
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">

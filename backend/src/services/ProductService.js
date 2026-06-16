@@ -85,6 +85,59 @@ class ProductService {
     }
     return await ProductRepository.softDelete(id);
   }
+
+  async uploadProductImage(productId, file) {
+    if (!file) {
+      throw new BusinessException('BAD_REQUEST', 'Không có file ảnh');
+    }
+
+    const existingProduct = await ProductRepository.findById(productId);
+    if (!existingProduct) {
+      throw new BusinessException('PRODUCT_NOT_FOUND', 'Không tìm thấy sản phẩm');
+    }
+
+    const supabase = require('../config/supabase');
+    
+    const safeName = file.originalname
+      .replace(/\s+/g, '-')
+      .replace(/[^a-zA-Z0-9.\-]/g, '');
+
+    const filePath = `products/${productId}/${Date.now()}-${safeName}`;
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error('Supabase storage upload error:', uploadError);
+      throw uploadError;
+    }
+
+    const { data: publicData } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
+
+    const imageUrl = publicData.publicUrl;
+
+    const { data, error } = await supabase
+      .from('products')
+      .update({
+        image_url: imageUrl,
+      })
+      .eq('product_id', productId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Update product image_url error:', error);
+      throw error;
+    }
+
+    return data;
+  }
 }
 
 module.exports = new ProductService();

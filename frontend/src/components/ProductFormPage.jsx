@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UploadCloud, CheckCircle2, AlertCircle, Lightbulb, X, Save } from 'lucide-react';
-import { createProduct, updateProduct } from '../services/productService';
+import { createProduct, updateProduct, uploadProductImage } from '../services/productService';
 import { getCategories } from '../services/categoryService';
 import { getUnits } from '../services/unitService';
 import { getSuppliers } from '../services/supplierService';
@@ -42,7 +42,7 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
   
   // Image handling states
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState(initialProduct.image_url || '');
 
   useEffect(() => {
     const loadMasterData = async () => {
@@ -77,14 +77,18 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
     if (!file) return;
 
     // Validate type
-    if (file.type !== 'image/png' && file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      setErrorMsg("Chỉ hỗ trợ ảnh PNG hoặc JPG.");
+    if (file.type !== 'image/png' && file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/webp') {
+      const msg = "Chỉ hỗ trợ ảnh PNG, JPG hoặc WEBP";
+      setErrorMsg(msg);
+      showToast({ type: "error", title: "Lỗi", message: msg });
       return;
     }
 
     // Validate size (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      setErrorMsg("Ảnh sản phẩm không được vượt quá 2MB.");
+      const msg = "Ảnh sản phẩm không được vượt quá 2MB";
+      setErrorMsg(msg);
+      showToast({ type: "error", title: "Lỗi", message: msg });
       return;
     }
 
@@ -213,6 +217,14 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
         }
       });
 
+      if (imageFile) {
+        changesArr.push({
+          label: 'Hình ảnh sản phẩm',
+          oldVal: initialProduct?.image_url ? 'Ảnh hiện tại' : 'Chưa có ảnh',
+          newVal: 'Đã chọn ảnh mới'
+        });
+      }
+
       if (changesArr.length === 0) {
         showToast({
           type: "info",
@@ -230,20 +242,52 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
   const handleConfirmSave = async () => {
     setLoading(true);
     try {
+      let productId = initialProduct?.product_id;
+
       if (isEdit) {
-        await updateProduct(initialProduct.product_id, dataToSave);
-        showToast({
-          type: "success",
-          title: "Thành công",
-          message: "Cập nhật sản phẩm thành công"
-        });
+        // Chỉ gọi update API nếu có thay đổi field thực sự (trừ hình ảnh sản phẩm)
+        const hasFieldChanges = calculatedChanges.some(c => c.label !== 'Hình ảnh sản phẩm');
+        
+        if (hasFieldChanges) {
+          await updateProduct(productId, dataToSave);
+        }
       } else {
-        await createProduct(dataToSave);
-        showToast({
-          type: "success",
-          title: "Thành công",
-          message: "Thêm sản phẩm thành công"
-        });
+        const res = await createProduct(dataToSave);
+        productId = res.data.product_id;
+      }
+      
+      let uploadSuccess = false;
+      if (imageFile) {
+        try {
+          await uploadProductImage(productId, imageFile);
+          uploadSuccess = true;
+          setImageFile(null); // Clear selected file after success
+        } catch (uploadError) {
+          console.error(uploadError);
+          showToast({
+            type: "error",
+            title: "Lỗi",
+            message: "Không thể tải ảnh sản phẩm. Vui lòng thử lại."
+          });
+        }
+      }
+      
+      // Determine the overall success message
+      if (isEdit) {
+        const hasFieldChanges = calculatedChanges.some(c => c.label !== 'Hình ảnh sản phẩm');
+        if (hasFieldChanges) {
+          if (imageFile && !uploadSuccess) {
+             showToast({ type: "warning", title: "Lưu ý", message: "Cập nhật thông tin thành công nhưng lỗi tải ảnh" });
+          } else {
+             showToast({ type: "success", title: "Thành công", message: "Cập nhật sản phẩm thành công" });
+          }
+        } else {
+          if (uploadSuccess) {
+            showToast({ type: "success", title: "Thành công", message: "Cập nhật ảnh sản phẩm thành công" });
+          }
+        }
+      } else {
+        showToast({ type: "success", title: "Thành công", message: "Thêm sản phẩm thành công" });
       }
       
       if (onSuccess) onSuccess();
@@ -518,10 +562,10 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">Hình ảnh sản phẩm</h2>
                 <label className="border-2 border-dashed border-blue-200 bg-blue-50 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-100 transition-colors relative overflow-hidden group min-h-[160px]">
-                  <input type="file" className="hidden" accept="image/png, image/jpeg, image/jpg" onChange={handleImageChange} />
+                  <input type="file" className="hidden" accept="image/png, image/jpeg, image/jpg, image/webp" onChange={handleImageChange} />
                   {imagePreview ? (
                     <div className="absolute inset-0 w-full h-full p-2">
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg" />
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
                       <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg m-2">
                         <span className="text-white text-sm font-medium">Thay đổi ảnh</span>
                       </div>
@@ -530,7 +574,7 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
                     <>
                       <UploadCloud className="w-10 h-10 text-blue-500 mb-3" />
                       <p className="text-sm font-medium text-slate-700">Kéo thả hoặc nhấn để tải ảnh</p>
-                      <p className="text-xs text-slate-500 mt-1">PNG, JPG tối đa 2MB</p>
+                      <p className="text-xs text-slate-500 mt-1">PNG, JPG, WEBP tối đa 2MB</p>
                     </>
                   )}
                 </label>
@@ -642,7 +686,11 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
                     <ul className="text-sm text-slate-900 space-y-1">
                       {calculatedChanges.slice(0, 5).map((c, i) => (
                         <li key={i} className="truncate">
-                          - <span className="text-slate-500">{c.label}:</span> {c.oldVal} <span className="text-slate-400 mx-1">→</span> <span className="font-semibold text-blue-600">{c.newVal}</span>
+                          {c.label === 'Hình ảnh sản phẩm' ? (
+                            <>- <span className="text-slate-500">{c.label}:</span> <span className="font-semibold text-blue-600">{c.newVal}</span></>
+                          ) : (
+                            <>- <span className="text-slate-500">{c.label}:</span> {c.oldVal} <span className="text-slate-400 mx-1">→</span> <span className="font-semibold text-blue-600">{c.newVal}</span></>
+                          )}
                         </li>
                       ))}
                     </ul>

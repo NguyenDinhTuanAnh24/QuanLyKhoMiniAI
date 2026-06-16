@@ -7,6 +7,7 @@ const productSchema = z.object({
   sku: z.string().min(1, 'SKU is required'),
   product_name: z.string().min(1, 'Name is required'),
   product_name_en: z.string().optional().nullable(),
+  image_url: z.string().optional().nullable(),
   category_id: z.string().min(1, 'Invalid Category ID'),
   category_name: z.string().optional().nullable(),
   unit_id: z.string().min(1, 'Invalid Unit ID'),
@@ -90,6 +91,39 @@ class ProductController {
       res.json({ success: true, message: 'Product deleted successfully' });
     } catch (error) {
       next(error);
+    }
+  }
+
+  async uploadProductImage(req, res, next) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: 'Vui lòng chọn ảnh' });
+      }
+
+      const { id } = req.params;
+      const file = req.file;
+
+      const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!allowedMimeTypes.includes(file.mimetype)) {
+        return res.status(400).json({ success: false, message: 'Chỉ hỗ trợ ảnh PNG, JPG hoặc WEBP' });
+      }
+
+      const data = await ProductService.uploadProductImage(id, file);
+
+      res.json({
+        success: true,
+        message: 'Upload ảnh sản phẩm thành công',
+        data: {
+          product_id: data.product_id,
+          image_url: data.image_url
+        }
+      });
+    } catch (error) {
+      console.error("Upload product image error:", error);
+      if (error.code === 'PRODUCT_NOT_FOUND') {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm' });
+      }
+      return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
   }
 }
