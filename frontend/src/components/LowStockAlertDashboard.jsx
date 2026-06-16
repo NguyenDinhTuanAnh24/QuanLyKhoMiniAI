@@ -19,12 +19,13 @@ export default function LowStockAlertDashboard({ onNavigate }) {
   const [categories, setCategories] = useState([]);
 
   const [data, setData] = useState({
-    kpis: {
-      totalProductsInStock: 0,
-      lowStockProductsCount: 0,
-      categoriesNeedingAttention: 0
+    summary: {
+      total_products: 0,
+      low_stock_count: 0,
+      out_of_stock_count: 0,
+      category_need_attention: 0
     },
-    items: [],
+    alerts: [],
     pagination: {
       currentPage: 1,
       totalPages: 1,
@@ -137,10 +138,10 @@ export default function LowStockAlertDashboard({ onNavigate }) {
       const result = await response.json();
       
       let exportData = [];
-      if (result.success && result.data && result.data.items) {
-        exportData = result.data.items;
+      if (result.success && result.data && result.data.alerts) {
+        exportData = result.data.alerts;
       } else {
-        exportData = data.items;
+        exportData = data.alerts;
       }
 
       if (exportData.length === 0) {
@@ -155,7 +156,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
           category_name: item.category_name || 'N/A',
           stock_quantity: item.stock_quantity,
           reorder_level: item.reorder_level,
-          alert_status: item.alert_status
+          alert_status: item.status
         });
       });
 
@@ -193,16 +194,16 @@ export default function LowStockAlertDashboard({ onNavigate }) {
         <StatCard
           icon={Package}
           iconColorClass="bg-blue-50 text-blue-600"
-          label="Tổng sản phẩm trong kho"
-          value={data.kpis.totalProductsInStock.toLocaleString('vi-VN')}
+          label="Tổng sản phẩm trong hệ thống"
+          value={data.summary.total_products.toLocaleString('vi-VN')}
           trend=""
           trendLabel="Tháng này"
         />
         <StatCard
           icon={AlertTriangle}
           iconColorClass="bg-red-50 text-red-600"
-          label="Sản phẩm sắp hết hàng"
-          value={data.kpis.lowStockProductsCount}
+          label="Sản phẩm sắp/hết hàng"
+          value={data.summary.low_stock_count}
           trend="down"
           trendLabel="-2%"
         />
@@ -210,7 +211,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
           icon={Layers}
           iconColorClass="bg-cyan-50 text-cyan-600"
           label="Danh mục cần lưu ý"
-          value={data.kpis.categoriesNeedingAttention}
+          value={data.summary.category_need_attention}
           trend=""
           trendLabel="Cấp bách"
         />
@@ -223,7 +224,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
             <span className="font-bold text-lg">AI</span>
           </div>
           <p className="text-blue-800 text-sm font-medium">
-            AI Insight: Có {data.kpis.lowStockProductsCount} sản phẩm cần bổ sung để đảm bảo hoạt động kinh doanh.
+            AI Insight: Có {data.summary.low_stock_count} sản phẩm cần bổ sung để đảm bảo hoạt động kinh doanh.
           </p>
         </div>
         <button
@@ -294,7 +295,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
 
         {loading ? (
           <div className="p-12 text-center text-slate-500">Đang tải dữ liệu...</div>
-        ) : data.items.length === 0 ? (
+        ) : data.alerts.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
               <Package className="w-8 h-8 text-slate-400" />
@@ -317,7 +318,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-slate-100">
-                {data.items.map(item => (
+                {data.alerts.map(item => (
                   <tr key={item.product_id} className="hover:bg-slate-50 transition-colors group">
                     <td className="p-4 pl-6">
                       <span className="text-blue-600 font-medium cursor-pointer hover:underline">
@@ -336,7 +337,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
                     </td>
                     <td className="p-4 text-slate-600">{item.category_name || 'N/A'}</td>
                     <td className="p-4 text-center">
-                      <span className={`font-bold ${item.alert_status === 'Rất nguy cấp' ? 'text-red-600' : 'text-slate-900'}`}>
+                      <span className={`font-bold ${item.alert_level === 'high' || item.alert_level === 'critical' ? 'text-red-600' : 'text-slate-900'}`}>
                         {item.stock_quantity}
                       </span>
                     </td>
@@ -344,8 +345,8 @@ export default function LowStockAlertDashboard({ onNavigate }) {
                       {item.reorder_level}
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getBadgeClass(item.alert_status)}`}>
-                        {item.alert_status}
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getBadgeClass(item.status)}`}>
+                        {item.status}
                       </span>
                     </td>
                     <td className="p-4 text-center pr-6">
@@ -364,7 +365,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
         )}
 
         {/* Pagination Footer */}
-        {data.items.length > 0 && (
+        {data.alerts.length > 0 && (
           <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
             <div className="text-sm text-slate-500">
               Hiển thị <span className="font-medium text-slate-900">{(currentPage - 1) * 5 + 1}</span> - <span className="font-medium text-slate-900">{Math.min(currentPage * 5, totalItems)}</span> trong tổng số <span className="font-medium text-slate-900">{totalItems}</span> sản phẩm

@@ -102,6 +102,7 @@ class InventoryController {
       if (error) throw error;
 
       let totalStock = 0;
+      let outOfStockCount = 0;
       const lowStockItems = [];
       const uniqueCategories = new Set();
 
@@ -115,12 +116,16 @@ class InventoryController {
           const isLowStock = stock <= safeLevel;
           
           if (isLowStock) {
-            let alert_status = 'Sắp hết hàng';
+            let alert_level = 'medium';
+            let status = 'Sắp hết hàng';
             
             if (stock === 0) {
-              alert_status = 'Hết hàng';
+              status = 'Hết hàng';
+              alert_level = 'critical';
+              outOfStockCount++;
             } else if (stock > 0 && stock <= (0.2 * safeLevel)) {
-              alert_status = 'Rất nguy cấp';
+              status = 'Rất nguy cấp';
+              alert_level = 'high';
             }
             
             lowStockItems.push({
@@ -130,7 +135,8 @@ class InventoryController {
               category_name: p.category_name,
               stock_quantity: stock,
               reorder_level: safeLevel,
-              alert_status
+              status: status,
+              alert_level: alert_level
             });
             
             if (p.category_name) {
@@ -140,11 +146,11 @@ class InventoryController {
         }
       }
 
-      // KPIs uses global lowStockItems
-      const kpis = {
-        totalProductsInStock: totalStock,
-        lowStockProductsCount: lowStockItems.length,
-        categoriesNeedingAttention: uniqueCategories.size
+      const summary = {
+        total_products: products ? products.length : 0,
+        low_stock_count: lowStockItems.length,
+        out_of_stock_count: outOfStockCount,
+        category_need_attention: uniqueCategories.size
       };
 
       // In-memory filtering
@@ -163,7 +169,11 @@ class InventoryController {
       }
 
       if (status) {
-        filteredItems = filteredItems.filter(item => item.alert_status === status);
+        filteredItems = filteredItems.filter(item => {
+          if (status === 'low') return item.alert_level === 'medium' || item.alert_level === 'high';
+          if (status === 'out_of_stock') return item.status === 'Hết hàng';
+          return item.status === status;
+        });
       }
 
       const totalItems = filteredItems.length;
@@ -180,8 +190,8 @@ class InventoryController {
       res.json({
         success: true,
         data: {
-          kpis,
-          items: paginatedItems,
+          summary,
+          alerts: paginatedItems,
           pagination: {
             currentPage: validPageNum,
             totalPages,

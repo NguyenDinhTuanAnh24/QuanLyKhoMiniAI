@@ -1,32 +1,29 @@
 import React from 'react';
 import { Search, Bell, Menu } from 'lucide-react';
 
+import { useLocation } from 'react-router-dom';
+
 export default function Topbar({ activePage, activePayload, onNavigate }) {
-  const getPageTitle = () => {
-    switch (activePage) {
-      case 'dashboard': return 'Tổng quan';
-      case 'products': return 'Quản lý sản phẩm';
-      case 'categories': return 'Quản lý danh mục';
-      case 'units': return 'Quản lý đơn vị tính';
-      case 'suppliers': return 'Quản lý nhà cung cấp';
-      case 'stock-movements': 
-      case 'warehouse':
-      case 'import-stock':
-      case 'inventory-ops': return 'Nhập / Xuất kho';
-      case 'orders':
-      case 'sales': return 'Đơn bán hàng';
-      case 'inventory':
-      case 'stock-alerts': return 'Cảnh báo tồn kho';
-      case 'ai-insights':
-      case 'ai-forecast': return 'AI Dự báo & Gợi ý';
-      case 'reports': return 'Báo cáo & Phân tích';
-      case 'users': return 'Quản lý người dùng';
-      case 'settings': return 'Cài đặt hệ thống';
-      default: return 'Smart Retail Inventory AI';
-    }
+  const location = useLocation();
+
+  const getPageTitle = (pathname) => {
+    if (pathname.includes("dashboard")) return "Tổng quan";
+    if (pathname.includes("products")) return "Quản lý sản phẩm";
+    if (pathname.includes("inventory-ops") || pathname.includes("warehouse") || pathname.includes("stock-movements")) return "Nhập / Xuất kho";
+    if (pathname.includes("sales") || pathname.includes("orders")) return "Đơn bán hàng";
+    if (pathname.includes("alerts") || pathname.includes("stock-alerts")) return "Cảnh báo tồn kho";
+    if (pathname.includes("ai")) return "AI Dự báo";
+    if (pathname.includes("reports")) return "Báo cáo";
+    if (pathname.includes("categories")) return "Quản lý danh mục";
+    if (pathname.includes("units")) return "Quản lý đơn vị tính";
+    if (pathname.includes("suppliers")) return "Quản lý nhà cung cấp";
+    if (pathname.includes("users")) return "Quản lý người dùng";
+    if (pathname.includes("settings")) return "Cài đặt hệ thống";
+    
+    return "Tổng quan";
   };
 
-  const pageTitle = getPageTitle();
+  const pageTitle = getPageTitle(location.pathname);
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
