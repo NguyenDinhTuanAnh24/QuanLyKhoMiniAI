@@ -43,6 +43,10 @@ export default function ProductDashboard({ onNavigate }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Selection states
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const selectAllRef = React.useRef(null);
+
   const loadProducts = async () => {
     setLoading(true);
     try {
@@ -132,6 +136,45 @@ export default function ProductDashboard({ onNavigate }) {
   }, [filteredProducts, currentPage]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Checkbox logic
+  const visibleProductIds = paginatedProducts.map((p) => p.product_id);
+
+  const isAllVisibleSelected =
+    visibleProductIds.length > 0 &&
+    visibleProductIds.every((id) => selectedProductIds.includes(id));
+
+  const isSomeVisibleSelected =
+    visibleProductIds.some((id) => selectedProductIds.includes(id)) &&
+    !isAllVisibleSelected;
+
+  const handleToggleSelectAllVisible = () => {
+    if (isAllVisibleSelected) {
+      setSelectedProductIds((prev) =>
+        prev.filter((id) => !visibleProductIds.includes(id))
+      );
+    } else {
+      setSelectedProductIds((prev) => {
+        const next = new Set(prev);
+        visibleProductIds.forEach((id) => next.add(id));
+        return Array.from(next);
+      });
+    }
+  };
+
+  const handleToggleSelectProduct = (productId) => {
+    setSelectedProductIds((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate = isSomeVisibleSelected;
+    }
+  }, [isSomeVisibleSelected]);
 
   const handleResetFilters = () => {
     setSearchTerm('');
@@ -480,7 +523,13 @@ export default function ProductDashboard({ onNavigate }) {
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   <th className="p-4 w-12 text-center">
-                    <input type="checkbox" className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                    <input 
+                      type="checkbox" 
+                      ref={selectAllRef}
+                      checked={isAllVisibleSelected}
+                      onChange={handleToggleSelectAllVisible}
+                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                    />
                   </th>
                   <th className="p-4">Sản phẩm</th>
                   <th className="p-4">SKU</th>
@@ -500,7 +549,12 @@ export default function ProductDashboard({ onNavigate }) {
                   return (
                     <tr key={product.product_id} className="hover:bg-slate-50 transition-colors group">
                       <td className="p-4 text-center">
-                        <input type="checkbox" className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                        <input 
+                          type="checkbox" 
+                          checked={selectedProductIds.includes(product.product_id)}
+                          onChange={() => handleToggleSelectProduct(product.product_id)}
+                          className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                        />
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-3">

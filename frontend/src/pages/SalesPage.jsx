@@ -41,6 +41,10 @@ export default function SalesPage({ onNavigate }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [formErrors, setFormErrors] = useState({});
   const [recentOrders, setRecentOrders] = useState([]);
+  
+  // Order History Pagination
+  const [orderPage, setOrderPage] = useState(1);
+  const ordersPerPage = 5;
 
   const [customerGivenAmount, setCustomerGivenAmount] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -129,12 +133,16 @@ export default function SalesPage({ onNavigate }) {
 
   const loadRecentOrders = async () => {
     try {
-      const res = await getRecentOrders(5);
+      const res = await getRecentOrders(1000);
       if (res.success) setRecentOrders(res.data);
     } catch (e) {
       console.error(e);
     }
   };
+
+  const sortedOrders = [...recentOrders].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const orderTotalPages = Math.ceil(sortedOrders.length / ordersPerPage) || 1;
+  const paginatedOrders = sortedOrders.slice((orderPage - 1) * ordersPerPage, orderPage * ordersPerPage);
 
   const handleAddToCart = (product) => {
     setErrorMessage('');
@@ -243,6 +251,7 @@ export default function SalesPage({ onNavigate }) {
             change: 0
           });
           setShowSuccessModal(true);
+          setOrderPage(1);
           loadRecentOrders();
           loadAllProductsAndCategories();
         }
@@ -321,6 +330,7 @@ export default function SalesPage({ onNavigate }) {
           message: customerInfo.paymentMethod === 'Chuyển khoản' ? 'Thanh toán chuyển khoản thành công' : 'Thanh toán thành công' 
         });
         setShowSuccessModal(true);
+        setOrderPage(1);
         loadRecentOrders();
         loadAllProductsAndCategories(); // reload stock
       }
@@ -594,12 +604,12 @@ export default function SalesPage({ onNavigate }) {
               </tr>
             </thead>
             <tbody className="text-sm divide-y divide-slate-100">
-              {recentOrders.length === 0 ? (
+              {paginatedOrders.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="p-6 text-center text-slate-500">Chưa có hóa đơn nào được tạo trong phiên này</td>
+                  <td colSpan="6" className="p-6 text-center text-slate-500">Chưa có hóa đơn nào</td>
                 </tr>
               ) : (
-                recentOrders.map(order => (
+                paginatedOrders.map(order => (
                   <tr key={order.order_id} className="hover:bg-slate-50">
                     <td className="p-3 font-medium text-slate-800">{order.order_code}</td>
                     <td className="p-3 text-slate-600">{order.customer_name}</td>
@@ -619,6 +629,34 @@ export default function SalesPage({ onNavigate }) {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination Controls */}
+        {sortedOrders.length > 0 && (
+          <div className="flex items-center justify-between mt-4 px-2">
+            <div className="text-sm text-slate-500">
+              Hiển thị {(orderPage - 1) * ordersPerPage + 1} - {Math.min(orderPage * ordersPerPage, sortedOrders.length)} trong tổng số {sortedOrders.length} hóa đơn
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setOrderPage(p => Math.max(1, p - 1))}
+                disabled={orderPage === 1}
+                className="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 disabled:opacity-50 text-sm font-medium transition-colors"
+              >
+                Trước
+              </button>
+              <div className="text-sm font-medium text-slate-700 px-2">
+                Trang {orderPage} / {orderTotalPages}
+              </div>
+              <button
+                onClick={() => setOrderPage(p => Math.min(orderTotalPages, p + 1))}
+                disabled={orderPage === orderTotalPages}
+                className="px-3 py-1.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 disabled:opacity-50 text-sm font-medium transition-colors"
+              >
+                Sau
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showSuccessModal && successOrderData && (

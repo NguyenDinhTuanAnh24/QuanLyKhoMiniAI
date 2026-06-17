@@ -106,6 +106,11 @@ export default function InventoryOpsDashboard() {
     if (!prod) return;
 
     if (activeTab === 'import') {
+      if (prod.supplier_id !== importForm.supplier_id) {
+        addToast('error', 'Lỗi', 'Sản phẩm không thuộc nhà cung cấp đã chọn.');
+        return;
+      }
+      
       const price = priceInput ? Number(priceInput) : prod.import_price || 0;
       setImportForm(prev => {
         // check if exists
@@ -275,7 +280,19 @@ export default function InventoryOpsDashboard() {
                     <select 
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
                       value={importForm.supplier_id}
-                      onChange={(e) => setImportForm({...importForm, supplier_id: e.target.value})}
+                      onChange={(e) => {
+                        const newSupplierId = e.target.value;
+                        if (importForm.items.length > 0) {
+                          const confirmChange = window.confirm('Đổi nhà cung cấp sẽ xóa các sản phẩm đã thêm vào phiếu. Bạn có chắc chắn không?');
+                          if (!confirmChange) {
+                            return; // Keep old
+                          }
+                        }
+                        setImportForm({ ...importForm, supplier_id: newSupplierId, items: [] });
+                        setSelectedProduct('');
+                        setQtyInput('');
+                        setPriceInput('');
+                      }}
                     >
                       <option value="">-- Chọn nhà cung cấp --</option>
                       {suppliers.map(s => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
@@ -316,9 +333,22 @@ export default function InventoryOpsDashboard() {
                           const p = products.find(x => x.product_id === e.target.value);
                           if (p) setPriceInput(p.import_price || 0);
                         }}
+                        disabled={!importForm.supplier_id}
                       >
-                        <option value="">-- Chọn sản phẩm --</option>
-                        {products.map(p => <option key={p.product_id} value={p.product_id}>{p.sku} - {p.product_name}</option>)}
+                        {!importForm.supplier_id ? (
+                          <option value="">Vui lòng chọn nhà cung cấp trước</option>
+                        ) : (
+                          <>
+                            <option value="">-- Chọn sản phẩm --</option>
+                            {products.filter(p => p.supplier_id === importForm.supplier_id).length === 0 ? (
+                              <option value="" disabled>Nhà cung cấp này chưa có sản phẩm</option>
+                            ) : (
+                              products
+                                .filter(p => p.supplier_id === importForm.supplier_id)
+                                .map(p => <option key={p.product_id} value={p.product_id}>{p.sku} - {p.product_name}</option>)
+                            )}
+                          </>
+                        )}
                       </select>
                     </div>
                     <div className="w-full md:w-24">
