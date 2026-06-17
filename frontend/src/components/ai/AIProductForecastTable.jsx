@@ -94,7 +94,7 @@ export default function AIProductForecastTable({ categories, onApplySuggestion }
             >
               <option value="">Tất cả danh mục</option>
               {categories.map((c, i) => (
-                <option key={i} value={c.category_name}>{c.category_name}</option>
+                <option key={i} value={c.category_id}>{c.category_name}</option>
               ))}
             </select>
           </div>

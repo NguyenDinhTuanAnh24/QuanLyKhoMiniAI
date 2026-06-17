@@ -46,7 +46,7 @@ export default function AIInsightsPage() {
   const fetchDependencies = async () => {
     try {
       const cats = await getCategories();
-      setCategories(Array.isArray(cats) ? cats : []);
+      setCategories(Array.isArray(cats?.data) ? cats.data : []);
     } catch (error) {
       console.error('Failed to load categories:', error);
       setCategories([]);
@@ -211,21 +211,21 @@ export default function AIInsightsPage() {
       <AIStatCards summary={uiData.statSummary} />
 
       {/* 3 & 4. Report and Suggestions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-7">
           <AIAnalysisReport report={uiData.report} />
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-5 h-full">
           <AIRestockSuggestions suggestions={uiData.suggestions} />
         </div>
       </div>
 
       {/* 5 & 6. Chart and Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-7">
           <AIForecastChart data={uiData.chartData} />
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-5 h-full">
           <AIRecommendedActions actions={uiData.actions} onApplyAll={handleApplyAllClick} />
         </div>
       </div>

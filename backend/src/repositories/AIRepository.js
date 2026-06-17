@@ -29,7 +29,7 @@ class AIRepository {
     }
     
     if (filters.category) {
-      query = query.eq('category_name', filters.category);
+      query = query.eq('category_id', filters.category);
     }
 
     if (onlySuggestions) {
