@@ -232,15 +232,12 @@ export default function AIInsightsPage() {
 
       {/* 7. Forecast Table */}
       <AIProductForecastTable 
-        data={rawData.items} 
         categories={categories} 
-        loading={recalculating} 
         onApplySuggestion={handleApplySingleClick} 
       />
 
       {/* 8. Suggestion Cards */}
       <AISuggestionCards 
-        items={rawData.items} 
         onApplySuggestion={handleApplySingleClick} 
       />
 

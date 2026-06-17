@@ -1,21 +1,55 @@
-import React from 'react';
-import { PackageSearch, ArrowRight, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { PackageSearch, ArrowRight, Zap, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { getAIForecastSuggestions } from '../../services/aiService';
 
-export default function AISuggestionCards({ items, onApplySuggestion }) {
-  const suggestions = items.filter(i => i.suggested_import_quantity > 0)
-                           .sort((a, b) => b.suggested_import_quantity - a.suggested_import_quantity);
+export default function AISuggestionCards({ onApplySuggestion }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const ITEMS_PER_PAGE = 8;
 
-  if (!suggestions || suggestions.length === 0) return null;
+  const fetchSuggestionsData = async () => {
+    setLoading(true);
+    try {
+      const response = await getAIForecastSuggestions({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE
+      });
+      if (response && response.data) {
+        setItems(response.data.items || []);
+        setTotalPages(response.data.pagination?.totalPages || 1);
+        setTotalItems(response.data.pagination?.totalItems || 0);
+      }
+    } catch (error) {
+      console.error('Lỗi khi tải dữ liệu thẻ gợi ý:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuggestionsData();
+  }, [currentPage]);
+
+  if (!loading && items.length === 0) return null;
 
   return (
     <div className="mt-6">
       <div className="flex items-center gap-2 mb-4">
         <Zap className="w-5 h-5 text-indigo-500" />
-        <h3 className="text-lg font-bold text-slate-900">Gợi ý nhập hàng từ AI</h3>
+        <h3 className="font-bold text-slate-800 text-lg">Gợi ý nhập hàng từ AI</h3>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {suggestions.map((item) => (
+      {loading ? (
+        <div className="flex justify-center items-center py-8">
+          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+          <span className="ml-2 text-slate-500">Đang tải gợi ý...</span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {items.map((item) => (
           <div key={item.product_id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-blue-300 transition-colors flex flex-col h-full">
             <div className="flex justify-between items-start mb-3 gap-2">
               <h4 className="font-bold text-slate-900 text-sm leading-tight line-clamp-2" title={item.product_name}>
@@ -50,8 +84,39 @@ export default function AISuggestionCards({ items, onApplySuggestion }) {
               </button>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-sm text-slate-600">
+            Hiển thị {(currentPage - 1) * ITEMS_PER_PAGE + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} trên tổng số {totalItems} thẻ
+          </span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="p-1 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white transition-colors"
+              title="Trang trước"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="px-3 py-1 text-sm font-medium text-slate-700 flex items-center bg-white border border-slate-200 rounded-md shadow-sm">
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="p-1 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white transition-colors"
+              title="Trang sau"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
