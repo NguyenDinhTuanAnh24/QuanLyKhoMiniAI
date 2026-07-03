@@ -12,6 +12,8 @@ import LowStockAlertDashboard from './components/LowStockAlertDashboard';
 import AIInsightsPage from './pages/AIInsightsPage';
 import DashboardPage from './pages/DashboardPage';
 import ReportsPage from './pages/ReportsPage';
+import UserDashboard from './pages/UserDashboard';
+import SettingsPage from './pages/SettingsPage';
 import { ToastProvider } from './contexts/ToastContext';
 
 function App() {
@@ -51,6 +53,8 @@ function App() {
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/ai-insights" element={<AIInsightsPage />} />
           <Route path="/alerts" element={<LowStockAlertDashboard onNavigate={handleNavigate} />} />
+          <Route path="/users" element={<UserDashboard />} />
+          <Route path="/settings" element={<SettingsPage />} />
 
           {/* Default fallback for undefined routes */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -12,6 +12,8 @@ const inventoryRoutes = require('./src/routes/inventoryRoutes');
 const aiRoutes = require('./src/routes/aiRoutes');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const reportRoutes = require('./src/routes/reportRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const settingRoutes = require('./src/routes/settingRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +32,8 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/settings', settingRoutes);
 
 // Error Handling Middleware
 app.use(GlobalExceptionHandler);

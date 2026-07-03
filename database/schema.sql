@@ -152,3 +152,54 @@ CREATE INDEX idx_order_items_product ON public.order_items(product_id);
 CREATE INDEX idx_stock_movements_product ON public.stock_movements(product_id);
 CREATE INDEX idx_stock_movements_type ON public.stock_movements(type);
 CREATE INDEX idx_stock_movements_created_at ON public.stock_movements(created_at);
+
+-- 8. App Users Table
+CREATE TABLE public.app_users (
+    user_id TEXT PRIMARY KEY,
+    full_name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    phone TEXT,
+    role TEXT NOT NULL DEFAULT 'Nhân viên bán hàng',
+    status TEXT NOT NULL DEFAULT 'Ðang ho?t ð?ng',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_app_users_email ON public.app_users(email);
+CREATE INDEX idx_app_users_status ON public.app_users(status);
+
+
+
+-- 9. Settings Table
+CREATE TABLE public.settings (
+    id TEXT PRIMARY KEY DEFAULT 'DEFAULT',
+    store_name TEXT DEFAULT 'C?a hàng c?a tôi',
+    store_phone TEXT DEFAULT '',
+    store_email TEXT DEFAULT '',
+    store_address TEXT DEFAULT '',
+    store_logo_url TEXT DEFAULT '',
+    low_stock_warning_days INTEGER DEFAULT 14,
+    default_reorder_level INTEGER DEFAULT 10,
+    auto_stock_alert_enabled BOOLEAN DEFAULT true,
+    allow_negative_stock BOOLEAN DEFAULT false,
+    ai_enabled BOOLEAN DEFAULT true,
+    ai_provider TEXT DEFAULT 'Google Gemini',
+    ai_model TEXT DEFAULT 'gemini-1.5-pro',
+    forecast_days INTEGER DEFAULT 14,
+    payos_enabled BOOLEAN DEFAULT true,
+    bank_name TEXT DEFAULT '',
+    bank_account_no TEXT DEFAULT '',
+    bank_account_name TEXT DEFAULT '',
+    currency TEXT DEFAULT 'VND',
+    date_format TEXT DEFAULT 'DD/MM/YYYY',
+    maintenance_mode BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed default settings
+INSERT INTO public.settings (id, store_name, store_phone, store_email, store_address)
+VALUES ('DEFAULT', 'Smart Retail Mini', '0123456789', 'admin@smartretail.com', '123 Smart Retail St.')
+ON CONFLICT (id) DO NOTHING;
+
