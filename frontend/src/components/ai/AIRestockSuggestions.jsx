@@ -18,30 +18,30 @@ export default function AIRestockSuggestions({ suggestions }) {
         <h3 className="text-lg font-bold text-slate-900">Gợi ý đặt hàng</h3>
       </div>
       
-      <div className="p-0 flex-1 overflow-auto custom-scrollbar">
+      <div className="p-0 flex-1 overflow-x-hidden overflow-y-auto custom-scrollbar">
         {suggestions && suggestions.length > 0 ? (
-          <table className="w-full text-left text-sm border-collapse">
+          <table className="w-full table-fixed text-left text-sm border-collapse">
             <thead className="bg-white sticky top-0 border-b border-slate-100">
               <tr className="text-slate-500 font-medium">
-                <th className="py-3 px-4">Sản phẩm</th>
-                <th className="py-3 px-4 text-center">Tồn</th>
-                <th className="py-3 px-4 text-center">Dự báo</th>
-                <th className="py-3 px-4 text-center">Nên nhập</th>
-                <th className="py-3 px-4 text-center">Ưu tiên</th>
+                <th className="py-3 px-4 w-2/5">Sản phẩm</th>
+                <th className="py-3 px-2 text-center w-[12%]">Tồn</th>
+                <th className="py-3 px-2 text-center w-[15%]">Dự báo</th>
+                <th className="py-3 px-2 text-center w-[15%]">Nên nhập</th>
+                <th className="py-3 px-2 text-center w-[18%]">Ưu tiên</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {suggestions.map((item, idx) => (
                 <tr key={idx} className="hover:bg-slate-50 transition-colors">
                   <td className="py-3 px-4 font-medium text-slate-800">
-                    <div className="truncate max-w-[120px]" title={item.product_name}>
+                    <div className="whitespace-normal break-words" title={item.product_name}>
                       {item.product_name}
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-center text-slate-600">{item.stock}</td>
-                  <td className="py-3 px-4 text-center font-medium text-indigo-600">{item.forecast}</td>
-                  <td className="py-3 px-4 text-center font-bold text-red-600">+{item.suggested}</td>
-                  <td className="py-3 px-4 text-center">
+                  <td className="py-3 px-2 text-center text-slate-600">{item.stock}</td>
+                  <td className="py-3 px-2 text-center font-medium text-indigo-600">{item.forecast}</td>
+                  <td className="py-3 px-2 text-center font-bold text-red-600">+{item.suggested}</td>
+                  <td className="py-3 px-2 text-center">
                     <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${getPriorityBadge(item.priority)}`}>
                       {item.priority}
                     </span>

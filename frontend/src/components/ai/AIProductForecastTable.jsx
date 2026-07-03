@@ -1,10 +1,47 @@
-import React, { useState } from 'react';
-import { Search, Filter, RefreshCcw, ArrowRight, Eye, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Filter, RefreshCcw, ArrowRight, Eye, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { getAIForecastTable } from '../../services/aiService';
 
-export default function AIProductForecastTable({ data, categories, loading, onApplySuggestion }) {
+export default function AIProductForecastTable({ categories, onApplySuggestion }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedRisk, setSelectedRisk] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const ITEMS_PER_PAGE = 5;
+
+  const fetchTableData = async () => {
+    setLoading(true);
+    try {
+      const response = await getAIForecastTable({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        search: searchTerm,
+        category: selectedCategory,
+        risk: selectedRisk !== 'all' ? selectedRisk : undefined
+      });
+      if (response && response.data) {
+        setItems(response.data.items || []);
+        setTotalPages(response.data.pagination?.totalPages || 1);
+        setTotalItems(response.data.pagination?.totalItems || 0);
+      }
+    } catch (error) {
+      console.error('Lỗi khi tải dữ liệu bảng:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTableData();
+  }, [currentPage, searchTerm, selectedCategory, selectedRisk]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, selectedRisk]);
 
   const getRiskBadgeClass = (risk) => {
     switch(risk) {
@@ -26,15 +63,8 @@ export default function AIProductForecastTable({ data, categories, loading, onAp
     setSearchTerm('');
     setSelectedCategory('');
     setSelectedRisk('');
+    setCurrentPage(1);
   };
-
-  const filteredData = data.filter(item => {
-    const matchSearch = item.product_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                        item.sku?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchCategory = selectedCategory ? item.category_name === selectedCategory : true;
-    const matchRisk = selectedRisk ? item.risk_level === selectedRisk : true;
-    return matchSearch && matchCategory && matchRisk;
-  });
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
@@ -64,7 +94,7 @@ export default function AIProductForecastTable({ data, categories, loading, onAp
             >
               <option value="">Tất cả danh mục</option>
               {categories.map((c, i) => (
-                <option key={i} value={c.category_name}>{c.category_name}</option>
+                <option key={i} value={c.category_id}>{c.category_name}</option>
               ))}
             </select>
           </div>
@@ -108,14 +138,14 @@ export default function AIProductForecastTable({ data, categories, loading, onAp
               <tr>
                 <td colSpan="7" className="p-8 text-center text-slate-500">Đang tải dữ liệu...</td>
               </tr>
-            ) : filteredData.length === 0 ? (
+            ) : items.length === 0 ? (
               <tr>
                 <td colSpan="7" className="p-8 text-center text-slate-500">
                   Không tìm thấy sản phẩm phù hợp.
                 </td>
               </tr>
             ) : (
-              filteredData.map((item) => (
+              items.map((item) => (
                 <tr key={item.product_id} className="hover:bg-slate-50 transition-colors">
                   <td className="p-4">
                     <div className="font-medium text-slate-900">{item.product_name}</div>
@@ -165,6 +195,36 @@ export default function AIProductForecastTable({ data, categories, loading, onAp
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between p-4 border-t border-slate-200 bg-white">
+          <span className="text-sm text-slate-600">
+            Hiển thị {(currentPage - 1) * ITEMS_PER_PAGE + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} trên tổng số {totalItems} sản phẩm
+          </span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="p-1 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Trang trước"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="px-3 py-1 text-sm font-medium text-slate-700 flex items-center">
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="p-1 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Trang sau"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

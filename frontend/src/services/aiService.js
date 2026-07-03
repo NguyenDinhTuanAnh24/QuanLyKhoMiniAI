@@ -33,3 +33,23 @@ export const recalculateForecast = async () => {
     throw error;
   }
 };
+
+export const getAIForecastTable = async (params = {}) => {
+  try {
+    const response = await api.get('/ai/forecast/table', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching AI forecast table:', error);
+    throw error;
+  }
+};
+
+export const getAIForecastSuggestions = async (params = {}) => {
+  try {
+    const response = await api.get('/ai/forecast/suggestions', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching AI forecast suggestions:', error);
+    throw error;
+  }
+};
