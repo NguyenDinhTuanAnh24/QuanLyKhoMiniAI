@@ -11,6 +11,7 @@ import InventoryOpsDashboard from './components/InventoryOpsDashboard';
 import LowStockAlertDashboard from './components/LowStockAlertDashboard';
 import AIInsightsPage from './pages/AIInsightsPage';
 import DashboardPage from './pages/DashboardPage';
+import ReportsPage from './pages/ReportsPage';
 import { ToastProvider } from './contexts/ToastContext';
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
           <Route path="/export" element={<Navigate to="/inventory-ops" replace />} />
 
           {/* Placeholders for other main routes */}
-          <Route path="/reports" element={<div className="p-8 text-center text-slate-500 mt-20"><h2 className="text-2xl font-bold">Báo cáo</h2><p>Tính năng đang phát triển...</p></div>} />
+          <Route path="/reports" element={<ReportsPage />} />
           <Route path="/ai-insights" element={<AIInsightsPage />} />
           <Route path="/alerts" element={<LowStockAlertDashboard onNavigate={handleNavigate} />} />
 
