@@ -105,7 +105,7 @@ const DashboardPage = ({ onNavigate }) => {
 
   // Render
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="max-w-[1600px] mx-auto space-y-6">
       {/* Header (Figma style) */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>

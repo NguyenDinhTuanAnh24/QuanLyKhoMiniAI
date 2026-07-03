@@ -29,3 +29,18 @@ export const updateUserStatus = async (id, status) => {
   const response = await api.patch(`/users/${id}/status`, { status });
   return response.data;
 };
+
+export const getMe = async () => {
+  const response = await api.get('/users/me');
+  return response.data;
+};
+
+export const updateMe = async (userData) => {
+  const response = await api.put('/users/me', userData);
+  return response.data;
+};
+
+export const updateMyPassword = async (passwordData) => {
+  const response = await api.put('/users/me/password', passwordData);
+  return response.data;
+};

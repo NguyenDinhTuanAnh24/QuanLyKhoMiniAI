@@ -12,6 +12,7 @@ import ImportsTab from '../components/reports/tabs/ImportsTab';
 export default function ReportsPage() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [activeTab, setActiveTab] = useState('revenue');
   
   const [filters, setFilters] = useState({
@@ -96,6 +97,7 @@ export default function ReportsPage() {
 
   const fetchReportData = async () => {
     setLoading(true);
+    setError(false);
     try {
       const { startDate, endDate } = getDateParams(filters.dateRange);
       
@@ -121,6 +123,7 @@ export default function ReportsPage() {
     } catch (error) {
       console.error('Error fetching report data:', error);
       showToast('Lỗi khi tải dữ liệu báo cáo', 'error');
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -294,10 +297,30 @@ export default function ReportsPage() {
 
       {/* Tab Content */}
       <div className="pt-2">
-        {activeTab === 'revenue' && <RevenueTab data={revenueData} loading={loading} />}
-        {activeTab === 'inventory' && <InventoryTab data={inventoryData} loading={loading} />}
-        {activeTab === 'top-selling' && <TopSellingTab data={topSellingData} loading={loading} />}
-        {activeTab === 'imports' && <ImportsTab data={importsData} loading={loading} />}
+        {error && !loading ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="text-red-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-slate-800 mb-1">Không thể tải dữ liệu báo cáo. Vui lòng kiểm tra backend.</h3>
+            <p className="text-slate-500 text-sm">Có thể server chưa khởi động hoặc gặp sự cố kết nối.</p>
+            <button 
+              onClick={handleRefresh}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Thử lại
+            </button>
+          </div>
+        ) : (
+          <>
+            {activeTab === 'revenue' && <RevenueTab data={revenueData} loading={loading} />}
+            {activeTab === 'inventory' && <InventoryTab data={inventoryData} loading={loading} />}
+            {activeTab === 'top-selling' && <TopSellingTab data={topSellingData} loading={loading} />}
+            {activeTab === 'imports' && <ImportsTab data={importsData} loading={loading} />}
+          </>
+        )}
       </div>
     </div>
   );

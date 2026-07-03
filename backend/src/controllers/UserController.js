@@ -16,6 +16,48 @@ const statusUpdateSchema = z.object({
 });
 
 class UserController {
+  async getMe(req, res, next) {
+    try {
+      // Demo fallback: get the first admin user since auth is not fully implemented
+      const { data } = await UserService.getUsers({ role: 'Quản trị viên' }, 1, 1);
+      if (data && data.length > 0) {
+        res.json({ success: true, data: data[0] });
+      } else {
+        res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản quản trị' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateMe(req, res, next) {
+    try {
+      const validatedData = userUpdateSchema.parse(req.body);
+      // Demo fallback: update the first admin user
+      const { data } = await UserService.getUsers({ role: 'Quản trị viên' }, 1, 1);
+      if (data && data.length > 0) {
+        const user = await UserService.updateUser(data[0].user_id, validatedData);
+        res.json({ success: true, data: user });
+      } else {
+        res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản quản trị' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateMyPassword(req, res, next) {
+    try {
+      // Currently the system does not have password_hash configured
+      res.status(501).json({
+        success: false,
+        message: "Chức năng đổi mật khẩu chưa được cấu hình xác thực."
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getUsers(req, res, next) {
     try {
       const { search, role, status, page = 1, limit = 10 } = req.query;

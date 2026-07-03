@@ -32,10 +32,10 @@ class SettingService {
       .replace(/\s+/g, '-')
       .replace(/[^a-zA-Z0-9.\-]/g, '');
 
-    const filePath = `settings/logo-${Date.now()}-${safeName}`;
+    const filePath = `logos/logo-${Date.now()}-${safeName}`;
 
     const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('product-images') // Dùng chung bucket cho tiện
+      .from('store-assets')
       .upload(filePath, file.buffer, {
         contentType: file.mimetype,
         upsert: true,
@@ -47,7 +47,7 @@ class SettingService {
     }
 
     const { data: publicData } = supabase.storage
-      .from('product-images')
+      .from('store-assets')
       .getPublicUrl(filePath);
 
     const imageUrl = publicData.publicUrl;
