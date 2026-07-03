@@ -34,15 +34,8 @@ const menuConfig = [
       { id: 'suppliers', label: 'Nhà cung cấp', icon: Truck },
     ]
   },
-  {
-    id: 'system',
-    label: 'Hệ thống',
-    icon: Settings,
-    children: [
-      { id: 'users', label: 'Người dùng', icon: Users },
-      { id: 'settings', label: 'Cài đặt', icon: Settings },
-    ]
-  }
+  { id: 'users', label: 'Người dùng', icon: Users },
+  { id: 'settings', label: 'Cài đặt', icon: Settings }
 ];
 
 export default function Sidebar({ activePage, onNavigate }) {
