@@ -1,5 +1,6 @@
 const UserRepository = require('../repositories/UserRepository');
 const { BusinessException } = require('../middleware/errorHandler');
+const bcrypt = require('bcryptjs');
 
 class UserService {
   async getUsers(filters, page, limit) {
@@ -24,6 +25,10 @@ class UserService {
     if (existingUser) {
       throw new BusinessException('DUPLICATE_EMAIL', 'Email này đã được sử dụng');
     }
+
+    // Hash default password 123456
+    const salt = await bcrypt.genSalt(10);
+    userData.password_hash = await bcrypt.hash('123456', salt);
 
     return await UserRepository.create(userData);
   }

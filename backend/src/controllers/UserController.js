@@ -18,12 +18,11 @@ const statusUpdateSchema = z.object({
 class UserController {
   async getMe(req, res, next) {
     try {
-      // Demo fallback: get the first admin user since auth is not fully implemented
-      const { data } = await UserService.getUsers({ role: 'Quản trị viên' }, 1, 1);
-      if (data && data.length > 0) {
-        res.json({ success: true, data: data[0] });
+      const user = await UserService.getUserById(req.user.user_id);
+      if (user) {
+        res.json({ success: true, data: user });
       } else {
-        res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản quản trị' });
+        res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản' });
       }
     } catch (error) {
       next(error);
@@ -33,14 +32,8 @@ class UserController {
   async updateMe(req, res, next) {
     try {
       const validatedData = userUpdateSchema.parse(req.body);
-      // Demo fallback: update the first admin user
-      const { data } = await UserService.getUsers({ role: 'Quản trị viên' }, 1, 1);
-      if (data && data.length > 0) {
-        const user = await UserService.updateUser(data[0].user_id, validatedData);
-        res.json({ success: true, data: user });
-      } else {
-        res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản quản trị' });
-      }
+      const user = await UserService.updateUser(req.user.user_id, validatedData);
+      res.json({ success: true, data: user });
     } catch (error) {
       next(error);
     }
@@ -48,10 +41,26 @@ class UserController {
 
   async updateMyPassword(req, res, next) {
     try {
-      // Currently the system does not have password_hash configured
-      res.status(501).json({
-        success: false,
-        message: "Chức năng đổi mật khẩu chưa được cấu hình xác thực."
+      const { oldPassword, newPassword } = req.body;
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({ success: false, message: 'Vui lòng nhập đầy đủ mật khẩu cũ và mới' });
+      }
+      
+      const user = await UserService.getUserById(req.user.user_id);
+      const bcrypt = require('bcryptjs');
+      const isValid = await bcrypt.compare(oldPassword, user.password_hash);
+      
+      if (!isValid) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu cũ không chính xác' });
+      }
+      
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      await UserService.updateUser(req.user.user_id, { password_hash: hashedPassword });
+      
+      res.json({
+        success: true,
+        message: "Cập nhật mật khẩu thành công."
       });
     } catch (error) {
       next(error);

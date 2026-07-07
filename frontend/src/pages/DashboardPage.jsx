@@ -27,6 +27,10 @@ const DashboardPage = ({ onNavigate }) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const userName = user?.full_name || 'Admin';
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
@@ -111,7 +115,7 @@ const DashboardPage = ({ onNavigate }) => {
         <div>
           <div className="text-sm text-slate-400 mb-1">Dashboard</div>
           <h1 className="text-2xl font-bold text-slate-800 mb-2">Tổng quan hệ thống</h1>
-          <p className="text-slate-500 text-sm">Xin chào, Nguyễn Admin! Đây là tóm tắt hoạt động hôm nay.</p>
+          <p className="text-slate-500 text-sm">Xin chào, {userName}! Đây là tóm tắt hoạt động hôm nay.</p>
         </div>
         <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 shadow-sm">
           <Calendar size={16} className="text-red-500" />

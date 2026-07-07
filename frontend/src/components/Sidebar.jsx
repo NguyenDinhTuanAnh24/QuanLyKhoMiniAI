@@ -163,11 +163,27 @@ export default function Sidebar({ activePage, onNavigate }) {
       <div className="p-4 border-t border-gray-100 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold">
-            A
+            {(() => {
+              const userStr = localStorage.getItem('user');
+              const user = userStr ? JSON.parse(userStr) : null;
+              return user?.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
+            })()}
           </div>
           <div>
-            <div className="text-sm font-semibold text-slate-800">Nguyễn Admin</div>
-            <div className="text-xs text-slate-500">Quản trị viên</div>
+            <div className="text-sm font-semibold text-slate-800">
+              {(() => {
+                const userStr = localStorage.getItem('user');
+                const user = userStr ? JSON.parse(userStr) : null;
+                return user?.full_name || 'Admin';
+              })()}
+            </div>
+            <div className="text-xs text-slate-500">
+              {(() => {
+                const userStr = localStorage.getItem('user');
+                const user = userStr ? JSON.parse(userStr) : null;
+                return user?.role || 'Quản trị viên';
+              })()}
+            </div>
           </div>
         </div>
       </div>

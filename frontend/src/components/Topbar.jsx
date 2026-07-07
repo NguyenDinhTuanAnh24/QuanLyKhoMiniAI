@@ -1,10 +1,11 @@
 import React from 'react';
-import { Search, Bell, Menu } from 'lucide-react';
+import { Search, Bell, Menu, LogOut, User } from 'lucide-react';
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Topbar({ activePage, activePayload, onNavigate }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getPageTitle = (pathname) => {
     if (pathname.includes("dashboard")) return "Tổng quan";
@@ -24,6 +25,15 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
   };
 
   const pageTitle = getPageTitle(location.pathname);
+  
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
@@ -50,6 +60,25 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
           <Bell className="w-5 h-5" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
         </button>
+        
+        <div className="h-8 w-px bg-slate-200 mx-2 hidden sm:block"></div>
+        
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex flex-col items-end">
+            <span className="text-sm font-medium text-slate-900 leading-none">{user?.full_name || 'Admin'}</span>
+            <span className="text-xs text-slate-500 mt-1">{user?.role || 'Quản trị viên'}</span>
+          </div>
+          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
+            <User className="w-5 h-5" />
+          </div>
+          <button 
+            onClick={handleLogout}
+            title="Đăng xuất"
+            className="ml-2 p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </header>
   );

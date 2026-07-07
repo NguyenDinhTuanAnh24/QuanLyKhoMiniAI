@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController');
+const { authMiddleware } = require('../middleware/authMiddleware');
 
+// Protect all user routes
+router.use(authMiddleware);
 router.get('/', UserController.getUsers);
 router.get('/me', UserController.getMe);
 router.put('/me', UserController.updateMe);
