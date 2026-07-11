@@ -17,8 +17,10 @@ import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import { ToastProvider } from './contexts/ToastContext';
 
+import { getToken } from './services/authService';
+
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = getToken();
   if (!token) {
     return <Navigate to="/login" replace />;
   }

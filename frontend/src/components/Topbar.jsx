@@ -1,7 +1,10 @@
-import React from 'react';
-import { Search, Bell, Menu, LogOut, User } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, Bell, Menu, LogOut, User, Settings as SettingsIcon } from 'lucide-react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
+import ConfirmModal from './ConfirmModal';
+import { logout, getUser } from '../services/authService';
+import { useToast } from '../contexts/ToastContext';
 
 export default function Topbar({ activePage, activePayload, onNavigate }) {
   const location = useLocation();
@@ -26,13 +29,41 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
 
   const pageTitle = getPageTitle(location.pathname);
   
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  const user = getUser();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/login';
+  const { showToast } = useToast();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogoutClick = () => {
+    setIsDropdownOpen(false);
+    setIsLogoutModalOpen(true);
+  };
+
+  const handleLogoutConfirm = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      showToast('Đăng xuất thành công', 'success');
+      navigate('/login', { replace: true });
+    } catch (error) {
+      showToast('Lỗi khi đăng xuất', 'error');
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
   };
 
   return (
@@ -63,23 +94,70 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
         
         <div className="h-8 w-px bg-slate-200 mx-2 hidden sm:block"></div>
         
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex flex-col items-end">
-            <span className="text-sm font-medium text-slate-900 leading-none">{user?.full_name || 'Admin'}</span>
-            <span className="text-xs text-slate-500 mt-1">{user?.role || 'Quản trị viên'}</span>
-          </div>
-          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
-            <User className="w-5 h-5" />
-          </div>
+        <div className="flex items-center gap-3 relative" ref={dropdownRef}>
           <button 
-            onClick={handleLogout}
-            title="Đăng xuất"
-            className="ml-2 p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-3 hover:bg-slate-50 p-1.5 rounded-lg transition-colors text-left"
           >
-            <LogOut className="w-5 h-5" />
+            <div className="hidden sm:flex flex-col items-end max-w-[150px]">
+              <span className="text-sm font-medium text-slate-900 leading-none truncate w-full text-right">{user?.full_name || 'Admin'}</span>
+              <span className="text-xs text-slate-500 mt-1 truncate w-full text-right">{user?.role || 'Quản trị viên'}</span>
+            </div>
+            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
+              <User className="w-5 h-5" />
+            </div>
           </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-2 z-50">
+              <div className="px-4 py-2 border-b border-slate-100 mb-1 sm:hidden">
+                <span className="block text-sm font-medium text-slate-900">{user?.full_name || 'Admin'}</span>
+                <span className="block text-xs text-slate-500">{user?.role || 'Quản trị viên'}</span>
+              </div>
+              <button 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  navigate('/settings?tab=account');
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 flex items-center gap-2 transition-colors"
+              >
+                <User className="w-4 h-4" />
+                Thông tin tài khoản
+              </button>
+              <button 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  onNavigate('settings');
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 flex items-center gap-2 transition-colors"
+              >
+                <SettingsIcon className="w-4 h-4" />
+                Cài đặt
+              </button>
+              <div className="h-px bg-slate-100 my-1"></div>
+              <button 
+                onClick={handleLogoutClick}
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Đăng xuất
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogoutConfirm}
+        title="Xác nhận đăng xuất"
+        message="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?"
+        confirmText="Đăng xuất"
+        cancelText="Hủy"
+        isDanger={true}
+        loading={isLoggingOut}
+      />
     </header>
   );
 }

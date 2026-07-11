@@ -22,13 +22,13 @@ import {
 } from 'lucide-react';
 import dashboardService from '../services/dashboardService';
 import { useToast } from '../contexts/ToastContext';
+import { getUser } from '../services/authService';
 
 const DashboardPage = ({ onNavigate }) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  const user = getUser();
   const userName = user?.full_name || 'Admin';
   
   const [loading, setLoading] = useState(true);

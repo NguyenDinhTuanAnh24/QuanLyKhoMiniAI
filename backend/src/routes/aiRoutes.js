@@ -1,6 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const AIController = require('../controllers/AIController');
+const { authMiddleware } = require('../middleware/authMiddleware');
+const { authorizeRoles } = require('../middleware/authorizeRoles');
+const { ROLES } = require('../config/permissions');
+
+const ADMIN_OWNER = [ROLES.ADMIN, ROLES.OWNER];
+
+router.use(authMiddleware);
+router.use(authorizeRoles(...ADMIN_OWNER));
 
 router.get('/settings', AIController.getSettings);
 router.put('/settings', AIController.updateSettings);

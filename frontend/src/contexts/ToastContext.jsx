@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 const ToastContext = createContext(null);
@@ -31,6 +31,14 @@ export function ToastProvider({ children }) {
   const removeToast = useCallback((id) => {
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
+
+  useEffect(() => {
+    const handleGlobalToast = (event) => {
+      addToast(event.detail);
+    };
+    window.addEventListener('globalToast', handleGlobalToast);
+    return () => window.removeEventListener('globalToast', handleGlobalToast);
+  }, [addToast]);
 
   const getIcon = (type) => {
     switch (type) {

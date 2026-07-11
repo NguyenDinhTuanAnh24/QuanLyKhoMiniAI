@@ -1,0 +1,90 @@
+const ROLES = {
+  ADMIN: 'ADMIN',
+  OWNER: 'OWNER',
+  WAREHOUSE_STAFF: 'WAREHOUSE_STAFF',
+  SALES_STAFF: 'SALES_STAFF'
+};
+
+const ROLE_MAP = {
+  'Quản trị viên': ROLES.ADMIN,
+  'Chủ cửa hàng': ROLES.OWNER,
+  'Nhân viên kho': ROLES.WAREHOUSE_STAFF,
+  'Nhân viên bán hàng': ROLES.SALES_STAFF
+};
+
+const normalizeRole = (vietnameseRole) => {
+  return ROLE_MAP[vietnameseRole] || vietnameseRole;
+};
+
+// Define permissions
+const PERMISSIONS = {
+  DASHBOARD_VIEW: 'dashboard:view',
+  
+  PRODUCTS_VIEW: 'products:view',
+  PRODUCTS_CREATE: 'products:create',
+  PRODUCTS_UPDATE: 'products:update',
+  PRODUCTS_DELETE: 'products:delete',
+
+  INVENTORY_VIEW: 'inventory:view',
+  INVENTORY_IMPORT: 'inventory:import',
+  INVENTORY_EXPORT: 'inventory:export',
+
+  SALES_VIEW: 'sales:view',
+  SALES_CREATE: 'sales:create',
+  SALES_UPDATE: 'sales:update',
+  SALES_PAYMENT: 'sales:payment',
+
+  ALERTS_VIEW: 'alerts:view',
+
+  REPORTS_VIEW: 'reports:view',
+  REPORTS_VIEW_FINANCIAL: 'reports:view_financial',
+
+  AI_VIEW: 'ai:view',
+  AI_ANALYZE: 'ai:analyze',
+  AI_SETTINGS: 'ai:settings',
+
+  USERS_VIEW: 'users:view',
+  USERS_CREATE: 'users:create',
+  USERS_UPDATE: 'users:update',
+  USERS_DELETE: 'users:delete',
+  USERS_CHANGE_ROLE: 'users:change_role',
+  USERS_CHANGE_STATUS: 'users:change_status',
+
+  SETTINGS_VIEW: 'settings:view',
+  SETTINGS_UPDATE: 'settings:update'
+};
+
+const ROLE_PERMISSIONS = {
+  [ROLES.ADMIN]: Object.values(PERMISSIONS), // Admin has all permissions
+  
+  [ROLES.OWNER]: [
+    PERMISSIONS.DASHBOARD_VIEW,
+    PERMISSIONS.PRODUCTS_VIEW, PERMISSIONS.PRODUCTS_CREATE, PERMISSIONS.PRODUCTS_UPDATE, PERMISSIONS.PRODUCTS_DELETE,
+    PERMISSIONS.INVENTORY_VIEW, PERMISSIONS.INVENTORY_IMPORT, PERMISSIONS.INVENTORY_EXPORT,
+    PERMISSIONS.SALES_VIEW,
+    PERMISSIONS.ALERTS_VIEW,
+    PERMISSIONS.REPORTS_VIEW, PERMISSIONS.REPORTS_VIEW_FINANCIAL,
+    PERMISSIONS.AI_VIEW, PERMISSIONS.AI_ANALYZE,
+    PERMISSIONS.SETTINGS_VIEW, PERMISSIONS.SETTINGS_UPDATE
+  ],
+
+  [ROLES.WAREHOUSE_STAFF]: [
+    PERMISSIONS.PRODUCTS_VIEW, PERMISSIONS.PRODUCTS_CREATE, PERMISSIONS.PRODUCTS_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW, PERMISSIONS.INVENTORY_IMPORT, PERMISSIONS.INVENTORY_EXPORT,
+    PERMISSIONS.ALERTS_VIEW
+  ],
+
+  [ROLES.SALES_STAFF]: [
+    PERMISSIONS.PRODUCTS_VIEW,
+    PERMISSIONS.SALES_VIEW, PERMISSIONS.SALES_CREATE, PERMISSIONS.SALES_PAYMENT,
+    PERMISSIONS.INVENTORY_VIEW
+  ]
+};
+
+module.exports = {
+  ROLES,
+  ROLE_MAP,
+  normalizeRole,
+  PERMISSIONS,
+  ROLE_PERMISSIONS
+};
