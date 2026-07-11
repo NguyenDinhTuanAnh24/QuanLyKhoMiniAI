@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/reports';
+const API_URL = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}/api/reports` : 'http://localhost:5000/api/reports';
 
 export const reportService = {
   getOverview: async (filters) => {

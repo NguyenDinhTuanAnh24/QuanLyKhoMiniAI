@@ -159,8 +159,8 @@ CREATE TABLE public.app_users (
     full_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     phone TEXT,
-    role TEXT NOT NULL DEFAULT 'Nhân viên bán hàng',
-    status TEXT NOT NULL DEFAULT 'Ðang ho?t ð?ng',
+    role TEXT NOT NULL DEFAULT 'Nhï¿½n viï¿½n bï¿½n hï¿½ng',
+    status TEXT NOT NULL DEFAULT 'ï¿½ang ho?t ï¿½?ng',
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     deleted_at TIMESTAMPTZ
@@ -174,7 +174,7 @@ CREATE INDEX idx_app_users_status ON public.app_users(status);
 -- 9. Settings Table
 CREATE TABLE public.settings (
     id TEXT PRIMARY KEY DEFAULT 'DEFAULT',
-    store_name TEXT DEFAULT 'C?a hàng c?a tôi',
+    store_name TEXT DEFAULT 'C?a hï¿½ng c?a tï¿½i',
     store_phone TEXT DEFAULT '',
     store_email TEXT DEFAULT '',
     store_address TEXT DEFAULT '',
@@ -202,4 +202,24 @@ CREATE TABLE public.settings (
 INSERT INTO public.settings (id, store_name, store_phone, store_email, store_address)
 VALUES ('DEFAULT', 'Smart Retail Mini', '0123456789', 'admin@smartretail.com', '123 Smart Retail St.')
 ON CONFLICT (id) DO NOTHING;
+
+-- --------------------------------------------------------
+-- Table structure for table `notifications`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.notifications (
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL DEFAULT 'ALL',
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) NOT NULL CHECK (type IN ('ORDER_NEW', 'PAYMENT_SUCCESS', 'STOCK_LOW', 'STOCK_IMPORT', 'STOCK_EXPORT')),
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    related_link VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON public.notifications(is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON public.notifications(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notifications_type_created ON public.notifications(type, created_at DESC);
+
 

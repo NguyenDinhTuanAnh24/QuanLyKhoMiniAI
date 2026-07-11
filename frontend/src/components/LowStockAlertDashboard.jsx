@@ -77,7 +77,8 @@ export default function LowStockAlertDashboard({ onNavigate }) {
         status: selectedStatus
       });
 
-      const response = await fetch(`http://localhost:5000/api/inventory/low-stock-alerts?${queryParams.toString()}`);
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const response = await fetch(`${baseUrl}/api/inventory/low-stock-alerts?${queryParams.toString()}`);
       const result = await response.json();
 
       if (result.success) {
@@ -134,7 +135,8 @@ export default function LowStockAlertDashboard({ onNavigate }) {
         status: selectedStatus
       });
       
-      const response = await fetch(`http://localhost:5000/api/inventory/low-stock-alerts?${queryParams.toString()}`);
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const response = await fetch(`${baseUrl}/api/inventory/low-stock-alerts?${queryParams.toString()}`);
       const result = await response.json();
       
       let exportData = [];

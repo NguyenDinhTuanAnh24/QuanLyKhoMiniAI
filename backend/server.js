@@ -15,6 +15,7 @@ const reportRoutes = require('./src/routes/reportRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const settingRoutes = require('./src/routes/settingRoutes');
 const authRoutes = require('./src/routes/authRoutes');
+const notificationRoutes = require('./src/routes/notificationRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -36,6 +37,8 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/notifications', notificationRoutes);
+
 
 // Error Handling Middleware
 app.use(GlobalExceptionHandler);

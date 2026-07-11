@@ -1,4 +1,5 @@
 const supabase = require('../config/supabase');
+const notificationService = require('../services/NotificationService');
 
 class InventoryController {
   async createMovement(req, res, next) {
@@ -14,10 +15,10 @@ class InventoryController {
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         
-        // get current stock
+        // get current stock, product name and reorder level
         const { data: p, error: pErr } = await supabase
           .from('products')
-          .select('stock_quantity')
+          .select('stock_quantity, product_name, reorder_level')
           .eq('product_id', item.product_id)
           .single();
           
@@ -48,6 +49,26 @@ class InventoryController {
           unit_price: item.unit_price || 0,
           note: note || ''
         });
+
+        try {
+          await notificationService.createNotification({
+            title: type === 'IMPORT' ? `Nhập kho: ${p.product_name || item.product_id}` : `Xuất kho: ${p.product_name || item.product_id}`,
+            message: `Đã ${type === 'IMPORT' ? 'nhập' : 'xuất'} số lượng ${item.quantity} cho sản phẩm ${p.product_name || item.product_id}. Tồn kho mới: ${newStock}`,
+            type: type === 'IMPORT' ? 'STOCK_IMPORT' : 'STOCK_EXPORT',
+            related_link: '/inventory-ops'
+          });
+
+          if (newStock <= (p.reorder_level || 10)) {
+            await notificationService.checkAndCreateLowStockAlert(
+              item.product_id,
+              p.product_name || item.product_id,
+              newStock,
+              p.reorder_level || 10
+            );
+          }
+        } catch (notiErr) {
+          console.error('Failed to create notification inside InventoryController:', notiErr);
+        }
       }
 
       // insert movements

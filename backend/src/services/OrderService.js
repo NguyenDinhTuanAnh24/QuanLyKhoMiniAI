@@ -1,4 +1,6 @@
 const orderRepository = require('../repositories/orderRepository');
+const notificationService = require('./NotificationService');
+
 
 class OrderService {
   async getRecentOrders(limit = 10) {
@@ -114,6 +116,17 @@ class OrderService {
         await this.deductStockAndRecordMovements(order, data.items);
       }
 
+      try {
+        await notificationService.createNotification({
+          title: `Đơn bán hàng mới ${order.order_code}`,
+          message: `Đơn hàng ${order.order_code} trị giá ${data.total_amount?.toLocaleString('vi-VN')}đ đã được tạo bởi ${data.customer_name || 'Khách lẻ'}`,
+          type: 'ORDER_NEW',
+          related_link: '/sales'
+        });
+      } catch (notiErr) {
+        console.error('Failed to create ORDER_NEW notification:', notiErr);
+      }
+
       return {
         order,
         items: orderItemsToInsert
@@ -169,6 +182,23 @@ class OrderService {
     }
 
     await orderRepository.insertStockMovements(movementsToInsert);
+
+    // Check Low Stock Alerts
+    for (const item of items) {
+      try {
+        const pData = await orderRepository.getProductStock(item.product_id);
+        if (pData && pData.stock_quantity <= pData.reorder_level) {
+          await notificationService.checkAndCreateLowStockAlert(
+            item.product_id, 
+            pData.product_name || item.product_id, 
+            pData.stock_quantity, 
+            pData.reorder_level
+          );
+        }
+      } catch (lowErr) {
+        console.error('Failed to check low stock alert in OrderService:', lowErr);
+      }
+    }
   }
 
   async processSuccessfulPayment(payosOrderCode) {
@@ -193,6 +223,18 @@ class OrderService {
         console.error(`Failed to deduct stock for order ${updatedOrder.order_code}`, err);
         // Continue without throwing to not crash webhook handler, but stock will be inconsistent
       }
+
+      try {
+        await notificationService.createNotification({
+          title: `Thanh toán thành công ${updatedOrder.order_code}`,
+          message: `Đơn hàng ${updatedOrder.order_code} đã hoàn tất thanh toán trực tuyến qua PayOS`,
+          type: 'PAYMENT_SUCCESS',
+          related_link: '/sales'
+        });
+      } catch (notiErr) {
+        console.error('Failed to create PAYMENT_SUCCESS notification:', notiErr);
+      }
+
       return updatedOrder;
     }
 

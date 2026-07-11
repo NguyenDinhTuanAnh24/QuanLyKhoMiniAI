@@ -1,14 +1,144 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, Menu, LogOut, User, Settings as SettingsIcon } from 'lucide-react';
-
+import { Search, Bell, Menu, LogOut, User, Settings as SettingsIcon, CheckCircle2, AlertTriangle, ArrowDownRight, ArrowUpRight, ShoppingBag, CheckCheck } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmModal from './ConfirmModal';
 import { logout, getUser } from '../services/authService';
 import { useToast } from '../contexts/ToastContext';
+import api from '../services/api';
+import supabase from '../config/supabase';
 
 export default function Topbar({ activePage, activePayload, onNavigate }) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Notification state
+  const [isOpen, setIsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingNoti, setLoadingNoti] = useState(false);
+  const notiDropdownRef = useRef(null);
+
+  // User & Auth state (from develop)
+  const user = getUser();
+  const { showToast } = useToast();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const userDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notiDropdownRef.current && 
+        !notiDropdownRef.current.contains(event.target) &&
+        !event.target.closest('.noti-dropdown-wrapper')
+      ) {
+        setIsOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const fetchNotifications = async (silent = false) => {
+    if (!silent) setLoadingNoti(true);
+    try {
+      const res = await api.get('/notifications?page=1&limit=15');
+      if (res.data && res.data.success) {
+        setNotifications(res.data.data?.items || []);
+        setUnreadCount(res.data.data?.unreadCount || 0);
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    } finally {
+      if (!silent) setLoadingNoti(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+
+    // Thiết lập kênh Realtime lắng nghe INSERT trên bảng notifications
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications' },
+        (payload) => {
+          // Optimistic update + lập tức đồng bộ dữ liệu từ API Backend
+          if (payload.new) {
+            setNotifications(prev => [payload.new, ...prev.slice(0, 14)]);
+            setUnreadCount(prev => prev + 1);
+          }
+          fetchNotifications(true);
+        }
+      )
+      .subscribe();
+
+    // Khử trùng lặp kênh (Cleanup) để tránh rò rỉ bộ nhớ (Memory Leak)
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const handleToggleDropdown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(prev => {
+      const nextState = !prev;
+      if (nextState) {
+        // Luôn fetch dữ liệu tươi mới ngay khi mở dropdown
+        fetchNotifications(true);
+      }
+      return nextState;
+    });
+  };
+
+  const handleNotificationClick = async (noti) => {
+    if (!noti.is_read) {
+      setNotifications(prev => prev.map(n => n.id === noti.id ? { ...n, is_read: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+      try {
+        await api.patch(`/notifications/${noti.id}/read`);
+      } catch (err) {
+        console.error('Failed to mark notification read:', err);
+      }
+    }
+    setIsOpen(false);
+    if (noti.related_link) {
+      navigate(noti.related_link);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setUnreadCount(0);
+    try {
+      await api.patch('/notifications/read-all');
+    } catch (err) {
+      console.error('Failed to mark all as read:', err);
+    }
+  };
+
+  const getNotiStyle = (type) => {
+    switch (type) {
+      case 'ORDER_NEW':
+        return { bg: 'bg-blue-100 text-blue-600', icon: <ShoppingBag className="w-4 h-4" /> };
+      case 'PAYMENT_SUCCESS':
+        return { bg: 'bg-emerald-100 text-emerald-600', icon: <CheckCircle2 className="w-4 h-4" /> };
+      case 'STOCK_LOW':
+        return { bg: 'bg-rose-100 text-rose-600', icon: <AlertTriangle className="w-4 h-4" /> };
+      case 'STOCK_IMPORT':
+        return { bg: 'bg-amber-100 text-amber-600', icon: <ArrowDownRight className="w-4 h-4" /> };
+      case 'STOCK_EXPORT':
+        return { bg: 'bg-purple-100 text-purple-600', icon: <ArrowUpRight className="w-4 h-4" /> };
+      default:
+        return { bg: 'bg-slate-100 text-slate-600', icon: <Bell className="w-4 h-4" /> };
+    }
+  };
 
   const getPageTitle = (pathname) => {
     if (pathname.includes("dashboard")) return "Tổng quan";
@@ -28,24 +158,6 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
   };
 
   const pageTitle = getPageTitle(location.pathname);
-  
-  const user = getUser();
-
-  const { showToast } = useToast();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleLogoutClick = () => {
     setIsDropdownOpen(false);
@@ -67,7 +179,7 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
+    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-50">
       <div className="flex items-center gap-4 flex-1">
         <button className="text-slate-500 hover:text-slate-700 md:hidden">
           <Menu className="w-5 h-5" />
@@ -87,14 +199,105 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
           />
         </div>
         
-        <button className="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-        </button>
+        {/* Notification Bell with Dropdown Popover */}
+        <div className="relative noti-dropdown-wrapper" ref={notiDropdownRef}>
+          <button 
+            type="button"
+            onClick={handleToggleDropdown}
+            className="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            title="Thông báo hệ thống"
+          >
+            <Bell className="w-5 h-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white font-bold text-[10px] flex items-center justify-center rounded-full border border-white animate-pulse">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-slate-200 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+              {/* Dropdown Header */}
+              <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-slate-900 text-sm">Thông báo mới</h3>
+                  {unreadCount > 0 && (
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                      {unreadCount} chưa đọc
+                    </span>
+                  )}
+                </div>
+                {unreadCount > 0 && (
+                  <button 
+                    type="button"
+                    onClick={handleMarkAllAsRead}
+                    className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors focus:outline-none"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    Đánh dấu tất cả
+                  </button>
+                )}
+              </div>
+
+              {/* Dropdown List */}
+              <div className="max-h-96 overflow-y-auto divide-y divide-slate-100">
+                {loadingNoti && notifications.length === 0 ? (
+                  <div className="py-8 text-center text-slate-400 text-sm">Đang tải thông báo...</div>
+                ) : notifications.length === 0 ? (
+                  <div className="py-10 flex flex-col items-center justify-center text-slate-400">
+                    <Bell className="w-10 h-10 text-slate-200 mb-2 stroke-1" />
+                    <p className="text-sm font-medium text-slate-500">Không có thông báo mới</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Hệ thống đang hoạt động ổn định</p>
+                  </div>
+                ) : (
+                  notifications.map((noti) => {
+                    const style = getNotiStyle(noti.type);
+                    return (
+                      <div 
+                        key={noti.id}
+                        onClick={() => handleNotificationClick(noti)}
+                        className={`p-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 ${
+                          !noti.is_read ? 'bg-blue-50/50 font-medium' : ''
+                        }`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 ${style.bg}`}>
+                          {style.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2 mb-0.5">
+                            <h4 className={`text-xs ${!noti.is_read ? 'font-bold text-slate-900' : 'font-semibold text-slate-700'} truncate`}>
+                              {noti.title}
+                            </h4>
+                            <span className="text-[10px] text-slate-400 flex-shrink-0">
+                              {noti.created_at ? new Date(noti.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : ''}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-normal">
+                            {noti.message}
+                          </p>
+                        </div>
+                        {!noti.is_read && (
+                          <span className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-1.5" />
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Dropdown Footer */}
+              <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 text-center">
+                <span className="text-[11px] text-slate-400">
+                  ⚡ Supabase Realtime Active • <strong className="text-slate-600 font-medium">Smart Retail AI</strong>
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
         
         <div className="h-8 w-px bg-slate-200 mx-2 hidden sm:block"></div>
         
-        <div className="flex items-center gap-3 relative" ref={dropdownRef}>
+        <div className="flex items-center gap-3 relative" ref={userDropdownRef}>
           <button 
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="flex items-center gap-3 hover:bg-slate-50 p-1.5 rounded-lg transition-colors text-left"
