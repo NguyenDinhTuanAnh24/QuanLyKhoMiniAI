@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, RefreshCcw, ArrowRight, Eye, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { getAIForecastTable } from '../../services/aiService';
-
-export default function AIProductForecastTable({ categories, onApplySuggestion }) {
+export default function AIProductForecastTable({ categories, data = [], onApplySuggestion }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,31 +11,54 @@ export default function AIProductForecastTable({ categories, onApplySuggestion }
   const [totalItems, setTotalItems] = useState(0);
   const ITEMS_PER_PAGE = 5;
 
-  const fetchTableData = async () => {
+  const filterAndPaginateData = () => {
     setLoading(true);
     try {
-      const response = await getAIForecastTable({
-        page: currentPage,
-        limit: ITEMS_PER_PAGE,
-        search: searchTerm,
-        category: selectedCategory,
-        risk: selectedRisk !== 'all' ? selectedRisk : undefined
-      });
-      if (response && response.data) {
-        setItems(response.data.items || []);
-        setTotalPages(response.data.pagination?.totalPages || 1);
-        setTotalItems(response.data.pagination?.totalItems || 0);
+      let filtered = [...data];
+
+      if (searchTerm) {
+        const lowerSearch = searchTerm.toLowerCase();
+        filtered = filtered.filter(item => 
+          item.product_name?.toLowerCase().includes(lowerSearch) || 
+          item.sku?.toLowerCase().includes(lowerSearch)
+        );
       }
+
+      if (selectedCategory) {
+        const cat = categories.find(c => String(c.category_id) === String(selectedCategory));
+        if (cat) {
+          filtered = filtered.filter(item => item.category_name === cat.category_name);
+        }
+      }
+
+      if (selectedRisk && selectedRisk !== 'all') {
+        filtered = filtered.filter(item => {
+          // Map priority to risk labels for filtering
+          const riskLabel = item.priority === 'Cao' ? 'Hết hàng' : (item.priority === 'Trung bình' ? 'Cần nhập' : 'Ổn định');
+          // For simplicity, just check if priority matches logic
+          if (selectedRisk === 'Hết hàng') return item.priority === 'Cao';
+          if (selectedRisk === 'Cần nhập' || selectedRisk === 'Rủi ro cao') return item.priority === 'Trung bình';
+          if (selectedRisk === 'Ổn định') return item.priority === 'Thấp';
+          return true;
+        });
+      }
+
+      setTotalItems(filtered.length);
+      setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1);
+
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const paginated = filtered.slice(from, from + ITEMS_PER_PAGE);
+      setItems(paginated);
     } catch (error) {
-      console.error('Lỗi khi tải dữ liệu bảng:', error);
+      console.error('Lỗi khi xử lý dữ liệu bảng:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTableData();
-  }, [currentPage, searchTerm, selectedCategory, selectedRisk]);
+    filterAndPaginateData();
+  }, [data, currentPage, searchTerm, selectedCategory, selectedRisk]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -67,7 +88,7 @@ export default function AIProductForecastTable({ categories, onApplySuggestion }
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col w-full min-w-0">
       <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
         <h3 className="text-lg font-bold text-slate-900">Dự báo nhu cầu từng sản phẩm (tuần tới)</h3>
       </div>
@@ -126,10 +147,11 @@ export default function AIProductForecastTable({ categories, onApplySuggestion }
             <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500">
               <th className="p-4 font-semibold">Sản phẩm</th>
               <th className="p-4 font-semibold text-center">Tồn</th>
+              <th className="p-4 font-semibold text-center">Đã bán 90N</th>
+              <th className="p-4 font-semibold text-center">TB/ngày</th>
               <th className="p-4 font-semibold text-center">Dự báo</th>
               <th className="p-4 font-semibold text-center">Nên nhập</th>
-              <th className="p-4 font-semibold text-center">Xu hướng</th>
-              <th className="p-4 font-semibold text-center">Độ tin cậy</th>
+              <th className="p-4 font-semibold text-center">Ưu tiên</th>
               <th className="p-4 font-semibold text-right">Hành động</th>
             </tr>
           </thead>
@@ -152,22 +174,19 @@ export default function AIProductForecastTable({ categories, onApplySuggestion }
                     <div className="text-xs text-slate-500">{item.sku} • {item.category_name}</div>
                   </td>
                   <td className="p-4 text-center">
-                    <span className={`font-semibold ${item.stock_quantity <= 0 ? 'text-red-600' : 'text-slate-700'}`}>
+                    <span className={`font-semibold ${item.stock_quantity <= item.reorder_level ? 'text-red-600' : 'text-slate-700'}`}>
                       {item.stock_quantity}
                     </span>
                   </td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.sales_90d}</td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.avg_daily_sales_90d}</td>
                   <td className="p-4 text-center font-medium text-slate-700">{item.forecast_14d}</td>
                   <td className="p-4 text-center font-bold text-blue-600">
                     {item.suggested_import_quantity > 0 ? `+${item.suggested_import_quantity}` : '-'}
                   </td>
                   <td className="p-4 text-center">
-                    <div className="flex justify-center">
-                      {getTrendIcon(item.avg_daily_sales_90d > 0 ? 1 : 0)}
-                    </div>
-                  </td>
-                  <td className="p-4 text-center">
-                    <div className="inline-flex items-center px-2 py-1 rounded bg-slate-100 text-xs font-medium text-slate-700">
-                      {item.confidence_score}%
+                    <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${getRiskBadgeClass(item.priority === 'Cao' ? 'Hết hàng' : (item.priority === 'Trung bình' ? 'Cần nhập' : 'Ổn định'))}`}>
+                      {item.priority || 'Thấp'}
                     </div>
                   </td>
                   <td className="p-4 text-right">

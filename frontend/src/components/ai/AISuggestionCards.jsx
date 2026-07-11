@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PackageSearch, ArrowRight, Zap, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { getAIForecastSuggestions } from '../../services/aiService';
-
-export default function AISuggestionCards({ onApplySuggestion }) {
+export default function AISuggestionCards({ data = [], onApplySuggestion }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -10,33 +8,31 @@ export default function AISuggestionCards({ onApplySuggestion }) {
   const [totalItems, setTotalItems] = useState(0);
   const ITEMS_PER_PAGE = 8;
 
-  const fetchSuggestionsData = async () => {
+  const paginateData = () => {
     setLoading(true);
     try {
-      const response = await getAIForecastSuggestions({
-        page: currentPage,
-        limit: ITEMS_PER_PAGE
-      });
-      if (response && response.data) {
-        setItems(response.data.items || []);
-        setTotalPages(response.data.pagination?.totalPages || 1);
-        setTotalItems(response.data.pagination?.totalItems || 0);
-      }
+      const filtered = data.filter(item => item.suggested_import_quantity > 0);
+      setTotalItems(filtered.length);
+      setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1);
+
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const paginated = filtered.slice(from, from + ITEMS_PER_PAGE);
+      setItems(paginated);
     } catch (error) {
-      console.error('Lỗi khi tải dữ liệu thẻ gợi ý:', error);
+      console.error('Lỗi khi xử lý dữ liệu thẻ gợi ý:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSuggestionsData();
-  }, [currentPage]);
+    paginateData();
+  }, [data, currentPage]);
 
   if (!loading && items.length === 0) return null;
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 w-full min-w-0">
       <div className="flex items-center gap-2 mb-4">
         <Zap className="w-5 h-5 text-indigo-500" />
         <h3 className="font-bold text-slate-800 text-lg">Gợi ý nhập hàng từ AI</h3>
@@ -48,7 +44,7 @@ export default function AISuggestionCards({ onApplySuggestion }) {
           <span className="ml-2 text-slate-500">Đang tải gợi ý...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {items.map((item) => (
           <div key={item.product_id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-blue-300 transition-colors flex flex-col h-full">
             <div className="flex justify-between items-start mb-3 gap-2">
@@ -62,7 +58,7 @@ export default function AISuggestionCards({ onApplySuggestion }) {
             
             <p className="text-xs text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex-1">
               <span className="font-semibold text-slate-700 block mb-1">Lý do:</span>
-              {item.ai_reason}
+              {item.reason || 'Dựa trên dự báo AI và mức tồn kho.'}
             </p>
             
             <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">

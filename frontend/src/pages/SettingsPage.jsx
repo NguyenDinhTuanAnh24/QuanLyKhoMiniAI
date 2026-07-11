@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Store, Package, Sparkles, User, Shield, Upload, AlertCircle, Save, CheckCircle2 } from 'lucide-react';
 import { getSettings, updateSettings, uploadStoreLogo } from '../services/settingService';
 import { getMe, updateMe, updateMyPassword } from '../services/userService';
 import ConfirmModal from '../components/ConfirmModal';
+import { testAIConnection } from '../services/aiService';
 import { useToast } from '../contexts/ToastContext';
 
 export default function SettingsPage() {
   const { showToast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState('store');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'store');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -84,6 +87,18 @@ export default function SettingsPage() {
   useEffect(() => {
     loadSettings();
   }, []);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && ['store', 'inventory', 'ai', 'account', 'security'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setSearchParams({ tab: tabId });
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -212,11 +227,20 @@ export default function SettingsPage() {
     }
   };
 
-  const checkAIConnection = () => {
+  const checkAIConnection = async () => {
     showToast('Đang kết nối AI...', 'info');
-    setTimeout(() => {
-      showToast('Kết nối AI thành công.', 'success');
-    }, 1000);
+    try {
+      const response = await testAIConnection();
+      if (response && response.success) {
+        showToast('Kết nối AI thành công.', 'success');
+      } else {
+        showToast('Kết nối AI thất bại.', 'error');
+      }
+    } catch (error) {
+      console.error(error);
+      const msg = error.response?.data?.message || 'Lỗi khi kết nối AI';
+      showToast(msg, 'error');
+    }
   };
 
   const tabs = [
@@ -252,7 +276,7 @@ export default function SettingsPage() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive 
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-200' 

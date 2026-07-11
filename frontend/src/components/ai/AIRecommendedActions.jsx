@@ -15,7 +15,14 @@ export default function AIRecommendedActions({ actions, onApplyAll }) {
             {actions.map((action, idx) => (
               <li key={idx} className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-700 leading-snug">{action}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-slate-800 leading-snug">
+                    {typeof action === 'string' ? action : action.label}
+                  </span>
+                  {typeof action === 'object' && action.description && (
+                    <span className="text-xs text-slate-600 mt-1">{action.description}</span>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

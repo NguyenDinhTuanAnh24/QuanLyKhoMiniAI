@@ -1,55 +1,81 @@
 import api from './api';
 
-export const getAIForecast = async (params = {}) => {
+export const getAISettings = async () => {
   try {
-    const response = await api.get("/ai/forecast", { params });
+    const response = await api.get('/ai/settings');
     return response.data?.data || response.data;
   } catch (error) {
+    console.error('Error fetching AI settings:', error);
+    throw error;
+  }
+};
+
+export const updateAISettings = async (payload) => {
+  try {
+    const response = await api.put('/ai/settings', payload);
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error updating AI settings:', error);
+    throw error;
+  }
+};
+
+export const getAIForecast = async (params = {}) => {
+  try {
+    const response = await api.get('/ai/forecast', { params });
+    return response.data?.data || null;
+  } catch (error) {
     console.error('Error fetching AI forecast:', error);
-    // Return empty safe structure on error
-    return {
-      summary: {
-        total_products: 0,
-        risk_products: 0,
-        total_suggested_import: 0,
-        estimated_import_value: 0,
-        avg_confidence: 0
-      },
-      insight: {
-        title: 'Không thể tải dữ liệu AI',
-        message: 'Vui lòng kiểm tra kết nối hoặc thử lại sau.'
-      },
-      items: []
-    };
-  }
-};
-
-export const recalculateForecast = async () => {
-  try {
-    const response = await api.post("/ai/forecast/recalculate");
-    return response.data;
-  } catch (error) {
-    console.error('Error recalculating forecast:', error);
     throw error;
   }
 };
 
-export const getAIForecastTable = async (params = {}) => {
+export const runAIAnalysis = async (settings = {}) => {
   try {
-    const response = await api.get('/ai/forecast/table', { params });
-    return response.data;
+    const response = await api.post('/ai/analyze', { settings });
+    return response.data?.data || null;
   } catch (error) {
-    console.error('Error fetching AI forecast table:', error);
+    console.error('Error running AI analysis:', error);
     throw error;
   }
 };
 
-export const getAIForecastSuggestions = async (params = {}) => {
+export const getAIRecommendations = async () => {
   try {
-    const response = await api.get('/ai/forecast/suggestions', { params });
+    const response = await api.get('/ai/recommendations');
+    return response.data?.data || null;
+  } catch (error) {
+    console.error('Error fetching AI recommendations:', error);
+    throw error;
+  }
+};
+
+export const applyAIRecommendation = async (id) => {
+  try {
+    const response = await api.post(`/ai/recommendations/${id}/apply`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching AI forecast suggestions:', error);
+    console.error('Error applying AI recommendation:', error);
+    throw error;
+  }
+};
+
+export const ignoreAIRecommendation = async (id) => {
+  try {
+    const response = await api.post(`/ai/recommendations/${id}/ignore`);
+    return response.data;
+  } catch (error) {
+    console.error('Error ignoring AI recommendation:', error);
+    throw error;
+  }
+};
+
+export const testAIConnection = async () => {
+  try {
+    const response = await api.post('/ai/test-connection');
+    return response.data;
+  } catch (error) {
+    console.error('Error testing AI connection:', error);
     throw error;
   }
 };

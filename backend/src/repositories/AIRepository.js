@@ -1,91 +1,140 @@
 const supabase = require('../config/supabase');
 
 class AIRepository {
-  async getProductsWithSuppliers() {
-    // We join with suppliers to get supplier_name
-    const { data, error } = await supabase
+  async getForecastBaseData() {
+    // 1. Lấy danh sách sản phẩm active kèm thông tin danh mục, ncc, đvt
+    const { data: products, error: prodErr } = await supabase
       .from('products')
-      .select(`
-        *,
-        suppliers ( supplier_name )
-      `)
-      .is('deleted_at', null);
-
-    if (error) throw error;
-    return data;
-  }
-
-  async getPaginatedProducts(filters, page = 1, limit = 5, onlySuggestions = false) {
-    let query = supabase
-      .from('products')
-      .select(`
-        *,
-        suppliers ( supplier_name )
-      `, { count: 'exact' })
-      .is('deleted_at', null);
-
-    if (filters.search) {
-      query = query.or(`product_name.ilike.%${filters.search}%,sku.ilike.%${filters.search}%`);
-    }
-    
-    if (filters.category) {
-      query = query.eq('category_id', filters.category);
-    }
-
-    if (onlySuggestions) {
-      query = query.gt('suggested_import_quantity', 0);
-      // Order by suggested amount descending
-      query = query.order('suggested_import_quantity', { ascending: false });
-    } else {
-      query = query.order('product_id', { ascending: true }); // Default ordering
-    }
-
-    // Risk level filter is hard because it's computed dynamically based on DB columns (stock vs reorder_level, forecast_14d)
-    // Actually, `status` might reflect risk, but `AIService` calculates risk from stock, reorderLevel, forecast_14d.
-    // If we have to filter by risk at DB level, it's tricky.
-    // We will do a basic filter if `status` matches, otherwise we might just return and filter in service (but that breaks pagination).
-    // Let's assume for `table`, risk filter uses the status column or we just pass it to the frontend.
-    // Wait, the original code calculates risk_level. If the user filters by risk, and we only fetch 5 from DB, we can't filter AFTER DB limit.
-    // For now, we will add a basic condition if possible, but the best we can do is rely on DB data.
-    
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
-    query = query.range(from, to);
-
-    const { data, count, error } = await query;
-    if (error) throw error;
-    return { data, count };
-  }
-
-  async getOrderItemsLast90Days() {
-    const ninetyDaysAgo = new Date();
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-    const dateString = ninetyDaysAgo.toISOString();
-
-    const { data, error } = await supabase
-      .from('order_items')
       .select(`
         product_id,
-        quantity,
-        orders!inner(created_at)
+        sku,
+        product_name,
+        stock_quantity,
+        reorder_level,
+        category:categories(category_name),
+        supplier:suppliers(supplier_name),
+        unit:units(unit_name)
       `)
-      .gte('orders.created_at', dateString);
+      .is('deleted_at', null);
 
-    if (error) {
-      console.warn("Could not join orders from order_items. Falling back to fetching all order_items and filtering locally if orders fetchable.");
-      // Fallback if foreign key doesn't allow direct inner join on created_at
-      const { data: allOrderItems, error: itemsError } = await supabase.from('order_items').select('*');
-      const { data: allOrders, error: ordersError } = await supabase.from('orders').select('order_id, created_at').gte('created_at', dateString);
-      
-      if (itemsError || ordersError) {
-        console.warn("Could not fetch order items. AI will rely on product table values.");
-        return [];
-      }
-      
-      const validOrderIds = new Set(allOrders.map(o => o.order_id));
-      return allOrderItems.filter(item => validOrderIds.has(item.order_id));
-    }
+    if (prodErr) throw new Error(`Error fetching products: ${prodErr.message}`);
+
+    // 2. Lấy đơn hàng trong 90 ngày gần nhất
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    const ninetyDaysAgoStr = ninetyDaysAgo.toISOString();
+
+    const { data: orders, error: orderErr } = await supabase
+      .from('orders')
+      .select(`
+        order_id,
+        created_at,
+        order_items (
+          product_id,
+          quantity
+        )
+      `)
+      .gte('created_at', ninetyDaysAgoStr);
+      // Giả định order thành công vì schema không có status cho order. Nếu có sẽ filter eq('status', 'COMPLETED')
+
+    if (orderErr) throw new Error(`Error fetching orders: ${orderErr.message}`);
+
+    // 3. (Optional) Lấy stock movements để phân tích nhập/xuất thêm nếu cần
+    // Tạm thời bỏ qua nếu chưa cần tính chi tiết movement, tập trung vào sales_90d từ order_items
     
+    // Map data
+    const productMap = {};
+    products.forEach(p => {
+      productMap[p.product_id] = {
+        ...p,
+        category_name: p.category?.category_name || null,
+        supplier_name: p.supplier?.supplier_name || null,
+        unit_name: p.unit?.unit_name || null,
+        sales_7d: 0,
+        sales_30d: 0,
+        sales_90d: 0
+      };
+      delete productMap[p.product_id].category;
+      delete productMap[p.product_id].supplier;
+      delete productMap[p.product_id].unit;
+    });
+
+    const now = new Date();
+    orders.forEach(order => {
+      const orderDate = new Date(order.created_at);
+      const diffTime = Math.abs(now - orderDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+      order.order_items.forEach(item => {
+        if (productMap[item.product_id]) {
+          productMap[item.product_id].sales_90d += item.quantity;
+          if (diffDays <= 30) {
+            productMap[item.product_id].sales_30d += item.quantity;
+          }
+          if (diffDays <= 7) {
+            productMap[item.product_id].sales_7d += item.quantity;
+          }
+        }
+      });
+    });
+
+    return Object.values(productMap);
+  }
+
+  async saveAnalysisRun(runData, recommendations) {
+    // Luu bang ai_analysis_runs
+    const { data: run, error: runErr } = await supabase
+      .from('ai_analysis_runs')
+      .insert([runData])
+      .select()
+      .single();
+
+    if (runErr) throw new Error(`Error saving run: ${runErr.message}`);
+
+    // Luu bang ai_recommendations
+    if (recommendations && recommendations.length > 0) {
+      const { error: recErr } = await supabase
+        .from('ai_recommendations')
+        .insert(recommendations);
+      
+      if (recErr) throw new Error(`Error saving recommendations: ${recErr.message}`);
+    }
+
+    return run;
+  }
+
+  async getLatestRecommendations() {
+    // Lấy run mới nhất
+    const { data: latestRun, error: runErr } = await supabase
+      .from('ai_analysis_runs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (runErr && runErr.code !== 'PGRST116') throw new Error(`Error fetching latest run: ${runErr.message}`);
+    if (!latestRun) return null;
+
+    // Lấy recommendations của run đó
+    const { data: recommendations, error: recErr } = await supabase
+      .from('ai_recommendations')
+      .select('*')
+      .eq('run_id', latestRun.run_id)
+      .order('suggested_import_quantity', { ascending: false });
+    
+    if (recErr) throw new Error(`Error fetching recommendations: ${recErr.message}`);
+
+    return { run: latestRun, recommendations };
+  }
+
+  async updateRecommendationStatus(id, status) {
+    const { data, error } = await supabase
+      .from('ai_recommendations')
+      .update({ status })
+      .eq('recommendation_id', id)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
     return data;
   }
 }
