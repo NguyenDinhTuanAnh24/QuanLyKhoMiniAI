@@ -8,7 +8,8 @@ import {
   getAIRecommendations, 
   runAIAnalysis, 
   applyAIRecommendation, 
-  testAIConnection 
+  testAIConnection,
+  normalizeForecastItem
 } from '../services/aiService';
 import { getCategories } from '../services/categoryService';
 
@@ -96,9 +97,9 @@ export default function AIInsightsPage() {
       .slice(0, 10)
       .map(i => ({
         product_name: i.product_name,
-        stock: i.stock_quantity,
-        forecast: i.forecast_14d,
-        suggested: i.suggested_import_quantity,
+        stock: i.stock_quantity ?? 0,
+        forecast: i.forecast_quantity ?? i.forecast_14d ?? 0,
+        suggested: i.suggested_import_quantity ?? 0,
         priority: i.priority || 'Thấp'
       }));
 
@@ -125,6 +126,9 @@ export default function AIInsightsPage() {
     if (runData && runData.summary) {
       try {
         parsedReport = JSON.parse(runData.summary);
+        if (parsedReport && Array.isArray(parsedReport.urgent_import_products)) {
+          parsedReport.urgent_import_products = parsedReport.urgent_import_products.map(normalizeForecastItem);
+        }
       } catch (e) {
         simpleSummary = runData.summary;
       }

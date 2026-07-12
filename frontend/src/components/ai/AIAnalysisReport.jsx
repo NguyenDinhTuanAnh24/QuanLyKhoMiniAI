@@ -82,11 +82,11 @@ export default function AIAnalysisReport({ report }) {
                 <div key={i} className="bg-white border border-slate-200 rounded-lg p-3 text-sm flex flex-col gap-2 shadow-sm">
                   <div className="flex justify-between items-start font-medium">
                     <span className="text-slate-900 line-clamp-1 flex-1 pr-2">{p.product_name}</span>
-                    <span className="text-red-600 whitespace-nowrap shrink-0">Nhập: +{p.suggested_quantity || p.suggested_import_quantity || 0}</span>
+                    <span className="text-red-600 whitespace-nowrap shrink-0">Nhập: +{p.suggested_import_quantity ?? p.suggested_quantity ?? 0}</span>
                   </div>
                   <div className="text-xs text-slate-500 flex gap-4">
-                    <span>Tồn: {p.stock_quantity ?? '?'}</span>
-                    <span>Dự báo: {p.forecast_14d ?? '?'}</span>
+                    <span>Tồn: {p.stock_quantity ?? 0}</span>
+                    <span>Dự báo: {p.forecast_quantity ?? p.forecast_14d ?? 0}</span>
                   </div>
                   <p className="text-xs text-slate-600 bg-slate-50 p-2 rounded italic mt-1">{p.reason}</p>
                 </div>

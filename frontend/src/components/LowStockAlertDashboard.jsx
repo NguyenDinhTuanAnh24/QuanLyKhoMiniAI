@@ -3,6 +3,7 @@ import { Package, AlertTriangle, Layers, ArrowRight, Search, RefreshCw } from 'l
 import StatCard from './StatCard';
 import { useToast } from '../contexts/ToastContext';
 import { getCategories } from '../services/categoryService';
+import api from '../services/api';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
@@ -77,18 +78,17 @@ export default function LowStockAlertDashboard({ onNavigate }) {
         status: selectedStatus
       });
 
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-      const response = await fetch(`${baseUrl}/api/inventory/low-stock-alerts?${queryParams.toString()}`);
-      const result = await response.json();
-
-      if (result.success) {
-        setData(result.data);
+      const response = await api.get(`/inventory/low-stock-alerts?${queryParams.toString()}`);
+      if (response.data.success) {
+        setData(response.data.data);
       } else {
-        showToast({ type: 'error', title: 'Lỗi', message: 'Không thể tải dữ liệu cảnh báo' });
+        showToast('Không thể tải dữ liệu cảnh báo', 'error');
       }
     } catch (error) {
       console.error('Failed to fetch low stock alerts', error);
-      showToast({ type: 'error', title: 'Lỗi', message: 'Lỗi kết nối máy chủ' });
+      if (error.response?.status !== 401 && error.response?.status !== 403) {
+        showToast('Lỗi kết nối máy chủ', 'error');
+      }
     } finally {
       setLoading(false);
     }
@@ -135,13 +135,11 @@ export default function LowStockAlertDashboard({ onNavigate }) {
         status: selectedStatus
       });
       
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-      const response = await fetch(`${baseUrl}/api/inventory/low-stock-alerts?${queryParams.toString()}`);
-      const result = await response.json();
+      const response = await api.get(`/inventory/low-stock-alerts?${queryParams.toString()}`);
       
       let exportData = [];
-      if (result.success && result.data && result.data.alerts) {
-        exportData = result.data.alerts;
+      if (response.data.success && response.data.data && response.data.data.alerts) {
+        exportData = response.data.data.alerts;
       } else {
         exportData = data.alerts;
       }

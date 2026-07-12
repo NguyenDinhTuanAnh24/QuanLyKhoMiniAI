@@ -50,20 +50,38 @@ class AIInsightService {
         finalReport.overview_comment = aiInsight.overview_comment || finalReport.overview_comment;
         finalReport.inventory_comment = aiInsight.inventory_comment || finalReport.inventory_comment;
         finalReport.sales_comment = aiInsight.sales_comment || finalReport.sales_comment;
-        finalReport.urgent_import_products = aiInsight.urgent_import_products || finalReport.urgent_import_products;
         finalReport.top_selling_products = aiInsight.top_selling_products || finalReport.top_selling_products;
         finalReport.slow_moving_products = aiInsight.slow_moving_products || finalReport.slow_moving_products;
         finalReport.category_insights = aiInsight.category_insights || finalReport.category_insights;
         finalReport.supplier_insights = aiInsight.supplier_insights || finalReport.supplier_insights;
         finalReport.recommended_actions = aiInsight.recommended_actions || finalReport.recommended_actions;
-
+        
         // Ghi đè số lượng và lý do từ AI nếu có
         if (aiInsight.urgent_import_products && Array.isArray(aiInsight.urgent_import_products)) {
+          const baselineMap = new Map(
+            baselineData.map(item => [String(item.product_id), item])
+          );
+
+          finalReport.urgent_import_products = aiInsight.urgent_import_products.map(aiItem => {
+            const baseline = baselineMap.get(String(aiItem.product_id)) || {};
+            return {
+              ...baseline,
+              ...aiItem,
+              stock_quantity: Number(baseline.stock_quantity ?? aiItem.stock_quantity ?? 0),
+              reorder_level: Number(baseline.reorder_level ?? aiItem.reorder_level ?? 0),
+              sales_90d: Number(baseline.sales_90d ?? aiItem.sales_90d ?? 0),
+              avg_daily_sales_90d: Number(baseline.avg_daily_sales_90d ?? aiItem.avg_daily_sales_90d ?? 0),
+              forecast_14d: Number(baseline.forecast_14d ?? baseline.forecast_quantity ?? aiItem.forecast_14d ?? aiItem.forecast_quantity ?? 0),
+              suggested_import_quantity: Number(aiItem.suggested_import_quantity ?? aiItem.suggested_quantity ?? baseline.suggested_import_quantity ?? 0),
+              reason: aiItem.reason ?? baseline.reason ?? ''
+            };
+          });
+
           const aiRecMap = new Map();
-          aiInsight.urgent_import_products.forEach(r => aiRecMap.set(r.product_id, r));
+          aiInsight.urgent_import_products.forEach(r => aiRecMap.set(String(r.product_id), r));
 
           recommendations = recommendations.map(rec => {
-            const aiOverride = aiRecMap.get(rec.product_id);
+            const aiOverride = aiRecMap.get(String(rec.product_id));
             if (aiOverride) {
               return {
                 ...rec,

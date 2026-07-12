@@ -32,6 +32,7 @@ Dữ liệu dưới đây là lịch sử bán hàng và thông tin tồn kho c�
 Nhiệm vụ của bạn là phân tích và trả về ĐÚNG MỘT OBJECT JSON THEO SCHEMA YÊU CẦU, không giải thích gì thêm, không bọc markdown.
 
 JSON Schema mong muốn:
+{
   "overview_comment": "Tổng quan tình hình kinh doanh và tồn kho (ít nhất 3-5 câu).",
   "inventory_comment": "Nhận xét chi tiết về tình trạng kho, rủi ro đứt gãy hoặc tồn đọng (ít nhất 3 câu).",
   "sales_comment": "Nhận xét chi tiết về doanh thu, tốc độ bán hàng (ít nhất 3 câu).",
@@ -82,6 +83,7 @@ JSON Schema mong muốn:
 - recommended_actions phải có tối thiểu 3 hành động thực tiễn.
 - Trong danh sách urgent_import_products, cố gắng đưa ra gợi ý cho NHỮNG SẢN PHẨM CẦN NHẬP NHẤT. Nếu AI thấy số lượng cần nhập khác với baseline (rule-based), hãy đề xuất số của AI và giải thích.
 - Phân tích bằng TIẾNG VIỆT, dựa trên dữ liệu thật, không bịa sản phẩm ngoài input.
+- Không thay đổi product_id. Chỉ sử dụng product_id có trong dữ liệu đầu vào. Không bịa sản phẩm mới.
 - Số ngày dự báo mục tiêu: ${forecastDays} ngày.
 `;
 

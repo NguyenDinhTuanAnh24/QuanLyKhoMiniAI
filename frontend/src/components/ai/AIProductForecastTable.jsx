@@ -175,14 +175,14 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
                   </td>
                   <td className="p-4 text-center">
                     <span className={`font-semibold ${item.stock_quantity <= item.reorder_level ? 'text-red-600' : 'text-slate-700'}`}>
-                      {item.stock_quantity}
+                      {item.stock_quantity ?? 0}
                     </span>
                   </td>
-                  <td className="p-4 text-center font-medium text-slate-700">{item.sales_90d}</td>
-                  <td className="p-4 text-center font-medium text-slate-700">{item.avg_daily_sales_90d}</td>
-                  <td className="p-4 text-center font-medium text-slate-700">{item.forecast_14d}</td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.sales_90d ?? 0}</td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.avg_daily_sales_90d ?? 0}</td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.forecast_quantity ?? item.forecast_14d ?? 0}</td>
                   <td className="p-4 text-center font-bold text-blue-600">
-                    {item.suggested_import_quantity > 0 ? `+${item.suggested_import_quantity}` : '-'}
+                    {(item.suggested_import_quantity ?? 0) > 0 ? `+${item.suggested_import_quantity}` : '-'}
                   </td>
                   <td className="p-4 text-center">
                     <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${getRiskBadgeClass(item.priority === 'Cao' ? 'Hết hàng' : (item.priority === 'Trung bình' ? 'Cần nhập' : 'Ổn định'))}`}>

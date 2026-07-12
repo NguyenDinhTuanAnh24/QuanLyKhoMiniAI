@@ -41,7 +41,10 @@ const authMiddleware = async (req, res, next) => {
     
     next();
   } catch (error) {
-    return res.status(401).json({ success: false, code: 'UNAUTHENTICATED', message: 'Bạn cần đăng nhập để sử dụng chức năng này.' });
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, code: 'TOKEN_EXPIRED', message: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.' });
+    }
+    return res.status(401).json({ success: false, code: 'INVALID_TOKEN', message: 'Token không hợp lệ.' });
   }
 };
 
