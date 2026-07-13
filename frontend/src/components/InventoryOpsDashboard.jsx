@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { Package, Truck, ArrowLeftRight, CheckCircle2, DollarSign, Plus, Trash2, Search, ArrowRightLeft, AlertTriangle, FileText, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { getProducts } from '../services/productService';
 import { getSuppliers } from '../services/supplierService';
@@ -9,6 +10,9 @@ import StatCard from './StatCard';
 export default function InventoryOpsDashboard() {
   const [activeTab, setActiveTab] = useState('import'); // 'import' or 'export'
   const { addToast } = useToast();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const processedProductIdRef = useRef(null);
 
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -24,12 +28,33 @@ export default function InventoryOpsDashboard() {
   });
 
   // Forms
-  const [importForm, setImportForm] = useState({
-    supplier_id: '',
-    date: new Date().toISOString().split('T')[0],
-    note: '',
-    items: []
+  const [importForm, setImportForm] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('inventory_ops_import_form');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.items)) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return {
+      supplier_id: '',
+      date: new Date().toISOString().split('T')[0],
+      note: '',
+      items: []
+    };
   });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('inventory_ops_import_form', JSON.stringify(importForm));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [importForm]);
 
   const [exportForm, setExportForm] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -54,6 +79,49 @@ export default function InventoryOpsDashboard() {
     loadInitialData();
   }, []);
 
+  useEffect(() => {
+    if (products.length > 0) {
+      const targetId = searchParams.get('productId') || searchParams.get('product_id') || location.state?.autoSelectProductId || location.state?.product_id;
+      if (targetId && processedProductIdRef.current !== targetId) {
+        processedProductIdRef.current = targetId;
+        const prod = products.find(p => String(p.product_id) === String(targetId) || String(p.sku) === String(targetId));
+        if (prod) {
+          if (activeTab !== 'import') {
+            setActiveTab('import');
+          }
+
+          const rawQty = searchParams.get('quantity') || location.state?.quantity || prod.suggested_import_quantity || prod.reorder_quantity;
+          let suggestedQty = Number(rawQty);
+          if (!suggestedQty || suggestedQty <= 0 || isNaN(suggestedQty)) {
+            if (typeof prod.reorder_level === 'number' && typeof prod.stock_quantity === 'number' && prod.reorder_level >= prod.stock_quantity) {
+              suggestedQty = Math.max(10, (prod.reorder_level || 10) * 2 - (prod.stock_quantity || 0));
+            } else {
+              suggestedQty = 10;
+            }
+          }
+
+          const unitPrice = Number(prod.import_price || prod.selling_price || 0);
+
+          setImportForm(prev => {
+            const distinctSuppliers = new Set([...prev.items.map(i => i.supplier_id), prod.supplier_id].filter(Boolean));
+            const newSupplierId = distinctSuppliers.size > 1 ? 'ALL' : (prod.supplier_id || prev.supplier_id || (suppliers.length > 0 ? suppliers[0].supplier_id : ''));
+
+            return {
+              ...prev,
+              supplier_id: newSupplierId
+            };
+          });
+
+          setSelectedProduct(prod.product_id);
+          setQtyInput(String(suggestedQty));
+          setPriceInput(String(unitPrice));
+
+          addToast('info', 'Đã chọn sẵn', `Đã điền thông tin sản phẩm ${prod.product_name} (${suggestedQty} ${prod.unit_name || 'SP'})`);
+        }
+      }
+    }
+  }, [products, searchParams, location, activeTab, suppliers]);
+
   const loadInitialData = async () => {
     setLoading(true);
     try {
@@ -65,13 +133,13 @@ export default function InventoryOpsDashboard() {
       setProducts(prodRes.data || []);
       setSuppliers(suppRes.data || []);
       setMovements(movRes.data || []);
-      
+
       // Calculate simple stats
       let iTotal = 0;
       let iValue = 0;
       let eTotal = 0;
       let eValue = 0;
-      
+
       (movRes.data || []).forEach(m => {
         if (m.type === 'IMPORT') {
           iTotal++;
@@ -81,14 +149,14 @@ export default function InventoryOpsDashboard() {
           eValue += (m.quantity * (m.unit_price || 0));
         }
       });
-      
+
       setStats({
         importTotal: iTotal,
         importValue: iValue,
         exportTotal: eTotal,
         exportValue: eValue
       });
-      
+
     } catch (error) {
       addToast('error', 'Lỗi', 'Không thể tải dữ liệu ban đầu');
     } finally {
@@ -106,43 +174,60 @@ export default function InventoryOpsDashboard() {
     if (!prod) return;
 
     if (activeTab === 'import') {
-      if (prod.supplier_id !== importForm.supplier_id) {
+      if (importForm.supplier_id !== 'ALL' && prod.supplier_id && importForm.supplier_id && prod.supplier_id !== importForm.supplier_id) {
         addToast('error', 'Lỗi', 'Sản phẩm không thuộc nhà cung cấp đã chọn.');
         return;
       }
-      
+
       const price = priceInput ? Number(priceInput) : prod.import_price || 0;
-      setImportForm(prev => {
-        // check if exists
-        const exists = prev.items.find(i => i.product_id === selectedProduct);
-        if (exists) {
+      const exists = importForm.items.find(i => String(i.product_id) === String(selectedProduct));
+      if (exists) {
+        if (exists.quantity !== Number(qtyInput) || exists.unit_price !== price) {
+          setImportForm(prev => ({
+            ...prev,
+            items: prev.items.map(i => String(i.product_id) === String(selectedProduct)
+              ? { ...i, quantity: Number(qtyInput), unit_price: price }
+              : i
+            )
+          }));
+          addToast('success', 'Đã cập nhật', `Đã cập nhật số lượng ${prod.product_name} thành ${qtyInput}`);
+        } else {
           addToast('warning', 'Đã tồn tại', 'Sản phẩm đã có trong phiếu');
-          return prev;
         }
-        return {
-          ...prev,
-          items: [...prev.items, { ...prod, quantity: Number(qtyInput), unit_price: price }]
-        };
-      });
+        return;
+      }
+      setImportForm(prev => ({
+        ...prev,
+        items: [...prev.items, { ...prod, quantity: Number(qtyInput), unit_price: price }]
+      }));
     } else {
       // Export validation
       if (Number(qtyInput) > prod.stock_quantity) {
         addToast('error', 'Vượt quá tồn kho', `Sản phẩm này chỉ còn ${prod.stock_quantity} ${prod.unit_name || 'sản phẩm'}`);
         return;
       }
-      setExportForm(prev => {
-        const exists = prev.items.find(i => i.product_id === selectedProduct);
-        if (exists) {
+      const exists = exportForm.items.find(i => String(i.product_id) === String(selectedProduct));
+      if (exists) {
+        if (exists.quantity !== Number(qtyInput)) {
+          setExportForm(prev => ({
+            ...prev,
+            items: prev.items.map(i => String(i.product_id) === String(selectedProduct)
+              ? { ...i, quantity: Number(qtyInput) }
+              : i
+            )
+          }));
+          addToast('success', 'Đã cập nhật', `Đã cập nhật số lượng ${prod.product_name} thành ${qtyInput}`);
+        } else {
           addToast('warning', 'Đã tồn tại', 'Sản phẩm đã có trong phiếu');
-          return prev;
         }
-        return {
-          ...prev,
-          items: [...prev.items, { ...prod, quantity: Number(qtyInput), unit_price: prod.selling_price || 0 }]
-        };
-      });
+        return;
+      }
+      setExportForm(prev => ({
+        ...prev,
+        items: [...prev.items, { ...prod, quantity: Number(qtyInput), unit_price: prod.selling_price || 0 }]
+      }));
     }
-    
+
     // Reset inputs
     setSelectedProduct('');
     setQtyInput('');
@@ -197,7 +282,7 @@ export default function InventoryOpsDashboard() {
     try {
       const isImport = confirmModal.type === 'IMPORT';
       const form = isImport ? importForm : exportForm;
-      
+
       const payload = {
         type: confirmModal.type,
         note: form.note || (isImport ? `Nhập kho từ NCC` : `Xuất kho`),
@@ -209,17 +294,18 @@ export default function InventoryOpsDashboard() {
       };
 
       await createMovement(payload);
-      
+
       addToast('success', 'Thành công', `${isImport ? 'Nhập' : 'Xuất'} kho thành công. Đã cập nhật tồn kho cho ${form.items.length} sản phẩm.`);
-      
+
       // Reset
       if (isImport) {
         setImportForm({ ...importForm, items: [], note: '' });
+        try { sessionStorage.removeItem('inventory_ops_import_form'); } catch (e) { }
       } else {
         setExportForm({ ...exportForm, items: [], note: '' });
       }
       setConfirmModal({ isOpen: false, type: '', data: null });
-      
+
       loadInitialData(); // Reload stats and products
     } catch (error) {
       addToast('error', 'Lỗi', error.message || 'Đã xảy ra lỗi khi lưu phiếu');
@@ -244,17 +330,15 @@ export default function InventoryOpsDashboard() {
       <div className="flex border-b border-slate-200">
         <button
           onClick={() => setActiveTab('import')}
-          className={`flex items-center gap-2 px-6 py-3 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'import' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'
-          }`}
+          className={`flex items-center gap-2 px-6 py-3 border-b-2 font-medium text-sm transition-colors ${activeTab === 'import' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
         >
           <ArrowDownToLine className="w-4 h-4" /> Nhập kho
         </button>
         <button
           onClick={() => setActiveTab('export')}
-          className={`flex items-center gap-2 px-6 py-3 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'export' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'
-          }`}
+          className={`flex items-center gap-2 px-6 py-3 border-b-2 font-medium text-sm transition-colors ${activeTab === 'export' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
         >
           <ArrowUpFromLine className="w-4 h-4" /> Xuất kho
         </button>
@@ -277,11 +361,15 @@ export default function InventoryOpsDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Nhà cung cấp *</label>
-                    <select 
+                    <select
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
                       value={importForm.supplier_id}
                       onChange={(e) => {
                         const newSupplierId = e.target.value;
+                        if (newSupplierId === 'ALL') {
+                          setImportForm({ ...importForm, supplier_id: 'ALL' });
+                          return;
+                        }
                         if (importForm.items.length > 0) {
                           const confirmChange = window.confirm('Đổi nhà cung cấp sẽ xóa các sản phẩm đã thêm vào phiếu. Bạn có chắc chắn không?');
                           if (!confirmChange) {
@@ -295,37 +383,38 @@ export default function InventoryOpsDashboard() {
                       }}
                     >
                       <option value="">-- Chọn nhà cung cấp --</option>
+                      <option value="ALL">-- Tổng hợp (Nhiều nhà cung cấp) --</option>
                       {suppliers.map(s => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Ngày nhập</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       value={importForm.date}
-                      onChange={(e) => setImportForm({...importForm, date: e.target.value})}
+                      onChange={(e) => setImportForm({ ...importForm, date: e.target.value })}
                     />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-slate-700 mb-1">Ghi chú</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Ghi chú nhập kho..."
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       value={importForm.note}
-                      onChange={(e) => setImportForm({...importForm, note: e.target.value})}
+                      onChange={(e) => setImportForm({ ...importForm, note: e.target.value })}
                     />
                   </div>
                 </div>
-                
+
                 {/* Product Select */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
                   <h4 className="text-sm font-medium text-slate-800">Thêm sản phẩm vào phiếu</h4>
                   <div className="flex flex-col md:flex-row gap-3 items-end">
                     <div className="flex-1">
                       <label className="block text-xs font-medium text-slate-500 mb-1">Sản phẩm</label>
-                      <select 
+                      <select
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
                         value={selectedProduct}
                         onChange={(e) => {
@@ -340,11 +429,11 @@ export default function InventoryOpsDashboard() {
                         ) : (
                           <>
                             <option value="">-- Chọn sản phẩm --</option>
-                            {products.filter(p => p.supplier_id === importForm.supplier_id).length === 0 ? (
+                            {products.filter(p => importForm.supplier_id === 'ALL' || p.supplier_id === importForm.supplier_id).length === 0 ? (
                               <option value="" disabled>Nhà cung cấp này chưa có sản phẩm</option>
                             ) : (
                               products
-                                .filter(p => p.supplier_id === importForm.supplier_id)
+                                .filter(p => importForm.supplier_id === 'ALL' || p.supplier_id === importForm.supplier_id)
                                 .map(p => <option key={p.product_id} value={p.product_id}>{p.sku} - {p.product_name}</option>)
                             )}
                           </>
@@ -353,8 +442,8 @@ export default function InventoryOpsDashboard() {
                     </div>
                     <div className="w-full md:w-24">
                       <label className="block text-xs font-medium text-slate-500 mb-1">Số lượng</label>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         min="1"
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         value={qtyInput}
@@ -363,15 +452,15 @@ export default function InventoryOpsDashboard() {
                     </div>
                     <div className="w-full md:w-32">
                       <label className="block text-xs font-medium text-slate-500 mb-1">Giá nhập (đ)</label>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         min="0"
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         value={priceInput}
                         onChange={e => setPriceInput(e.target.value)}
                       />
                     </div>
-                    <button 
+                    <button
                       onClick={handleAddItem}
                       className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
                     >
@@ -416,19 +505,19 @@ export default function InventoryOpsDashboard() {
                     </tbody>
                   </table>
                 </div>
-                
+
                 {/* Summary */}
                 <div className="flex justify-between items-center bg-slate-50 p-4 rounded-lg border border-slate-200">
                   <div className="text-sm text-slate-600">
-                    Tổng số lượng: <span className="font-bold text-slate-900">{importForm.items.reduce((a,b) => a + b.quantity, 0)}</span>
+                    Tổng số lượng: <span className="font-bold text-slate-900">{importForm.items.reduce((a, b) => a + b.quantity, 0)}</span>
                   </div>
                   <div className="text-base text-slate-600">
-                    Tổng tiền: <span className="text-xl font-bold text-blue-600">{formatCurrency(importForm.items.reduce((a,b) => a + (b.quantity * b.unit_price), 0))}</span>
+                    Tổng tiền: <span className="text-xl font-bold text-blue-600">{formatCurrency(importForm.items.reduce((a, b) => a + (b.quantity * b.unit_price), 0))}</span>
                   </div>
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <button 
+                  <button
                     onClick={handleOpenConfirm}
                     disabled={importForm.items.length === 0 || !importForm.supplier_id}
                     className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 flex items-center gap-2"
@@ -485,32 +574,32 @@ export default function InventoryOpsDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Ngày xuất</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       value={exportForm.date}
-                      onChange={(e) => setExportForm({...exportForm, date: e.target.value})}
+                      onChange={(e) => setExportForm({ ...exportForm, date: e.target.value })}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Lý do / Ghi chú</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Ví dụ: Xuất hàng hỏng, điều chỉnh..."
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       value={exportForm.note}
-                      onChange={(e) => setExportForm({...exportForm, note: e.target.value})}
+                      onChange={(e) => setExportForm({ ...exportForm, note: e.target.value })}
                     />
                   </div>
                 </div>
-                
+
                 {/* Product Select */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
                   <h4 className="text-sm font-medium text-slate-800">Thêm sản phẩm xuất</h4>
                   <div className="flex flex-col md:flex-row gap-3 items-end">
                     <div className="flex-1">
                       <label className="block text-xs font-medium text-slate-500 mb-1">Sản phẩm</label>
-                      <select 
+                      <select
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
                         value={selectedProduct}
                         onChange={(e) => setSelectedProduct(e.target.value)}
@@ -525,15 +614,15 @@ export default function InventoryOpsDashboard() {
                     </div>
                     <div className="w-full md:w-32">
                       <label className="block text-xs font-medium text-slate-500 mb-1">Số lượng xuất</label>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         min="1"
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         value={qtyInput}
                         onChange={e => setQtyInput(e.target.value)}
                       />
                     </div>
-                    <button 
+                    <button
                       onClick={handleAddItem}
                       className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
                     >
@@ -576,16 +665,16 @@ export default function InventoryOpsDashboard() {
                     </tbody>
                   </table>
                 </div>
-                
+
                 {/* Summary */}
                 <div className="flex justify-between items-center bg-slate-50 p-4 rounded-lg border border-slate-200">
                   <div className="text-sm text-slate-600">
-                    Tổng số lượng xuất: <span className="font-bold text-slate-900">{exportForm.items.reduce((a,b) => a + b.quantity, 0)}</span>
+                    Tổng số lượng xuất: <span className="font-bold text-slate-900">{exportForm.items.reduce((a, b) => a + b.quantity, 0)}</span>
                   </div>
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <button 
+                  <button
                     onClick={handleOpenConfirm}
                     disabled={exportForm.items.length === 0}
                     className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 flex items-center gap-2"
@@ -635,10 +724,10 @@ export default function InventoryOpsDashboard() {
                 Xác nhận {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'} kho
               </h3>
             </div>
-            
+
             <div className="p-6 space-y-4 text-slate-600 text-sm">
               <p>Bạn có chắc chắn muốn {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'} các sản phẩm này {confirmModal.type === 'IMPORT' ? 'vào' : 'khỏi'} kho không?</p>
-              
+
               <div className="bg-slate-50 p-4 rounded-lg space-y-2 border border-slate-100">
                 {confirmModal.type === 'IMPORT' && confirmModal.data.supplier_id && (
                   <div className="flex justify-between">
@@ -664,18 +753,18 @@ export default function InventoryOpsDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Tổng số lượng {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'}:</span>
-                  <span className="font-medium text-slate-900">{confirmModal.data.items.reduce((a,b) => a + b.quantity, 0)}</span>
+                  <span className="font-medium text-slate-900">{confirmModal.data.items.reduce((a, b) => a + b.quantity, 0)}</span>
                 </div>
                 {confirmModal.type === 'IMPORT' && (
                   <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
                     <span className="text-slate-500">Tổng giá trị:</span>
                     <span className="font-bold text-blue-600">
-                      {formatCurrency(confirmModal.data.items.reduce((a,b) => a + (b.quantity * b.unit_price), 0))}
+                      {formatCurrency(confirmModal.data.items.reduce((a, b) => a + (b.quantity * b.unit_price), 0))}
                     </span>
                   </div>
                 )}
               </div>
-              
+
               <div className="border border-slate-200 rounded-lg overflow-hidden">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
@@ -710,17 +799,17 @@ export default function InventoryOpsDashboard() {
             </div>
 
             <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 disabled={isSubmitting}
-                onClick={() => setConfirmModal({ isOpen: false, type: '', data: null })} 
+                onClick={() => setConfirmModal({ isOpen: false, type: '', data: null })}
                 className="px-4 py-2 border border-slate-200 text-slate-700 bg-white rounded-lg hover:bg-slate-50 font-medium disabled:opacity-50"
               >
                 Hủy
               </button>
-              <button 
-                type="button" 
-                onClick={handleSubmit} 
+              <button
+                type="button"
+                onClick={handleSubmit}
                 disabled={isSubmitting}
                 className="px-4 py-2 text-white rounded-lg font-medium disabled:opacity-50 flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
               >
