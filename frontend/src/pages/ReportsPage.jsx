@@ -102,27 +102,33 @@ export default function ReportsPage() {
       const { startDate, endDate } = getDateParams(filters.dateRange);
       
       const apiFilters = {
-        startDate,
-        endDate,
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
         ...(filters.categoryId && { categoryId: filters.categoryId }),
         ...(filters.supplierId && { supplierId: filters.supplierId })
       };
 
-      const [revenue, inventory, top, imports] = await Promise.all([
-        reportService.getRevenue(apiFilters),
-        reportService.getInventory({ categoryId: filters.categoryId, supplierId: filters.supplierId }), // Inventory không theo thời gian
-        reportService.getTopSelling({ ...apiFilters, limit: 10 }),
-        reportService.getImports(apiFilters)
-      ]);
-
-      setRevenueData(revenue);
-      setInventoryData(inventory);
-      setTopSellingData(top);
-      setImportsData(imports);
-
+      if (activeTab === 'revenue') {
+        const revenue = await reportService.getRevenue(apiFilters);
+        setRevenueData(revenue);
+      } else if (activeTab === 'inventory') {
+        const inventory = await reportService.getInventory({ 
+          ...(filters.categoryId && { categoryId: filters.categoryId }),
+          ...(filters.supplierId && { supplierId: filters.supplierId }) 
+        });
+        setInventoryData(inventory);
+      } else if (activeTab === 'top-selling') {
+        const top = await reportService.getTopSelling({ ...apiFilters, limit: 10 });
+        setTopSellingData(top);
+      } else if (activeTab === 'imports') {
+        const imports = await reportService.getImports(apiFilters);
+        setImportsData(imports);
+      }
     } catch (error) {
       console.error('Error fetching report data:', error);
-      showToast('Lỗi khi tải dữ liệu báo cáo', 'error');
+      if (error?.response?.status !== 401 && error?.response?.status !== 403) {
+        showToast('Lỗi khi tải dữ liệu báo cáo', 'error');
+      }
       setError(true);
     } finally {
       setLoading(false);
@@ -136,7 +142,7 @@ export default function ReportsPage() {
   useEffect(() => {
     fetchReportData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
+  }, [filters.dateRange, filters.categoryId, filters.supplierId, activeTab]);
 
   const handleFilter = () => {
     fetchReportData();
