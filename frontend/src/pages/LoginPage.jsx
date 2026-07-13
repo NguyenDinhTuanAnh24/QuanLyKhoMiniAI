@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Package, Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
 import { useToast } from '../contexts/ToastContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
     email: '',
@@ -43,7 +44,9 @@ const LoginPage = () => {
         }
 
         showToast('Đăng nhập thành công', 'success');
-        navigate('/dashboard');
+        
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
       }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {

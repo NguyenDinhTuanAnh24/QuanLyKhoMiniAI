@@ -13,6 +13,23 @@ export const getToken = () => {
   return localStorage.getItem('token');
 };
 
+export const isAuthenticated = () => {
+  const token = getToken();
+  if (!token) return false;
+  
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export const getUser = () => {
   const userStr = localStorage.getItem('user');
   try {

@@ -17,12 +17,14 @@ import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import { ToastProvider } from './contexts/ToastContext';
 
-import { getToken } from './services/authService';
+import { isAuthenticated } from './services/authService';
 
 const ProtectedRoute = ({ children }) => {
-  const token = getToken();
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  const location = useLocation();
+  const isAuth = isAuthenticated();
+  
+  if (!isAuth) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 };
