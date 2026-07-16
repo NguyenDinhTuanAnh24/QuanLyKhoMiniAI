@@ -154,19 +154,20 @@ export default function SettingsPage() {
     e.preventDefault();
     if (activeTab === 'security') {
       if (!pwdData.current_password) {
-        showToast('Vui lòng nhập mật khẩu hiện tại', 'error');
+        showToast({ type: 'error', title: 'Lỗi', message: 'Vui lòng nhập mật khẩu hiện tại' });
         return;
       }
-      if (pwdData.new_password.length < 6) {
-        showToast('Mật khẩu mới phải có ít nhất 6 ký tự', 'error');
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!passwordRegex.test(pwdData.new_password)) {
+        showToast({ type: 'error', title: 'Lỗi', message: 'Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số' });
         return;
       }
       if (pwdData.new_password !== pwdData.confirm_password) {
-        showToast('Mật khẩu mới không khớp', 'error');
+        showToast({ type: 'error', title: 'Lỗi', message: 'Mật khẩu mới không khớp' });
         return;
       }
       if (pwdData.new_password === pwdData.current_password) {
-        showToast('Mật khẩu mới không được trùng mật khẩu hiện tại', 'error');
+        showToast({ type: 'error', title: 'Lỗi', message: 'Mật khẩu mới không được trùng mật khẩu hiện tại' });
         return;
       }
       setIsConfirmOpen(true);
