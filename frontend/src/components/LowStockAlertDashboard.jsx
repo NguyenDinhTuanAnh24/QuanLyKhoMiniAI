@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Package, AlertTriangle, Layers, ArrowRight, Search, RefreshCw } from 'lucide-react';
 import StatCard from './StatCard';
 import { useToast } from '../contexts/ToastContext';
@@ -9,6 +10,7 @@ import { saveAs } from 'file-saver';
 
 export default function LowStockAlertDashboard({ onNavigate }) {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   // States for filtering and pagination
@@ -100,6 +102,18 @@ export default function LowStockAlertDashboard({ onNavigate }) {
     setSelectedCategory('');
     setSelectedStatus('');
     setPage(1);
+  };
+
+  const handleCreateImportOrder = (item) => {
+    const suggestedQty = item.suggested_import_quantity || item.reorder_quantity || Math.max(10, (item.reorder_level || 10) * 2 - (item.stock_quantity || 0));
+    navigate(`/inventory-ops?productId=${item.product_id}&product_id=${item.product_id}&action=import&quantity=${suggestedQty}`, {
+      state: {
+        autoSelectProductId: item.product_id,
+        product_id: item.product_id,
+        quantity: suggestedQty,
+        item: item
+      }
+    });
   };
 
   const getBadgeClass = (status) => {
@@ -351,7 +365,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
                     </td>
                     <td className="p-4 text-center pr-6">
                       <button
-                        onClick={() => onNavigate('import')}
+                        onClick={() => handleCreateImportOrder(item)}
                         className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded font-semibold transition-colors text-xs"
                       >
                         Tạo đơn nhập kho

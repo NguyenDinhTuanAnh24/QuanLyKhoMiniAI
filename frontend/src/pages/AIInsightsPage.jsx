@@ -279,7 +279,15 @@ export default function AIInsightsPage() {
         await applyAIRecommendation(modalState.product.recommendation_id);
       }
       addToast({ type: 'success', message: `Đã áp dụng gợi ý nhập hàng cho ${modalState.product.product_name}.` });
-      navigate(`/inventory-ops?tab=import&product_id=${modalState.product.product_id}&quantity=${modalState.product.suggested_import_quantity}`);
+      const targetQty = modalState.product.suggested_import_quantity || 10;
+      navigate(`/inventory-ops?productId=${modalState.product.product_id}&product_id=${modalState.product.product_id}&action=import&quantity=${targetQty}`, {
+        state: {
+          autoSelectProductId: modalState.product.product_id,
+          product_id: modalState.product.product_id,
+          quantity: targetQty,
+          item: modalState.product
+        }
+      });
     } catch (error) {
       addToast({ type: 'error', message: 'Lỗi khi áp dụng gợi ý.' });
     }

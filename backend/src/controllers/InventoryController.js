@@ -118,7 +118,7 @@ class InventoryController {
 
       const { data: products, error } = await supabase
         .from('products')
-        .select('product_id, sku, product_name, category_name, stock_quantity, reorder_level')
+        .select('product_id, sku, product_name, category_name, stock_quantity, reorder_level, reorder_quantity, suggested_import_quantity, unit_name, supplier_id')
         .is('deleted_at', null);
 
       if (error) throw error;
