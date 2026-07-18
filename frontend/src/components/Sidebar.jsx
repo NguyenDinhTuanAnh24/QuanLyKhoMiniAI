@@ -104,8 +104,17 @@ export default function Sidebar({ activePage, onNavigate }) {
       
       <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-6">
         {menuGroups.map((group, groupIdx) => {
-          // Placeholder for role filtering
-          const visibleItems = group.items;
+          const user = getUser();
+          const role = user?.role || '';
+          
+          let visibleItems = group.items.filter(item => {
+            if (role === 'Quản trị viên') return true;
+            if (role === 'Chủ cửa hàng') return item.id !== 'users';
+            if (role === 'Nhân viên kho') return ['products', 'inventory-ops', 'alerts'].includes(item.id);
+            if (role === 'Nhân viên bán hàng') return ['products', 'sales'].includes(item.id);
+            return false;
+          });
+
           if (visibleItems.length === 0) return null;
 
           return (

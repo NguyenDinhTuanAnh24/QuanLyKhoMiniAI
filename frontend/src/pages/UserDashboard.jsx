@@ -101,6 +101,19 @@ export default function UserDashboard() {
 
   const handleSaveForm = async (e) => {
     e.preventDefault();
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      showToast({ type: 'error', title: 'Lỗi', message: 'Email không đúng định dạng' });
+      return;
+    }
+
+    const phoneRegex = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      showToast({ type: 'error', title: 'Lỗi', message: 'Số điện thoại không hợp lệ' });
+      return;
+    }
+
     if (isProcessing) return;
     setIsProcessing(true);
     try {
