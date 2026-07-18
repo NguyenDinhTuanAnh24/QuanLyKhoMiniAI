@@ -19,12 +19,14 @@ import { ToastProvider } from './contexts/ToastContext';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 
 
-import { getToken } from './services/authService';
+import { isAuthenticated } from './services/authService';
 
 const ProtectedRoute = ({ children }) => {
-  const token = getToken();
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  const location = useLocation();
+  const isAuth = isAuthenticated();
+  
+  if (!isAuth) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 };
