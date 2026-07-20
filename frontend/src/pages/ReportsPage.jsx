@@ -3,6 +3,7 @@ import { useToast } from '../contexts/ToastContext';
 import { reportService } from '../services/reportService';
 import { getCategories } from '../services/categoryService';
 import { getSuppliers } from '../services/supplierService';
+import { getUser } from '../services/authService';
 import ReportFilters from '../components/reports/ReportFilters';
 import RevenueTab from '../components/reports/tabs/RevenueTab';
 import InventoryTab from '../components/reports/tabs/InventoryTab';
@@ -13,7 +14,17 @@ export default function ReportsPage() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [activeTab, setActiveTab] = useState('revenue');
+  const user = getUser();
+  const isWarehouseStaff = user?.role === 'Nhân viên kho';
+  const isSalesStaff = user?.role === 'Nhân viên bán hàng';
+
+  const getInitialTab = () => {
+    if (isWarehouseStaff) return 'inventory';
+    if (isSalesStaff) return 'top-selling';
+    return 'revenue';
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab());
   
   const [filters, setFilters] = useState({
     dateRange: 'this_month',
@@ -257,12 +268,18 @@ export default function ReportsPage() {
     }
   };
 
-  const tabs = [
-    { id: 'revenue', label: 'Doanh thu' },
-    { id: 'inventory', label: 'Tồn kho' },
-    { id: 'top-selling', label: 'Sản phẩm bán chạy' },
-    { id: 'imports', label: 'Nhập hàng' }
+  const allTabs = [
+    { id: 'revenue', label: 'Doanh thu', allowWarehouse: false, allowSales: false },
+    { id: 'inventory', label: 'Tồn kho', allowWarehouse: true, allowSales: true },
+    { id: 'top-selling', label: 'Sản phẩm bán chạy', allowWarehouse: false, allowSales: true },
+    { id: 'imports', label: 'Nhập hàng', allowWarehouse: true, allowSales: false }
   ];
+
+  const tabs = allTabs.filter(tab => {
+    if (isWarehouseStaff && !tab.allowWarehouse) return false;
+    if (isSalesStaff && !tab.allowSales) return false;
+    return true;
+  });
 
   return (
     <div className="max-w-[1600px] mx-auto space-y-6">

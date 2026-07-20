@@ -15,6 +15,7 @@ import ReportsPage from './pages/ReportsPage';
 import UserDashboard from './pages/UserDashboard';
 import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
+import ActivityLogsPage from './pages/ActivityLogsPage';
 import { ToastProvider } from './contexts/ToastContext';
 
 import { getToken } from './services/authService';
@@ -73,6 +74,7 @@ function App() {
                   <Route path="/alerts" element={<LowStockAlertDashboard onNavigate={handleNavigate} />} />
                   <Route path="/users" element={<UserDashboard />} />
                   <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/activity-logs" element={<ActivityLogsPage />} />
 
                   {/* Default fallback for undefined routes */}
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />

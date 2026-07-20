@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Store, Package, Sparkles, User, Shield, Upload, AlertCircle, Save, CheckCircle2 } from 'lucide-react';
 import { getSettings, updateSettings, uploadStoreLogo } from '../services/settingService';
 import { getMe, updateMe, updateMyPassword } from '../services/userService';
+import { getUser } from '../services/authService';
 import ConfirmModal from '../components/ConfirmModal';
 import { testAIConnection } from '../services/aiService';
 import { useToast } from '../contexts/ToastContext';
@@ -11,7 +12,10 @@ export default function SettingsPage() {
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'store');
+  const userRole = getUser()?.role;
+  const isStaff = userRole === 'Nhân viên kho' || userRole === 'Nhân viên bán hàng';
+
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || (isStaff ? 'account' : 'store'));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -64,16 +68,21 @@ export default function SettingsPage() {
   const loadSettings = async () => {
     setLoading(true);
     try {
-      const [res, userRes] = await Promise.all([
-        getSettings().catch(err => { console.error('Error loading settings:', err); return { data: null }; }),
-        getMe().catch(err => { console.error('Error loading user:', err); return { data: null }; })
-      ]);
+      const promises = [getMe().catch(err => { console.error('Error loading user:', err); return { data: null }; })];
       
-      if (res.data) {
+      if (!isStaff) {
+        promises.push(getSettings().catch(err => { console.error('Error loading settings:', err); return { data: null }; }));
+      }
+      
+      const results = await Promise.all(promises);
+      const userRes = results[0];
+      const res = !isStaff ? results[1] : null;
+      
+      if (res && res.data) {
         setFormData(res.data);
         setInitialData(res.data);
       }
-      if (userRes.data) {
+      if (userRes && userRes.data) {
         setUserData(userRes.data);
         setInitialUserData(userRes.data);
       }
@@ -243,13 +252,15 @@ export default function SettingsPage() {
     }
   };
 
-  const tabs = [
-    { id: 'store', label: 'Thông tin cửa hàng', icon: Store },
-    { id: 'inventory', label: 'Cài đặt tồn kho', icon: Package },
-    { id: 'ai', label: 'Cài đặt AI', icon: Sparkles },
-    { id: 'account', label: 'Tài khoản', icon: User },
-    { id: 'security', label: 'Bảo mật', icon: Shield },
+  const allTabs = [
+    { id: 'store', label: 'Thông tin cửa hàng', icon: Store, adminOnly: true },
+    { id: 'inventory', label: 'Cài đặt tồn kho', icon: Package, adminOnly: true },
+    { id: 'ai', label: 'Cài đặt AI', icon: Sparkles, adminOnly: true },
+    { id: 'account', label: 'Tài khoản', icon: User, adminOnly: false },
+    { id: 'security', label: 'Bảo mật', icon: Shield, adminOnly: false },
   ];
+  
+  const tabs = allTabs.filter(t => isStaff ? !t.adminOnly : true);
 
   if (loading) return (
     <div className="max-w-[1600px] mx-auto p-12 flex justify-center">

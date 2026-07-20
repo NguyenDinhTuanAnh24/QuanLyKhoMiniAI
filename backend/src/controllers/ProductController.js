@@ -69,6 +69,17 @@ class ProductController {
     try {
       const validatedData = productSchema.parse(req.body);
       const product = await ProductService.createProduct(validatedData);
+      
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: req.user ? req.user.user_id : null,
+        user_name: req.user ? req.user.full_name : 'Unknown',
+        action: 'CREATE_PRODUCT',
+        entity_type: 'PRODUCT',
+        entity_id: product.product_id,
+        details: { sku: product.sku, name: product.product_name }
+      });
+      
       res.status(201).json({ success: true, data: product });
     } catch (error) {
       next(error);
@@ -79,6 +90,17 @@ class ProductController {
     try {
       const validatedData = productUpdateSchema.parse(req.body);
       const product = await ProductService.updateProduct(req.params.id, validatedData);
+      
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: req.user ? req.user.user_id : null,
+        user_name: req.user ? req.user.full_name : 'Unknown',
+        action: 'UPDATE_PRODUCT',
+        entity_type: 'PRODUCT',
+        entity_id: product.product_id,
+        details: { name: product.product_name }
+      });
+      
       res.json({ success: true, data: product });
     } catch (error) {
       next(error);
@@ -88,6 +110,17 @@ class ProductController {
   async deleteProduct(req, res, next) {
     try {
       await ProductService.deleteProduct(req.params.id);
+      
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: req.user ? req.user.user_id : null,
+        user_name: req.user ? req.user.full_name : 'Unknown',
+        action: 'DELETE_PRODUCT',
+        entity_type: 'PRODUCT',
+        entity_id: req.params.id,
+        details: {}
+      });
+      
       res.json({ success: true, message: 'Product deleted successfully' });
     } catch (error) {
       next(error);

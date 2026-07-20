@@ -62,8 +62,9 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
     fetchNotifications();
 
     // Thiết lập kênh Realtime lắng nghe INSERT trên bảng notifications
+    const channelName = `notifications-${Date.now()}`;
     const channel = supabase
-      .channel('schema-db-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'notifications' },

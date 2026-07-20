@@ -56,6 +56,17 @@ class AuthController {
       // Xóa password_hash trước khi trả về
       delete user.password_hash;
 
+      // Log activity
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: user.user_id,
+        user_name: user.full_name,
+        action: 'LOGIN',
+        entity_type: 'USER',
+        entity_id: user.user_id,
+        details: { email: user.email }
+      });
+
       res.json({
         success: true,
         message: 'Đăng nhập thành công',

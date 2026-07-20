@@ -222,4 +222,20 @@ CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON public.notifications(is_
 CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON public.notifications(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notifications_type_created ON public.notifications(type, created_at DESC);
 
+-- --------------------------------------------------------
+-- Table structure for table `activity_logs`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.activity_logs (
+    id TEXT PRIMARY KEY,
+    user_id TEXT REFERENCES public.app_users(user_id) ON DELETE SET NULL,
+    user_name TEXT, -- To easily show who did it even if the user is deleted
+    action VARCHAR(255) NOT NULL, -- 'LOGIN', 'CREATE_PRODUCT', 'UPDATE_PRODUCT', 'DELETE_PRODUCT', 'IMPORT_STOCK', 'EXPORT_STOCK', 'CREATE_ORDER', 'UPDATE_SETTING'
+    entity_type VARCHAR(255), -- 'PRODUCT', 'ORDER', 'USER', 'SETTING'
+    entity_id TEXT,
+    details JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
+CREATE INDEX IF NOT EXISTS idx_activity_logs_user_id ON public.activity_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_activity_logs_created_at ON public.activity_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_activity_logs_action ON public.activity_logs(action);
