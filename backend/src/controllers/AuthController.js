@@ -65,8 +65,8 @@ class AuthController {
         }
       });
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, message: error.errors[0].message });
+      if (error instanceof z.ZodError || error.name === 'ZodError') {
+        return res.status(400).json({ success: false, message: error.errors?.[0]?.message || 'Dữ liệu không hợp lệ' });
       }
       next(error);
     }
