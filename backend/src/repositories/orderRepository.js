@@ -141,6 +141,15 @@ class OrderRepository {
   }
 
   async getProductConsumption(limit = 10) {
+    // Try RPC first (optimized)
+    const { data: rpcData, error: rpcError } = await supabase
+      .rpc('get_product_consumption', { p_limit: limit });
+
+    if (!rpcError && rpcData) {
+      return rpcData;
+    }
+
+    // Fallback to JS computation if RPC is not created yet
     const { data: orderItems, error } = await supabase
       .from('order_items')
       .select('product_id, quantity, unit_price');

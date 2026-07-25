@@ -25,7 +25,10 @@ class GeminiAIService {
       .slice(0, 100);
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: modelName });
+    const model = genAI.getGenerativeModel({ 
+      model: modelName,
+      generationConfig: { responseMimeType: "application/json" }
+    });
 
     const systemPrompt = `Bạn là trợ lý phân tích tồn kho chuyên nghiệp cho hệ thống Smart Retail Inventory AI.
 Dữ liệu dưới đây là lịch sử bán hàng và thông tin tồn kho của các sản phẩm.
@@ -39,24 +42,19 @@ JSON Schema mong muốn:
   "urgent_import_products": [
     {
       "product_id": "Mã sản phẩm",
-      "product_name": "Tên sản phẩm",
-      "suggested_quantity": Số_lượng_nhập_gợi_ý_của_AI,
-      "priority": "Cao" | "Trung bình" | "Thấp",
-      "reason": "Lý do AI đề xuất số lượng này (1-2 câu rõ ràng)"
+      "reason": "Lý do khẩn cấp cần nhập hàng (1-2 câu rõ ràng)"
     }
   ],
   "top_selling_products": [
     {
       "product_id": "Mã sản phẩm",
-      "product_name": "Tên sản phẩm",
-      "reason": "1-2 câu rõ ràng"
+      "reason": "Lý do bán chạy (1-2 câu)"
     }
   ],
   "slow_moving_products": [
     {
       "product_id": "Mã sản phẩm",
-      "product_name": "Tên sản phẩm",
-      "reason": "1-2 câu rõ ràng"
+      "reason": "Lý do tồn đọng (1-2 câu)"
     }
   ],
   "category_insights": [
@@ -81,9 +79,8 @@ JSON Schema mong muốn:
 
 - Độ dài: overview_comment (3-5 câu), inventory_comment (3 câu), sales_comment (3 câu), reason cho mỗi SP (1-2 câu).
 - recommended_actions phải có tối thiểu 3 hành động thực tiễn.
-- Trong danh sách urgent_import_products, cố gắng đưa ra gợi ý cho NHỮNG SẢN PHẨM CẦN NHẬP NHẤT. Nếu AI thấy số lượng cần nhập khác với baseline (rule-based), hãy đề xuất số của AI và giải thích.
-- Phân tích bằng TIẾNG VIỆT, dựa trên dữ liệu thật, không bịa sản phẩm ngoài input.
-- Không thay đổi product_id. Chỉ sử dụng product_id có trong dữ liệu đầu vào. Không bịa sản phẩm mới.
+- Phân tích bằng TIẾNG VIỆT, dựa trên dữ liệu thật. Tuyệt đối KHÔNG tự tính toán lại tồn kho, dự báo, số lượng nhập hay bịa sản phẩm ngoài input.
+- KHÔNG thay đổi product_id. Chỉ sử dụng đúng product_id (chuỗi nguyên bản) có trong dữ liệu đầu vào.
 - Số ngày dự báo mục tiêu: ${forecastDays} ngày.
 `;
 
@@ -106,8 +103,8 @@ ${JSON.stringify(topProducts.map(p => ({
       const response = await result.response;
       let text = response.text();
       
-      // Strip markdown code block if model still outputs it
-      text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      // Strip markdown code block if model still outputs it despite responseMimeType
+      text = text.replace(/^```json\s*/, '').replace(/\s*```$/, '').trim();
       
       return JSON.parse(text);
     } catch (error) {

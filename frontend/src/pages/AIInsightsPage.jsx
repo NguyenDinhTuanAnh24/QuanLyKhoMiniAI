@@ -62,25 +62,25 @@ export default function AIInsightsPage() {
   };
 
   const buildAIInsightsData = (items, runData) => {
-    const total_suggested_import_products = items.filter(i => i.suggested_import_quantity > 0).length;
-    const risk_products = items.filter(i => i.priority === 'Cao' || i.priority === 'Trung bình').length;
-    const top_selling_products = items.filter(i => i.avg_daily_sales_90d >= 1).length;
-    const slow_selling_products = items.filter(i => i.avg_daily_sales_90d < 0.2 && i.stock_quantity > 0).length;
+    const total_suggested_import_products = items.filter(i => (i.suggested_import_quantity ?? 0) > 0).length;
+    const risk_products = items.filter(i => i.priority === 'CRITICAL' || i.priority === 'HIGH' || i.priority === 'Cao' || i.priority === 'Trung bình').length;
+    const top_selling_products = items.filter(i => (i.avg_daily_sales_90d ?? i.avg_daily_sales ?? 0) >= 1).length;
+    const slow_selling_products = items.filter(i => (i.avg_daily_sales_90d ?? i.avg_daily_sales ?? 0) < 0.2 && (i.stock_quantity ?? 0) > 0).length;
     
     const sales_comment = top_selling_products > 0
       ? `Trung bình có ${top_selling_products} sản phẩm đang có luân chuyển nhanh.`
       : 'Dữ liệu bán hàng chưa đủ lớn để đưa ra nhận định chi tiết, hệ thống đang sử dụng xu hướng gần nhất.';
     
-    const topItems = [...items].sort((a,b) => b.avg_daily_sales_90d - a.avg_daily_sales_90d).slice(0, 3);
-    const top_selling_comment = topItems.length > 0 && topItems[0].avg_daily_sales_90d > 0
-      ? `Top 3: ${topItems.map(i => `${i.product_name} (${i.avg_daily_sales_90d} SP/ngày)`).join(', ')}`
+    const topItems = [...items].sort((a,b) => (b.avg_daily_sales_90d ?? b.avg_daily_sales ?? 0) - (a.avg_daily_sales_90d ?? a.avg_daily_sales ?? 0)).slice(0, 3);
+    const top_selling_comment = topItems.length > 0 && (topItems[0].avg_daily_sales_90d ?? topItems[0].avg_daily_sales ?? 0) > 0
+      ? `Top 3: ${topItems.map(i => `${i.product_name} (${i.avg_daily_sales_90d ?? i.avg_daily_sales ?? 0} SP/ngày)`).join(', ')}`
       : 'Hệ thống đang thu thập thêm dữ liệu để xác định sản phẩm bán chạy nhất.';
 
     const slow_selling_comment = slow_selling_products > 0 
       ? `Có ${slow_selling_products} sản phẩm tồn đọng lâu, bán chậm. Cần cân nhắc khuyến mãi để xả kho.`
       : 'Hiện tại tồn kho đang luân chuyển tốt, không có sản phẩm tồn đọng quá lâu.';
 
-    const totalForecast = items.reduce((acc, i) => acc + i.forecast_14d, 0);
+    const totalForecast = items.reduce((acc, i) => acc + (i.forecast_quantity ?? i.forecast_14d ?? 0), 0);
     const forecast_comment = totalForecast > 0
       ? `Dự báo tổng nhu cầu 14 ngày tới là ${totalForecast} đơn vị sản phẩm trên toàn hệ thống.`
       : 'Chưa có đủ dự báo nhu cầu cho các chu kỳ tiếp theo.';
@@ -100,7 +100,7 @@ export default function AIInsightsPage() {
         stock: i.stock_quantity ?? 0,
         forecast: i.forecast_quantity ?? i.forecast_14d ?? 0,
         suggested: i.suggested_import_quantity ?? 0,
-        priority: i.priority || 'Thấp'
+        priority: i.priority || 'LOW'
       }));
 
     const baseDaily = Math.floor(totalForecast / 14);
@@ -129,6 +129,9 @@ export default function AIInsightsPage() {
         if (parsedReport && Array.isArray(parsedReport.urgent_import_products)) {
           parsedReport.urgent_import_products = parsedReport.urgent_import_products.map(normalizeForecastItem);
         }
+        if (!parsedReport.analysis_mode) {
+          parsedReport.analysis_mode = runData.provider === 'Rule-based' ? 'rule_based' : 'gemini_enhanced';
+        }
       } catch (e) {
         simpleSummary = runData.summary;
       }
@@ -138,11 +141,14 @@ export default function AIInsightsPage() {
       statSummary: { total_suggested_import_products, risk_products, top_selling_products, slow_selling_products },
       report: parsedReport || {
         fallback: true,
+        analysis_mode: 'rule_based',
         summary: simpleSummary || 'Đã tạo báo cáo dự báo nội bộ.',
         sales_comment, top_selling_comment, slow_selling_comment, forecast_comment, import_comment,
-        urgent_import_products: suggestions,
+        urgent_import_products: suggestions.map(s => ({
+          ...s, stock_quantity: s.stock, forecast_quantity: s.forecast, suggested_import_quantity: s.suggested
+        })),
         top_selling_products: topItems,
-        slow_moving_products: items.filter(i => i.avg_daily_sales_90d < 0.2 && i.stock_quantity > 0).slice(0, 5)
+        slow_moving_products: items.filter(i => (i.avg_daily_sales_90d ?? i.avg_daily_sales ?? 0) < 0.2 && (i.stock_quantity ?? 0) > 0).slice(0, 5)
       },
       suggestions,
       chartData,
@@ -370,9 +376,21 @@ export default function AIInsightsPage() {
           <div className="text-right flex flex-col items-end">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nguồn phân tích gần nhất</span>
             {rawData.run ? (
-              <div className="flex items-center gap-1.5 text-sm font-bold text-indigo-700">
-                {rawData.run.provider === 'Rule-based' ? <Box className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                {rawData.run.provider}
+              <div className="flex flex-col items-end gap-1">
+                <div className="flex items-center gap-1.5 text-sm font-bold text-indigo-700">
+                  {rawData.run.provider === 'Rule-based' ? <Box className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                  {rawData.run.provider}
+                </div>
+                {uiData.report?.analysis_mode === 'rule_based' && rawData.run.provider !== 'Rule-based' && (
+                  <span className="text-xs text-amber-600 font-medium px-2 py-0.5 bg-amber-50 rounded border border-amber-100">
+                    Fallback: Nội bộ
+                  </span>
+                )}
+                {uiData.report?.analysis_mode === 'gemini_enhanced' && (
+                  <span className="text-xs text-green-600 font-medium px-2 py-0.5 bg-green-50 rounded border border-green-100">
+                    AI Nâng cao
+                  </span>
+                )}
               </div>
             ) : (
               <span className="text-sm font-medium text-slate-500 italic">Dự báo nội bộ (Chưa lưu)</span>

@@ -4,8 +4,7 @@ import StatCard from './StatCard';
 import { useToast } from '../contexts/ToastContext';
 import { getCategories } from '../services/categoryService';
 import api from '../services/api';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+
 
 export default function LowStockAlertDashboard({ onNavigate }) {
   const { showToast } = useToast();
@@ -114,6 +113,11 @@ export default function LowStockAlertDashboard({ onNavigate }) {
 
   const handleExportExcel = async () => {
     try {
+      const excelModule = await import('exceljs');
+      const ExcelJS = excelModule.default || excelModule;
+      const fileSaverModule = await import('file-saver');
+      const saveAs = fileSaverModule.saveAs || fileSaverModule.default?.saveAs || fileSaverModule.default;
+
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Canh Bao Ton Kho');
 
