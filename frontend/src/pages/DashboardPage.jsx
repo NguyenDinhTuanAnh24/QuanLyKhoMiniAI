@@ -30,6 +30,7 @@ const DashboardPage = ({ onNavigate }) => {
   
   const user = getUser();
   const userName = user?.full_name || 'Admin';
+  const isStaff = user?.role === 'Nhân viên kho' || user?.role === 'Nhân viên bán hàng';
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -127,18 +128,20 @@ const DashboardPage = ({ onNavigate }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Doanh thu hôm nay */}
-        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
-          <div className="flex justify-between items-start">
-            <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
-              <DollarSign size={20} />
+        {!isStaff && (
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
+            <div className="flex justify-between items-start">
+              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
+                <DollarSign size={20} />
+              </div>
+              <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
             </div>
-            <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
+            <div>
+              <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary?.today_revenue)}</h3>
+              <p className="text-xs text-slate-500 font-medium mt-1">Doanh thu hôm nay</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary?.today_revenue)}</h3>
-            <p className="text-xs text-slate-500 font-medium mt-1">Doanh thu hôm nay</p>
-          </div>
-        </div>
+        )}
 
         {/* Đơn hàng hôm nay */}
         <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
@@ -169,74 +172,78 @@ const DashboardPage = ({ onNavigate }) => {
         </div>
 
         {/* Giá trị tồn kho */}
-        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
-          <div className="flex justify-between items-start">
-            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500">
-              <Warehouse size={20} />
+        {!isStaff && (
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
+            <div className="flex justify-between items-start">
+              <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500">
+                <Warehouse size={20} />
+              </div>
+              <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
             </div>
-            <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
+            <div>
+              <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary?.inventory_value)}</h3>
+              <p className="text-xs text-slate-500 font-medium mt-1">Giá trị tồn kho</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary?.inventory_value)}</h3>
-            <p className="text-xs text-slate-500 font-medium mt-1">Giá trị tồn kho</p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Row 2: Chart & AI Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Doanh thu 7 ngày gần nhất (span 2) */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6 flex flex-col">
-          <div className="mb-6">
-            <h3 className="text-base font-bold text-slate-800">Doanh thu 7 ngày gần nhất</h3>
-            <p className="text-xs text-slate-500 mt-1">Cập nhật đến hôm nay</p>
-          </div>
-          
-          <div className="flex-1 flex items-end gap-4 relative pt-8">
-            {/* Y-axis simple guides */}
-            <div className="absolute inset-0 flex flex-col justify-between text-[10px] font-medium text-slate-400 pb-6 pointer-events-none">
-              <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
-                <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue)}</span>
-              </div>
-              <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
-                <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue / 2)}</span>
-              </div>
-              <div className="border-b border-slate-200 w-full h-0 flex items-end justify-start">
-                <span className="-translate-y-2 bg-white pr-2">0</span>
-              </div>
+        {!isStaff && (
+          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6 flex flex-col">
+            <div className="mb-6">
+              <h3 className="text-base font-bold text-slate-800">Doanh thu 7 ngày gần nhất</h3>
+              <p className="text-xs text-slate-500 mt-1">Cập nhật đến hôm nay</p>
             </div>
+            
+            <div className="flex-1 flex items-end gap-4 relative pt-8">
+              {/* Y-axis simple guides */}
+              <div className="absolute inset-0 flex flex-col justify-between text-[10px] font-medium text-slate-400 pb-6 pointer-events-none">
+                <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
+                  <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue)}</span>
+                </div>
+                <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
+                  <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue / 2)}</span>
+                </div>
+                <div className="border-b border-slate-200 w-full h-0 flex items-end justify-start">
+                  <span className="-translate-y-2 bg-white pr-2">0</span>
+                </div>
+              </div>
 
-            {/* Bars */}
-            <div className="w-full flex justify-around items-end h-full pl-8 pb-6 z-10">
-              {revenue_7_days?.map((item, index) => {
-                const heightPercentage = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
-                return (
-                  <div key={index} className="flex flex-col items-center group w-full px-2 relative h-full justify-end">
-                    {/* Value on top of bar */}
-                    {item.revenue > 0 && (
-                      <span className="text-[10px] font-bold text-blue-600 mb-1 absolute" style={{ bottom: `${heightPercentage}%` }}>
-                        {formatCurrencyShort(item.revenue)}
-                      </span>
-                    )}
-                    {/* Bar */}
-                    <div 
-                      className="w-full max-w-[40px] bg-blue-500 hover:bg-blue-600 rounded-t transition-all duration-300 min-h-[4px]"
-                      style={{ height: `${heightPercentage}%` }}
-                    ></div>
-                    {/* Label */}
-                    <div className="absolute -bottom-5 text-xs font-medium text-slate-500 whitespace-nowrap">
-                      {item.label}
+              {/* Bars */}
+              <div className="w-full flex justify-around items-end h-full pl-8 pb-6 z-10">
+                {revenue_7_days?.map((item, index) => {
+                  const heightPercentage = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
+                  return (
+                    <div key={index} className="flex flex-col items-center group w-full px-2 relative h-full justify-end">
+                      {/* Value on top of bar */}
+                      {item.revenue > 0 && (
+                        <span className="text-[10px] font-bold text-blue-600 mb-1 absolute" style={{ bottom: `${heightPercentage}%` }}>
+                          {formatCurrencyShort(item.revenue)}
+                        </span>
+                      )}
+                      {/* Bar */}
+                      <div 
+                        className="w-full max-w-[40px] bg-blue-500 hover:bg-blue-600 rounded-t transition-all duration-300 min-h-[4px]"
+                        style={{ height: `${heightPercentage}%` }}
+                      ></div>
+                      {/* Label */}
+                      <div className="absolute -bottom-5 text-xs font-medium text-slate-500 whitespace-nowrap">
+                        {item.label}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* AI Insights hôm nay */}
-        <div className="bg-[#f8faff] rounded-xl border border-blue-100 shadow-sm p-6 flex flex-col">
+        <div className={`${isStaff ? 'lg:col-span-3' : ''} bg-[#f8faff] rounded-xl border border-blue-100 shadow-sm p-6 flex flex-col`}>
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
               <Sparkles className="text-blue-600" size={18} />
@@ -384,47 +391,49 @@ const DashboardPage = ({ onNavigate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Sản phẩm bán chạy hôm nay (span 2) */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-          <h3 className="text-base font-bold text-slate-800 mb-6">Sản phẩm bán chạy hôm nay</h3>
-          
-          {(!top_selling || top_selling.length === 0) ? (
-            <div className="text-center py-8 text-slate-500 italic text-sm">Chưa có dữ liệu bán hàng</div>
-          ) : (
-            <div className="space-y-4">
-              {top_selling.map((item, idx) => {
-                const maxSold = top_selling[0]?.quantity_sold || 1;
-                const barWidth = (item.quantity_sold / maxSold) * 100;
-                
-                return (
-                  <div key={idx} className="flex items-center gap-4">
-                    <div className="w-6 text-center font-bold text-slate-400">{idx + 1}</div>
-                    
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-800">{item.product_name}</p>
-                      <p className="text-xs text-slate-500">{item.quantity_sold} đã bán</p>
-                    </div>
+        {!isStaff && (
+          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+            <h3 className="text-base font-bold text-slate-800 mb-6">Sản phẩm bán chạy hôm nay</h3>
+            
+            {(!top_selling || top_selling.length === 0) ? (
+              <div className="text-center py-8 text-slate-500 italic text-sm">Chưa có dữ liệu bán hàng</div>
+            ) : (
+              <div className="space-y-4">
+                {top_selling.map((item, idx) => {
+                  const maxSold = top_selling[0]?.quantity_sold || 1;
+                  const barWidth = (item.quantity_sold / maxSold) * 100;
+                  
+                  return (
+                    <div key={idx} className="flex items-center gap-4">
+                      <div className="w-6 text-center font-bold text-slate-400">{idx + 1}</div>
+                      
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-slate-800">{item.product_name}</p>
+                        <p className="text-xs text-slate-500">{item.quantity_sold} đã bán</p>
+                      </div>
 
-                    <div className="hidden sm:block w-32 md:w-48">
-                      <div className="w-full bg-slate-100 rounded-full h-1.5">
-                        <div className="h-1.5 rounded-full bg-blue-300" style={{ width: `${barWidth}%` }}></div>
+                      <div className="hidden sm:block w-32 md:w-48">
+                        <div className="w-full bg-slate-100 rounded-full h-1.5">
+                          <div className="h-1.5 rounded-full bg-blue-300" style={{ width: `${barWidth}%` }}></div>
+                        </div>
+                      </div>
+
+                      <div className="w-24 text-right">
+                        <p className="text-sm font-bold text-slate-800">₫ {formatCurrencyShort(item.revenue)}</p>
                       </div>
                     </div>
-
-                    <div className="w-24 text-right">
-                      <p className="text-sm font-bold text-slate-800">₫ {formatCurrencyShort(item.revenue)}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Thao tác nhanh */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-          <h3 className="text-base font-bold text-slate-800 mb-4">Thao tác nhanh</h3>
+        <div className={`${isStaff ? 'lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4' : ''} bg-white rounded-xl border border-slate-100 shadow-sm p-6`}>
+          <h3 className={`text-base font-bold text-slate-800 mb-4 ${isStaff ? 'col-span-full' : ''}`}>Thao tác nhanh</h3>
           
-          <div className="space-y-3">
+          <div className={`${isStaff ? 'contents' : 'space-y-3'}`}>
             <button 
               onClick={() => onNavigate ? onNavigate('sales') : navigate('/sales')}
               className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group"

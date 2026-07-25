@@ -77,6 +77,17 @@ class InventoryController {
           .from('stock_movements')
           .insert(movementsToInsert);
         if (movErr) throw movErr;
+        
+        // Log activity
+        const ActivityLogService = require('../services/ActivityLogService');
+        await ActivityLogService.logActivity({
+          user_id: req.user ? req.user.user_id : null,
+          user_name: req.user ? req.user.full_name : 'Unknown',
+          action: type === 'IMPORT' ? 'IMPORT_STOCK' : 'EXPORT_STOCK',
+          entity_type: 'PRODUCT',
+          entity_id: items.length > 1 ? 'MULTIPLE' : items[0].product_id,
+          details: { item_count: items.length, note }
+        });
       }
 
       res.status(201).json({ success: true, message: 'Stock updated successfully' });

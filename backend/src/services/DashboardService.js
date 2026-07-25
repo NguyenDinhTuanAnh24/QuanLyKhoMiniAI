@@ -1,8 +1,8 @@
 const DashboardRepository = require('../repositories/DashboardRepository');
 
 class DashboardService {
-  async getOverview() {
-    return await DashboardRepository.getDashboardData();
+  async getOverview(role) {
+    return await DashboardRepository.getDashboardData(role);
   }
 }
 

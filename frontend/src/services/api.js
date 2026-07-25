@@ -3,6 +3,7 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}/api` : 'http://localhost:5000/api';
 
 let isHandlingUnauthorized = false;
+let isHandlingForbidden = false;
 
 const api = axios.create({
   baseURL,
@@ -12,6 +13,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  if (isHandlingUnauthorized) {
+    return Promise.reject(new axios.Cancel('Đang xử lý đăng xuất, hủy request.'));
+  }
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -31,13 +35,20 @@ api.interceptors.response.use((response) => response, (error) => {
         window.location.href = '/login';
       }
     } else if (error.response.status === 403) {
-      window.dispatchEvent(new CustomEvent('globalToast', {
-        detail: {
-          type: 'error',
-          title: 'Lỗi truy cập',
-          message: 'Bạn không có quyền thực hiện thao tác này.'
-        }
-      }));
+      if (!isHandlingForbidden) {
+        isHandlingForbidden = true;
+        window.dispatchEvent(new CustomEvent('globalToast', {
+          detail: {
+            type: 'error',
+            title: 'Lỗi truy cập',
+            message: 'Bạn không có quyền thực hiện thao tác này.'
+          }
+        }));
+        
+        setTimeout(() => {
+          isHandlingForbidden = false;
+        }, 2000);
+      }
     }
   }
   return Promise.reject(error);

@@ -25,6 +25,17 @@ class OrderController {
     try {
       const validatedData = createOrderSchema.parse(req.body);
       const result = await OrderService.createOrder(validatedData);
+      
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: req.user ? req.user.user_id : null,
+        user_name: req.user ? req.user.full_name : 'Unknown',
+        action: 'CREATE_ORDER',
+        entity_type: 'ORDER',
+        entity_id: result.order.order_id,
+        details: { total_amount: result.order.total_amount, customer_name: result.order.customer_name }
+      });
+      
       res.status(201).json({ success: true, data: result.order });
     } catch (error) {
       if (error instanceof z.ZodError) {

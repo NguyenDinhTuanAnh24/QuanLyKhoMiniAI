@@ -1,7 +1,11 @@
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+
 
 export const exportProductsToExcel = async (products) => {
+  const excelModule = await import('exceljs');
+  const ExcelJS = excelModule.default || excelModule;
+  const fileSaverModule = await import('file-saver');
+  const saveAs = fileSaverModule.saveAs || fileSaverModule.default?.saveAs || fileSaverModule.default;
+
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('SanPham');
 
@@ -120,6 +124,9 @@ export const exportProductsToExcel = async (products) => {
 };
 
 export const parseExcelFile = async (file) => {
+  const excelModule = await import('exceljs');
+  const ExcelJS = excelModule.default || excelModule;
+
   const workbook = new ExcelJS.Workbook();
   const buffer = await file.arrayBuffer();
   await workbook.xlsx.load(buffer);
@@ -155,6 +162,11 @@ export const parseExcelFile = async (file) => {
 };
 
 export const downloadTemplate = async () => {
+  const excelModule = await import('exceljs');
+  const ExcelJS = excelModule.default || excelModule;
+  const fileSaverModule = await import('file-saver');
+  const saveAs = fileSaverModule.saveAs || fileSaverModule.default?.saveAs || fileSaverModule.default;
+
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('SanPham');
 

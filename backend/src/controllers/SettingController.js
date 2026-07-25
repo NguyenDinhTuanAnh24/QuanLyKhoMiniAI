@@ -39,6 +39,17 @@ class SettingController {
     try {
       const validatedData = settingsSchema.parse(req.body);
       const settings = await SettingService.updateSettings(validatedData);
+      
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: req.user ? req.user.user_id : null,
+        user_name: req.user ? req.user.full_name : 'Unknown',
+        action: 'UPDATE_SETTING',
+        entity_type: 'SETTING',
+        entity_id: 'DEFAULT',
+        details: validatedData
+      });
+      
       res.json({ success: true, data: settings });
     } catch (error) {
       next(error);

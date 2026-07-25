@@ -15,6 +15,7 @@ import ReportsPage from './pages/ReportsPage';
 import UserDashboard from './pages/UserDashboard';
 import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
+import ActivityLogsPage from './pages/ActivityLogsPage';
 import { ToastProvider } from './contexts/ToastContext';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 
@@ -108,6 +109,11 @@ function App() {
                   <Route path="/settings" element={
                     <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
                       <SettingsPage />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/activity-logs" element={
+                    <RoleProtectedRoute allowedRoles={['Quản trị viên']}>
+                      <ActivityLogsPage />
                     </RoleProtectedRoute>
                   } />
 

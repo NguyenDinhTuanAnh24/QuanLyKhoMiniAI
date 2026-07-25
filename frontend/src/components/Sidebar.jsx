@@ -13,6 +13,7 @@ import {
   Tags,
   Ruler,
   Truck,
+  History,
   ChevronDown
 } from 'lucide-react';
 import { getUser } from '../services/authService';
@@ -54,6 +55,7 @@ const menuGroups = [
         ]
       },
       { id: 'users', label: 'Người dùng', icon: Users },
+      { id: 'activity-logs', label: 'Nhật ký hoạt động', icon: History },
       { id: 'settings', label: 'Cài đặt', icon: Settings }
     ]
   }
@@ -88,6 +90,13 @@ export default function Sidebar({ activePage, onNavigate }) {
     return activePage === id;
   };
 
+  const user = getUser();
+  const isAdmin = user?.role === 'Quản trị viên';
+  const isOwner = user?.role === 'Chủ cửa hàng';
+  const isWarehouseStaff = user?.role === 'Nhân viên kho';
+  const isSalesStaff = user?.role === 'Nhân viên bán hàng';
+  const isAdminOrOwner = isAdmin || isOwner;
+
   return (
     <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0">
       <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
@@ -104,17 +113,24 @@ export default function Sidebar({ activePage, onNavigate }) {
       
       <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-6">
         {menuGroups.map((group, groupIdx) => {
-          const user = getUser();
-          const role = user?.role || '';
-          
-          let visibleItems = group.items.filter(item => {
-            if (role === 'Quản trị viên') return true;
-            if (role === 'Chủ cửa hàng') return item.id !== 'users';
-            if (role === 'Nhân viên kho') return ['products', 'inventory-ops', 'alerts'].includes(item.id);
-            if (role === 'Nhân viên bán hàng') return ['products', 'sales'].includes(item.id);
-            return false;
+          const visibleItems = group.items.filter(item => {
+            switch (item.id) {
+              case 'users':
+              case 'activity-logs':
+              case 'ai-insights':
+              case 'master-data':
+                return isAdminOrOwner;
+              case 'inventory-ops':
+              case 'alerts':
+                return !isSalesStaff; // Warehouse, Admin, Owner can see
+              case 'sales':
+                return !isWarehouseStaff; // Sales, Admin, Owner can see
+              case 'reports':
+                return isAdminOrOwner;
+              default:
+                return true;
+            }
           });
-
           if (visibleItems.length === 0) return null;
 
           return (

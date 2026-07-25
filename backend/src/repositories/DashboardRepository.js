@@ -1,7 +1,8 @@
 const supabase = require('../config/supabase');
 
 class DashboardRepository {
-  async getDashboardData() {
+  async getDashboardData(role) {
+    const isStaff = role === 'WAREHOUSE_STAFF' || role === 'SALES_STAFF';
     // 1. Get products for summary (total, stock, value, low_stock)
     const { data: products, error: productError } = await supabase
       .from('products')
@@ -171,13 +172,13 @@ class DashboardRepository {
       summary: {
         total_products,
         total_stock,
-        today_revenue,
+        today_revenue: isStaff ? 0 : today_revenue,
         low_stock_count,
         today_orders,
-        inventory_value
+        inventory_value: isStaff ? 0 : inventory_value
       },
-      revenue_7_days,
-      top_selling,
+      revenue_7_days: isStaff ? [] : revenue_7_days,
+      top_selling: isStaff ? [] : top_selling,
       low_stock_products,
       ai_insight: {
         message: `AI phát hiện ${low_stock_count} sản phẩm có nguy cơ thiếu hàng. Nên ưu tiên nhập bổ sung các sản phẩm tồn kho thấp.`,

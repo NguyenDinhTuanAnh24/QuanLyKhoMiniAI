@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import StatCard from '../../StatCard';
 import { Star, Package, DollarSign } from 'lucide-react';
 
@@ -27,6 +27,11 @@ export default function TopSellingTab({ data, loading }) {
   }
 
   const { summary = {}, tableData = [] } = data || {};
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(tableData.length / itemsPerPage);
+  const currentTableData = tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6">
@@ -72,7 +77,7 @@ export default function TopSellingTab({ data, loading }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {tableData.map((row, idx) => (
+                {currentTableData.map((row, idx) => (
                   <tr key={idx} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3 text-center font-bold text-slate-500">
                       {row.rank === 1 ? <span className="text-yellow-500">1</span> :
@@ -103,6 +108,30 @@ export default function TopSellingTab({ data, loading }) {
             <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
           )}
         </div>
+        
+        {tableData.length > 0 && totalPages > 1 && (
+          <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-between bg-slate-50 rounded-b-xl">
+            <span className="text-sm text-slate-500">
+              Hiển thị <span className="font-medium text-slate-700">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-medium text-slate-700">{Math.min(currentPage * itemsPerPage, tableData.length)}</span> trong số <span className="font-medium text-slate-700">{tableData.length}</span> kết quả
+            </span>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 text-sm font-medium border border-slate-200 rounded-lg hover:bg-white bg-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Trước
+              </button>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 text-sm font-medium border border-slate-200 rounded-lg hover:bg-white bg-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Sau
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
