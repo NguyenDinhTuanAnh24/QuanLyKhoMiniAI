@@ -4,12 +4,18 @@ import { Package, Truck, ArrowLeftRight, CheckCircle2, DollarSign, Plus, Trash2,
 import { getProducts } from '../services/productService';
 import { getSuppliers } from '../services/supplierService';
 import { createMovement, getMovements } from '../services/inventoryService';
+import ConfirmModal from './ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import StatCard from './StatCard';
 
 export default function InventoryOpsDashboard() {
   const [activeTab, setActiveTab] = useState('import'); // 'import' or 'export'
   const { addToast } = useToast();
+  
+  // State for Confirm Modal
+  const [supplierConfirmOpen, setSupplierConfirmOpen] = useState(false);
+  const [pendingSupplierId, setPendingSupplierId] = useState(null);
+
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const processedProductIdRef = useRef(null);
@@ -371,10 +377,9 @@ export default function InventoryOpsDashboard() {
                           return;
                         }
                         if (importForm.items.length > 0) {
-                          const confirmChange = window.confirm('Đổi nhà cung cấp sẽ xóa các sản phẩm đã thêm vào phiếu. Bạn có chắc chắn không?');
-                          if (!confirmChange) {
-                            return; // Keep old
-                          }
+                          setPendingSupplierId(newSupplierId);
+                          setSupplierConfirmOpen(true);
+                          return;
                         }
                         setImportForm({ ...importForm, supplier_id: newSupplierId, items: [] });
                         setSelectedProduct('');
@@ -819,6 +824,23 @@ export default function InventoryOpsDashboard() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={supplierConfirmOpen}
+        onClose={() => setSupplierConfirmOpen(false)}
+        onConfirm={() => {
+          setImportForm({ ...importForm, supplier_id: pendingSupplierId, items: [] });
+          setSelectedProduct('');
+          setQtyInput('');
+          setPriceInput('');
+          setSupplierConfirmOpen(false);
+        }}
+        title="Xác nhận đổi nhà cung cấp"
+        message="Đổi nhà cung cấp sẽ xóa các sản phẩm đã thêm vào phiếu. Bạn có chắc chắn không?"
+        confirmText="Đồng ý"
+        cancelText="Hủy"
+        isDanger={true}
+      />
     </div>
   );
 }

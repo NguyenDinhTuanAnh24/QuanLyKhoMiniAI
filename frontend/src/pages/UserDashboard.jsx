@@ -128,7 +128,7 @@ export default function UserDashboard() {
       loadUsers();
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Có lỗi xảy ra khi lưu người dùng';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Có lỗi xảy ra khi lưu người dùng';
       showToast({ type: 'error', title: 'Lỗi', message: msg });
     } finally {
       setIsProcessing(false);

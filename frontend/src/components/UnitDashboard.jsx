@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Filter, LayoutGrid, CheckCircle2, AlertCircle, Eye, Pencil, Trash2, X } from 'lucide-react';
 import { getUnits, createUnit, updateUnit, deleteUnit } from '../services/unitService';
 import StatCard from './StatCard';
+import ConfirmModal from './ConfirmModal';
+import { useToast } from '../contexts/ToastContext';
 
 export default function UnitDashboard() {
   const [units, setUnits] = useState([]);
@@ -21,6 +23,10 @@ export default function UnitDashboard() {
     description: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { showToast } = useToast();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [unitToDelete, setUnitToDelete] = useState(null);
 
   const loadUnits = async () => {
     setLoading(true);
@@ -69,32 +75,40 @@ export default function UnitDashboard() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!formData.unit_name) {
-      alert("Tên đơn vị là bắt buộc");
+      showToast("Tên đơn vị là bắt buộc", "error");
       return;
     }
     setIsSubmitting(true);
     try {
       if (editingUnit) {
         await updateUnit(editingUnit.unit_id, formData);
+        showToast("Cập nhật đơn vị thành công", "success");
       } else {
         await createUnit(formData);
+        showToast("Thêm đơn vị thành công", "success");
       }
       closeModal();
       loadUnits();
     } catch (error) {
-      alert(error.response?.data?.message || "Đã xảy ra lỗi");
+      showToast(error.response?.data?.error?.message || error.response?.data?.message || "Đã xảy ra lỗi", "error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa đơn vị này?")) return;
+  const handleDeleteClick = (id) => {
+    setUnitToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setDeleteConfirmOpen(false);
     try {
-      await deleteUnit(id);
+      await deleteUnit(unitToDelete);
+      showToast("Xóa đơn vị thành công", "success");
       loadUnits();
     } catch (error) {
-      alert(error.response?.data?.message || "Đã xảy ra lỗi khi xóa");
+      showToast(error.response?.data?.error?.message || error.response?.data?.message || "Đã xảy ra lỗi khi xóa", "error");
     }
   };
 
@@ -192,7 +206,7 @@ export default function UnitDashboard() {
                           <button onClick={() => openEditModal(unit)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
                             <Pencil className="w-4 h-4" /> Sửa
                           </button>
-                          <button onClick={() => handleDelete(unit.unit_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
+                          <button onClick={() => handleDeleteClick(unit.unit_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
                             <Trash2 className="w-4 h-4" /> Xoá
                           </button>
                         </div>
@@ -275,6 +289,17 @@ export default function UnitDashboard() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Xác nhận xóa"
+        message="Bạn có chắc chắn muốn xóa đơn vị này không?"
+        confirmText="Xóa"
+        cancelText="Hủy"
+        isDanger={true}
+      />
     </div>
   );
 }
