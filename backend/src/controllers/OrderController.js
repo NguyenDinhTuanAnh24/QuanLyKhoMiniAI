@@ -24,7 +24,7 @@ class OrderController {
   async createOrder(req, res, next) {
     try {
       const validatedData = createOrderSchema.parse(req.body);
-      const result = await OrderService.createOrder(validatedData);
+      const result = await OrderService.createOrder(validatedData, req.user);
       
       const ActivityLogService = require('../services/ActivityLogService');
       await ActivityLogService.logActivity({

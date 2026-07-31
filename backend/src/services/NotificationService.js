@@ -1,17 +1,55 @@
 const notificationRepository = require('../repositories/notificationRepository');
+const supabase = require('../config/supabase');
 
 class NotificationService {
-  async createNotification({ user_id = 'ALL', title, message, type, related_link }) {
-    const id = `NOTI-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    return await notificationRepository.create({
-      id,
-      user_id,
-      title,
-      message,
-      type,
-      is_read: false,
-      related_link: related_link || '/'
-    });
+  async createNotification({ user_id, targetRoles, title, message, type, related_link }) {
+    try {
+      let targetUserIds = [];
+
+      // If specific targetRoles are provided, query users who have those roles
+      if (targetRoles && Array.isArray(targetRoles) && targetRoles.length > 0) {
+        const { data: users, error } = await supabase
+          .from('app_users')
+          .select('user_id')
+          .in('role', targetRoles)
+          .eq('status', 'Đang hoạt động')
+          .is('deleted_at', null);
+          
+        if (!error && users && users.length > 0) {
+          targetUserIds = users.map(u => u.user_id);
+        }
+      } 
+      
+      // If a specific user_id is provided, add it to the list
+      if (user_id && user_id !== 'ALL') {
+        targetUserIds.push(user_id);
+      } 
+      // Fallback: everyone if nothing is specified (legacy behavior)
+      else if (targetUserIds.length === 0 && (!user_id || user_id === 'ALL')) {
+        targetUserIds = ['ALL'];
+      }
+
+      // Remove duplicates
+      targetUserIds = [...new Set(targetUserIds)];
+
+      if (targetUserIds.length === 0) return null;
+
+      const baseTimestamp = Date.now();
+      const payload = targetUserIds.map((uid, index) => ({
+        id: `NOTI-${baseTimestamp}-${index}-${Math.floor(Math.random() * 1000)}`,
+        user_id: uid,
+        title,
+        message,
+        type,
+        is_read: false,
+        related_link: related_link || '/'
+      }));
+
+      return await notificationRepository.create(payload);
+    } catch (err) {
+      console.error('[NotificationService] Error in createNotification:', err);
+      return null;
+    }
   }
 
   async checkAndCreateLowStockAlert(productId, productName, currentStock, reorderLevel) {
@@ -33,7 +71,8 @@ class NotificationService {
         title,
         message,
         type: 'STOCK_LOW',
-        related_link: '/alerts'
+        related_link: '/alerts',
+        targetRoles: ['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho']
       });
     } catch (err) {
       console.error('[NotificationService] Error in checkAndCreateLowStockAlert:', err);

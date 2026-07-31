@@ -67,7 +67,12 @@ export default function Topbar({ activePage, activePayload, onNavigate }) {
       .channel(channelName)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'notifications' },
+        { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'notifications',
+          filter: user?.user_id ? `user_id=eq.${user.user_id}` : undefined
+        },
         (payload) => {
           // Optimistic update + lập tức đồng bộ dữ liệu từ API Backend
           if (payload.new) {

@@ -3,23 +3,25 @@ const supabase = require('../config/supabase');
 class NotificationRepository {
   async create(data) {
     try {
+      const isArray = Array.isArray(data);
+      const payload = isArray ? data : [data];
+      
       const { data: result, error } = await supabase
         .from('notifications')
-        .insert([data])
-        .select()
-        .single();
+        .insert(payload)
+        .select();
         
       if (error) {
         if (error.code === 'PGRST205' || error.code === '42P01') {
           console.warn(`[NotificationRepository] Table 'notifications' not found on Supabase. Please run database/schema.sql on Supabase SQL Editor.`);
-          return data;
+          return isArray ? payload : payload[0];
         }
         throw error;
       }
-      return result;
+      return isArray ? result : result[0];
     } catch (err) {
       console.error('[NotificationRepository] Error creating notification:', err.message || err);
-      return data;
+      return Array.isArray(data) ? data : data;
     }
   }
 
