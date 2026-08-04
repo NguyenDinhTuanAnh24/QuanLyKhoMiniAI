@@ -91,11 +91,13 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
   };
 
   const user = getUser();
-  const isAdmin = user?.role === 'Quản trị viên';
-  const isOwner = user?.role === 'Chủ cửa hàng';
-  const isWarehouseStaff = user?.role === 'Nhân viên kho';
-  const isSalesStaff = user?.role === 'Nhân viên bán hàng';
+  const roleCode = user?.roleCode || user?.role;
+  const isAdmin = roleCode === 'ADMIN' || user?.role === 'Quản trị viên';
+  const isOwner = roleCode === 'OWNER' || user?.role === 'Chủ cửa hàng';
+  const isWarehouseStaff = roleCode === 'WAREHOUSE_STAFF' || user?.role === 'Nhân viên kho';
+  const isSalesStaff = roleCode === 'SALES_STAFF' || user?.role === 'Nhân viên bán hàng';
   const isAdminOrOwner = isAdmin || isOwner;
+
 
   return (
     <>
