@@ -24,7 +24,7 @@ class PaymentController {
       const validatedData = createOrderSchema.parse(req.body);
 
       // Create pending order
-      const { order, items } = await OrderService.createOrder(validatedData);
+      const { order, items } = await OrderService.createOrder(validatedData, req.user);
 
       // Prepare items for payos
       const payosItems = items.map(item => ({

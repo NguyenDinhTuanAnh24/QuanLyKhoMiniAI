@@ -55,7 +55,8 @@ class InventoryController {
             title: type === 'IMPORT' ? `Nhập kho: ${p.product_name || item.product_id}` : `Xuất kho: ${p.product_name || item.product_id}`,
             message: `Đã ${type === 'IMPORT' ? 'nhập' : 'xuất'} số lượng ${item.quantity} cho sản phẩm ${p.product_name || item.product_id}. Tồn kho mới: ${newStock}`,
             type: type === 'IMPORT' ? 'STOCK_IMPORT' : 'STOCK_EXPORT',
-            related_link: '/inventory-ops'
+            related_link: '/inventory-ops',
+            targetRoles: ['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho']
           });
 
           if (newStock <= (p.reorder_level || 10)) {

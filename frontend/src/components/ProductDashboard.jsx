@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Plus, Filter, Upload, Download, MoreHorizontal, LayoutGrid, List, Package, CheckCircle2, AlertTriangle, DollarSign, Eye, Pencil, Trash2, X, RefreshCw, AlertCircle, FileSpreadsheet } from 'lucide-react';
-import { getProducts, deleteProduct, createProduct } from '../services/productService';
+import { getProducts, deleteProduct, createProduct, getProductStats } from '../services/productService';
 import { getCategories } from '../services/categoryService';
 import { getUnits } from '../services/unitService';
 import { getSuppliers } from '../services/supplierService';
