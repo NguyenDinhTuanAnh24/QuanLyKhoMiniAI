@@ -1,12 +1,19 @@
 import api from './api';
 
 export const logout = async () => {
-  // Clear local storage items related to auth
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  
-  // Xóa Authorization header mặc định của Axios
-  delete api.defaults.headers.common['Authorization'];
+  try {
+    // Gọi API logout để backend ghi log
+    await api.post('/auth/logout');
+  } catch (error) {
+    console.error('Logout error:', error);
+  } finally {
+    // Clear local storage items related to auth
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Xóa Authorization header mặc định của Axios
+    delete api.defaults.headers.common['Authorization'];
+  }
 };
 
 export const getToken = () => {

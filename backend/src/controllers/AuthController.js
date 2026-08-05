@@ -64,7 +64,7 @@ class AuthController {
         action: 'LOGIN',
         entity_type: 'USER',
         entity_id: user.user_id,
-        details: { email: user.email }
+        details: { role: (typeof user !== 'undefined' ? user.role : (req.user ? req.user.role : 'UNKNOWN')), status: 'Thành công', email: user.email }
       });
 
       res.json({
@@ -79,6 +79,25 @@ class AuthController {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ success: false, message: error.errors[0].message });
       }
+      next(error);
+    }
+  }
+
+  async logout(req, res, next) {
+    try {
+      if (req.user) {
+        const ActivityLogService = require('../services/ActivityLogService');
+        await ActivityLogService.logActivity({
+          user_id: req.user.user_id,
+          user_name: req.user.full_name,
+          action: 'LOGOUT',
+          entity_type: 'USER',
+          entity_id: req.user.user_id,
+          details: { role: (typeof user !== 'undefined' ? user.role : (req.user ? req.user.role : 'UNKNOWN')), status: 'Thành công', message: 'User logged out' }
+        });
+      }
+      res.json({ success: true, message: 'Đăng xuất thành công' });
+    } catch (error) {
       next(error);
     }
   }

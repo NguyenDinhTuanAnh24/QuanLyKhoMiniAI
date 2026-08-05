@@ -106,7 +106,18 @@ export default function ReportsPage() {
     }
   };
 
-  const fetchReportData = async () => {
+  const fetchReportData = async (force = false) => {
+    // Only fetch if forced or data for active tab is missing
+    let shouldFetch = force;
+    if (!force) {
+      if (activeTab === 'revenue' && !revenueData) shouldFetch = true;
+      if (activeTab === 'inventory' && !inventoryData) shouldFetch = true;
+      if (activeTab === 'top-selling' && !topSellingData) shouldFetch = true;
+      if (activeTab === 'imports' && !importsData) shouldFetch = true;
+    }
+
+    if (!shouldFetch) return;
+
     setLoading(true);
     setError(false);
     try {
@@ -153,10 +164,14 @@ export default function ReportsPage() {
   useEffect(() => {
     fetchReportData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.dateRange, filters.categoryId, filters.supplierId, activeTab]);
+  }, [activeTab]);
 
   const handleFilter = () => {
-    fetchReportData();
+    setRevenueData(null);
+    setInventoryData(null);
+    setTopSellingData(null);
+    setImportsData(null);
+    fetchReportData(true);
   };
 
   const handleRefresh = () => {
@@ -165,6 +180,15 @@ export default function ReportsPage() {
       categoryId: '',
       supplierId: ''
     });
+    setRevenueData(null);
+    setInventoryData(null);
+    setTopSellingData(null);
+    setImportsData(null);
+    // Let useEffect or subsequent renders handle fetching if needed, 
+    // but to be safe we can use a timeout to let state update.
+    setTimeout(() => {
+      fetchReportData(true);
+    }, 0);
   };
 
   const exportCurrentTab = async () => {
@@ -173,6 +197,24 @@ export default function ReportsPage() {
       const { saveAs } = (await import('file-saver')).default;
       const workbook = new ExcelJS.Workbook();
       const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+      const exportDateFormatted = new Date().toLocaleDateString('vi-VN');
+
+      const addHeaderToSheet = (sheet, title, columnsCount) => {
+        sheet.mergeCells(1, 1, 1, columnsCount);
+        const titleCell = sheet.getCell(1, 1);
+        titleCell.value = title;
+        titleCell.font = { name: 'Arial', size: 16, bold: true };
+        titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        sheet.mergeCells(2, 1, 2, columnsCount);
+        const dateCell = sheet.getCell(2, 1);
+        dateCell.value = `Ngày xuất: ${exportDateFormatted}`;
+        dateCell.font = { name: 'Arial', size: 11, italic: true };
+        dateCell.alignment = { vertical: 'middle', horizontal: 'center' };
+        
+        // Return row offset for table headers (row 4)
+        return 4;
+      };
 
       if (activeTab === 'revenue') {
         if (!revenueData?.tableData || revenueData.tableData.length === 0) {
@@ -181,15 +223,30 @@ export default function ReportsPage() {
         }
         showToast('Đang tạo file Excel...', 'info');
         const sheet = workbook.addWorksheet('Doanh thu');
+        
+        addHeaderToSheet(sheet, 'BÁO CÁO DOANH THU', 6);
+        
+        sheet.getRow(4).values = ['Ngày', 'Số đơn', 'Doanh thu', 'Giảm giá', 'Doanh thu thuần', 'Lợi nhuận'];
+        sheet.getRow(4).font = { bold: true };
+        
         sheet.columns = [
-          { header: 'Ngày', key: 'date', width: 15 },
-          { header: 'Số đơn', key: 'orders_count', width: 10 },
-          { header: 'Doanh thu', key: 'revenue', width: 20 },
-          { header: 'Giảm giá', key: 'discount', width: 15 },
-          { header: 'Doanh thu thuần', key: 'net_revenue', width: 20 },
-          { header: 'Lợi nhuận', key: 'profit', width: 20 }
+          { key: 'date', width: 15 },
+          { key: 'orders_count', width: 10 },
+          { key: 'revenue', width: 20 },
+          { key: 'discount', width: 15 },
+          { key: 'net_revenue', width: 20 },
+          { key: 'profit', width: 20 }
         ];
-        sheet.addRows(revenueData.tableData);
+        
+        sheet.getColumn('C').numFmt = '#,##0 "₫"';
+        sheet.getColumn('D').numFmt = '#,##0 "₫"';
+        sheet.getColumn('E').numFmt = '#,##0 "₫"';
+        sheet.getColumn('F').numFmt = '#,##0 "₫"';
+
+        revenueData.tableData.forEach(row => {
+          sheet.addRow(row);
+        });
+        
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `bao_cao_doanh_thu_${dateStr}.xlsx`);
@@ -202,17 +259,30 @@ export default function ReportsPage() {
         }
         showToast('Đang tạo file Excel...', 'info');
         const sheet = workbook.addWorksheet('Tồn kho');
+        
+        addHeaderToSheet(sheet, 'BÁO CÁO TỒN KHO', 8);
+        
+        sheet.getRow(4).values = ['SKU', 'Sản phẩm', 'Danh mục', 'Tồn kho', 'Mức tồn tối thiểu', 'Giá nhập', 'Giá trị tồn', 'Trạng thái'];
+        sheet.getRow(4).font = { bold: true };
+
         sheet.columns = [
-          { header: 'SKU', key: 'sku', width: 15 },
-          { header: 'Sản phẩm', key: 'product_name', width: 30 },
-          { header: 'Danh mục', key: 'category', width: 20 },
-          { header: 'Tồn kho', key: 'stock_quantity', width: 15 },
-          { header: 'Mức tồn tối thiểu', key: 'reorder_level', width: 20 },
-          { header: 'Giá nhập', key: 'import_price', width: 15 },
-          { header: 'Giá trị tồn', key: 'inventory_value', width: 20 },
-          { header: 'Trạng thái', key: 'status', width: 15 }
+          { key: 'sku', width: 15 },
+          { key: 'product_name', width: 30 },
+          { key: 'category', width: 20 },
+          { key: 'stock_quantity', width: 15 },
+          { key: 'reorder_level', width: 20 },
+          { key: 'import_price', width: 15 },
+          { key: 'inventory_value', width: 20 },
+          { key: 'status', width: 15 }
         ];
-        sheet.addRows(inventoryData.tableData);
+
+        sheet.getColumn('F').numFmt = '#,##0 "₫"';
+        sheet.getColumn('G').numFmt = '#,##0 "₫"';
+
+        inventoryData.tableData.forEach(row => {
+          sheet.addRow(row);
+        });
+
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `bao_cao_ton_kho_${dateStr}.xlsx`);
@@ -225,16 +295,29 @@ export default function ReportsPage() {
         }
         showToast('Đang tạo file Excel...', 'info');
         const sheet = workbook.addWorksheet('Bán chạy');
+        
+        addHeaderToSheet(sheet, 'BÁO CÁO SẢN PHẨM BÁN CHẠY', 7);
+        
+        sheet.getRow(4).values = ['STT', 'Sản phẩm', 'Mã SKU', 'Danh mục', 'Số lượng bán', 'Doanh thu', 'Tỷ trọng (%)'];
+        sheet.getRow(4).font = { bold: true };
+
         sheet.columns = [
-          { header: 'STT', key: 'rank', width: 10 },
-          { header: 'Sản phẩm', key: 'product_name', width: 30 },
-          { header: 'Mã SKU', key: 'sku', width: 15 },
-          { header: 'Danh mục', key: 'category', width: 20 },
-          { header: 'Số lượng bán', key: 'sold_quantity', width: 15 },
-          { header: 'Doanh thu', key: 'revenue', width: 20 },
-          { header: 'Tỷ trọng (%)', key: 'percentage', width: 15 }
+          { key: 'rank', width: 10 },
+          { key: 'product_name', width: 30 },
+          { key: 'sku', width: 15 },
+          { key: 'category', width: 20 },
+          { key: 'sold_quantity', width: 15 },
+          { key: 'revenue', width: 20 },
+          { key: 'percentage', width: 15 }
         ];
-        sheet.addRows(topSellingData.tableData);
+
+        sheet.getColumn('F').numFmt = '#,##0 "₫"';
+        sheet.getColumn('G').numFmt = '0.00 "%"';
+
+        topSellingData.tableData.forEach(row => {
+          sheet.addRow(row);
+        });
+
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `bao_cao_san_pham_ban_chay_${dateStr}.xlsx`);
@@ -247,16 +330,29 @@ export default function ReportsPage() {
         }
         showToast('Đang tạo file Excel...', 'info');
         const sheet = workbook.addWorksheet('Nhập hàng');
+        
+        addHeaderToSheet(sheet, 'BÁO CÁO NHẬP HÀNG', 7);
+        
+        sheet.getRow(4).values = ['Thời gian', 'Sản phẩm', 'Nhà cung cấp', 'Số lượng', 'Giá nhập', 'Thành tiền', 'Ghi chú'];
+        sheet.getRow(4).font = { bold: true };
+
         sheet.columns = [
-          { header: 'Thời gian', key: 'date', width: 20 },
-          { header: 'Sản phẩm', key: 'product_name', width: 30 },
-          { header: 'Nhà cung cấp', key: 'supplier', width: 25 },
-          { header: 'Số lượng', key: 'quantity', width: 15 },
-          { header: 'Giá nhập', key: 'unit_price', width: 15 },
-          { header: 'Thành tiền', key: 'total', width: 20 },
-          { header: 'Ghi chú', key: 'note', width: 25 }
+          { key: 'date', width: 20 },
+          { key: 'product_name', width: 30 },
+          { key: 'supplier', width: 25 },
+          { key: 'quantity', width: 15 },
+          { key: 'unit_price', width: 15 },
+          { key: 'total', width: 20 },
+          { key: 'note', width: 25 }
         ];
-        sheet.addRows(importsData.tableData);
+        
+        sheet.getColumn('E').numFmt = '#,##0 "₫"';
+        sheet.getColumn('F').numFmt = '#,##0 "₫"';
+
+        importsData.tableData.forEach(row => {
+          sheet.addRow(row);
+        });
+
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `bao_cao_nhap_hang_${dateStr}.xlsx`);

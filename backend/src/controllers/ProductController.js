@@ -77,7 +77,7 @@ class ProductController {
         action: 'CREATE_PRODUCT',
         entity_type: 'PRODUCT',
         entity_id: product.product_id,
-        details: { sku: product.sku, name: product.product_name }
+        details: { role: req.user.role, status: 'Thành công', sku: product.sku, name: product.product_name }
       });
       
       res.status(201).json({ success: true, data: product });
@@ -98,7 +98,7 @@ class ProductController {
         action: 'UPDATE_PRODUCT',
         entity_type: 'PRODUCT',
         entity_id: product.product_id,
-        details: { name: product.product_name }
+        details: { role: req.user.role, status: 'Thành công', name: product.product_name }
       });
       
       res.json({ success: true, data: product });
@@ -118,7 +118,7 @@ class ProductController {
         action: 'DELETE_PRODUCT',
         entity_type: 'PRODUCT',
         entity_id: req.params.id,
-        details: {}
+        details: { role: req.user.role, status: 'Thành công',}
       });
       
       res.json({ success: true, message: 'Product deleted successfully' });

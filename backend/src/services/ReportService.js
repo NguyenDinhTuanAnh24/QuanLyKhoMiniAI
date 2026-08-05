@@ -8,7 +8,7 @@ class ReportService {
     const orderIds = orders.map(o => o.order_id);
     let orderItems = await ReportRepository.getOrderItems(orderIds);
 
-    orderItems = orderItems.filter(item => !item.product || item.product.deleted_at === null);
+    // Allow deleted products in revenue to preserve historical data
 
     if (categoryId) orderItems = orderItems.filter(item => item.product?.category_id === categoryId);
     if (supplierId) orderItems = orderItems.filter(item => item.product?.supplier_id === supplierId);
@@ -172,7 +172,7 @@ class ReportService {
     let orderItems = await ReportRepository.getOrderItems(orderIds);
     let products = await ReportRepository.getProducts();
 
-    orderItems = orderItems.filter(item => !item.product || item.product.deleted_at === null);
+    // Allow deleted products in top selling to preserve historical data
     
     if (categoryId) orderItems = orderItems.filter(item => item.product?.category_id === categoryId);
     if (supplierId) orderItems = orderItems.filter(item => item.product?.supplier_id === supplierId);
