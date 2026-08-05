@@ -274,12 +274,14 @@ const DashboardPage = ({ onNavigate }) => {
             )}
           </div>
 
-          <button 
-            onClick={() => onNavigate ? onNavigate('ai-insights') : navigate('/ai-insights')}
-            className="w-full mt-6 py-2.5 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 font-medium rounded-lg transition-colors flex justify-center items-center gap-2 text-sm"
-          >
-            <Sparkles size={14} /> Xem phân tích đầy đủ <ArrowRight size={14} />
-          </button>
+          {!isStaff && (
+            <button 
+              onClick={() => onNavigate ? onNavigate('ai-insights') : navigate('/ai-insights')}
+              className="w-full mt-6 py-2.5 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 font-medium rounded-lg transition-colors flex justify-center items-center gap-2 text-sm"
+            >
+              <Sparkles size={14} /> Xem phân tích đầy đủ <ArrowRight size={14} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -430,7 +432,7 @@ const DashboardPage = ({ onNavigate }) => {
         )}
 
         {/* Thao tác nhanh */}
-        <div className={`${isStaff ? 'lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4' : ''} bg-white rounded-xl border border-slate-100 shadow-sm p-6`}>
+        <div className={`${isStaff ? 'lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4' : ''} bg-white rounded-xl border border-slate-100 shadow-sm p-6`}>
           <h3 className={`text-base font-bold text-slate-800 mb-4 ${isStaff ? 'col-span-full' : ''}`}>Thao tác nhanh</h3>
           
           <div className={`${isStaff ? 'contents' : 'space-y-3'}`}>
@@ -473,18 +475,20 @@ const DashboardPage = ({ onNavigate }) => {
               <ArrowRight size={14} className="text-slate-400 group-hover:text-purple-500" />
             </button>
 
-            <button 
-              onClick={() => onNavigate ? onNavigate('ai-insights') : navigate('/ai-insights')}
-              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-orange-200 hover:bg-orange-50/50 transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-1.5 bg-orange-50 text-orange-500 rounded-md group-hover:bg-orange-100">
-                  <Sparkles size={16} />
+            {!isStaff && (
+              <button 
+                onClick={() => onNavigate ? onNavigate('ai-insights') : navigate('/ai-insights')}
+                className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-orange-200 hover:bg-orange-50/50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-1.5 bg-orange-50 text-orange-500 rounded-md group-hover:bg-orange-100">
+                    <Sparkles size={16} />
+                  </div>
+                  <span className="text-sm font-medium text-slate-700">Chạy phân tích AI ngay</span>
                 </div>
-                <span className="text-sm font-medium text-slate-700">Chạy phân tích AI ngay</span>
-              </div>
-              <ArrowRight size={14} className="text-slate-400 group-hover:text-orange-500" />
-            </button>
+                <ArrowRight size={14} className="text-slate-400 group-hover:text-orange-500" />
+              </button>
+            )}
           </div>
         </div>
         
