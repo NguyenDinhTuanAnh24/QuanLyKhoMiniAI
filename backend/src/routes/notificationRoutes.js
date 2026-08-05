@@ -11,3 +11,4 @@ router.patch('/:id/read', notificationController.markAsRead);
 router.post('/', notificationController.createNotification);
 
 module.exports = router;
+

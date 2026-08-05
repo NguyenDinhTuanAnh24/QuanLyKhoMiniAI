@@ -1,20 +1,22 @@
 import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { getUser } from '../services/authService';
+import { getUser, getUserRoleCode } from '../services/authService';
 
 export default function RoleProtectedRoute({ children, allowedRoles }) {
   const user = getUser();
   
-  // If no allowedRoles specified, treat it as open to any logged in user
-  const isAllowed = user && (!allowedRoles || allowedRoles.length === 0 || allowedRoles.includes(user.role));
+  const isAllowed = user && (!allowedRoles || allowedRoles.length === 0 || allowedRoles.some(allowed => {
+    const allowedCode = getUserRoleCode(allowed);
+    return allowed === user.role || allowedCode === user.roleCode || allowed === user.roleCode;
+  }));
 
   useEffect(() => {
     if (user && !isAllowed) {
       window.dispatchEvent(new CustomEvent('globalToast', {
         detail: {
           type: 'error',
-          title: 'Từ chối truy cập',
-          message: 'Bạn không có quyền truy cập trang này.'
+          title: 'Từ chối truy cập (403)',
+          message: 'Tài khoản của bạn không có quyền truy cập tính năng này.'
         }
       }));
     }
@@ -30,3 +32,4 @@ export default function RoleProtectedRoute({ children, allowedRoles }) {
 
   return children;
 }
+

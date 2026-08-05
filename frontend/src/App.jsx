@@ -62,25 +62,29 @@ function App() {
                   
                   <Route path="/products" element={<ProductDashboard onNavigate={handleNavigate} />} />
                   <Route path="/categories" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <CategoryDashboard onNavigate={handleNavigate} />
                     </RoleProtectedRoute>
                   } />
                   <Route path="/units" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <UnitDashboard onNavigate={handleNavigate} />
                     </RoleProtectedRoute>
                   } />
                   <Route path="/suppliers" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <SupplierDashboard onNavigate={handleNavigate} />
                     </RoleProtectedRoute>
                   } />
-                  <Route path="/sales" element={<SalesPage onNavigate={handleNavigate} />} />
+                  <Route path="/sales" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER', 'SALES_STAFF']}>
+                      <SalesPage onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
                   
                   {/* Inventory Ops Routes */}
                   <Route path="/inventory-ops" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER', 'WAREHOUSE_STAFF']}>
                       <InventoryOpsDashboard onNavigate={handleNavigate} />
                     </RoleProtectedRoute>
                   } />
@@ -91,31 +95,36 @@ function App() {
 
                   {/* Placeholders for other main routes */}
                   <Route path="/reports" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <ReportsPage />
                     </RoleProtectedRoute>
                   } />
                   <Route path="/ai-insights" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <AIInsightsPage />
                     </RoleProtectedRoute>
                   } />
-                  <Route path="/alerts" element={<LowStockAlertDashboard onNavigate={handleNavigate} />} />
+                  <Route path="/alerts" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER', 'WAREHOUSE_STAFF']}>
+                      <LowStockAlertDashboard onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
                   <Route path="/users" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <UserDashboard />
                     </RoleProtectedRoute>
                   } />
                   <Route path="/settings" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên', 'Chủ cửa hàng']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <SettingsPage />
                     </RoleProtectedRoute>
                   } />
                   <Route path="/activity-logs" element={
-                    <RoleProtectedRoute allowedRoles={['Quản trị viên']}>
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
                       <ActivityLogsPage />
                     </RoleProtectedRoute>
                   } />
+
 
                   {/* Default fallback for undefined routes */}
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
