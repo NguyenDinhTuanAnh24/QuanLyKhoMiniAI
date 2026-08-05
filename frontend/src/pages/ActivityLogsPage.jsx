@@ -86,27 +86,103 @@ const ActivityLogsPage = () => {
 
   const formatDetailKey = (key) => {
     const keyMap = {
+      // Product
       product_name: 'Tên SP',
+      product_name_en: 'Tên SP (TA)',
       sku: 'SKU',
       price: 'Giá bán',
       import_price: 'Giá nhập',
       selling_price: 'Giá bán',
       quantity: 'Số lượng',
       stock_quantity: 'Tồn kho',
+      reorder_level: 'Mức tồn tối thiểu',
+      reorder_quantity: 'SL đặt lại',
+      date_received: 'Ngày nhập',
+      expiration_date: 'Ngày hết hạn',
+      warehouse_location: 'Vị trí kho',
+      sales_90d: 'Đã bán 90N',
+      avg_daily_sales_90d: 'Bán TB ngày',
+      forecast_14d: 'Dự báo 14N',
+      suggested_import_quantity: 'SL nhập đề xuất',
+      source_row_count: 'Số dòng nguồn',
+      
+      // Order
       total: 'Tổng tiền',
+      total_amount: 'Tổng tiền',
+      customer_name: 'Khách hàng',
+      payment_method: 'PT thanh toán',
+      order_id: 'Mã đơn hàng',
+      order_code: 'Mã đơn hàng',
+      created_by: 'Người tạo',
+      items: 'Sản phẩm',
+      
+      // Stock Movement
+      type: 'Loại thao tác',
+      old_quantity: 'SL cũ',
+      new_quantity: 'SL mới',
+      unit_price: 'Đơn giá',
+      
+      // User
       role: 'Vai trò',
       status: 'Trạng thái',
       email: 'Email',
       full_name: 'Họ tên',
+      phone: 'Số điện thoại',
+      user_id: 'Mã người dùng',
       ip: 'Địa chỉ IP',
+      message: 'Hệ thống',
+      
+      // Common & Master Data
       old_value: 'Giá trị cũ',
       new_value: 'Giá trị mới',
       note: 'Ghi chú',
+      description: 'Mô tả',
       category_id: 'Danh mục',
+      category_name: 'Tên danh mục',
       supplier_id: 'Nhà cung cấp',
-      reorder_level: 'Mức tồn tối thiểu'
+      supplier_name: 'Tên NCC',
+      unit_id: 'Đơn vị tính',
+      unit_name: 'Tên ĐVT',
+      address: 'Địa chỉ',
+      
+      // Settings
+      store_name: 'Tên cửa hàng',
+      store_phone: 'SĐT cửa hàng',
+      store_email: 'Email cửa hàng',
+      store_address: 'Địa chỉ cửa hàng',
+      low_stock_warning_days: 'Ngày cảnh báo tồn',
+      default_reorder_level: 'Tồn tối thiểu mặc định',
+      auto_stock_alert_enabled: 'Cảnh báo tự động',
+      allow_negative_stock: 'Cho phép tồn âm',
+      ai_enabled: 'Bật AI',
+      ai_provider: 'Nhà cung cấp AI',
+      ai_model: 'Mô hình AI',
+      forecast_days: 'Số ngày dự báo',
+      payos_enabled: 'Bật PayOS',
+      bank_name: 'Tên ngân hàng',
+      bank_account_no: 'Số TK ngân hàng',
+      bank_account_name: 'Chủ TK ngân hàng',
+      currency: 'Tiền tệ',
+      date_format: 'Định dạng ngày',
+      maintenance_mode: 'Bảo trì',
+      store_logo_url: 'Logo cửa hàng'
     };
     return keyMap[key] || key;
+  };
+
+  const formatDetailValue = (key, value) => {
+    if (value === true || value === 'true') return 'Có';
+    if (value === false || value === 'false') return 'Không';
+    
+    // Các giá trị Role
+    if (value === 'OWNER') return 'Chủ cửa hàng';
+    if (value === 'ADMIN') return 'Quản trị viên';
+    
+    // Các giá trị Status
+    if (value === 'Active' || value === 'ACTIVE') return 'Hoạt động';
+    if (value === 'Inactive' || value === 'INACTIVE') return 'Khóa';
+    
+    return String(value);
   };
 
   const renderDetails = (details) => {
@@ -123,20 +199,20 @@ const ActivityLogsPage = () => {
       }
 
       const entries = Object.entries(data).filter(([key, value]) => {
-        return !['id', 'created_at', 'updated_at', 'deleted_at', 'password', 'product_id', 'user_id', 'category_name', 'unit_name'].includes(key) && 
+        return !['id', 'created_at', 'updated_at', 'deleted_at', 'password', 'product_id', 'user_id', 'category_name', 'unit_name', 'role', 'status'].includes(key) && 
                value !== null && 
                value !== undefined && 
                typeof value !== 'object';
       });
 
-      if (entries.length === 0) return <span className="text-gray-400 italic text-xs">Không có chi tiết</span>;
+      if (entries.length === 0) return <span className="text-gray-400 italic text-xs">Không có chi tiết bổ sung</span>;
 
       return (
         <div className="space-y-1">
           {entries.map(([key, value], idx) => (
             <div key={idx} className="flex gap-2 text-xs">
               <span className="font-semibold text-gray-700 whitespace-nowrap min-w-[80px]">{formatDetailKey(key)}:</span>
-              <span className="text-blue-600 truncate flex-1 font-medium" title={String(value)}>{String(value)}</span>
+              <span className="text-blue-600 truncate flex-1 font-medium" title={String(value)}>{formatDetailValue(key, value)}</span>
             </div>
           ))}
         </div>
@@ -213,36 +289,66 @@ const ActivityLogsPage = () => {
                 <thead>
                   <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500">
                     <th className="px-6 py-4 font-medium whitespace-nowrap">Thời gian</th>
-                    <th className="px-6 py-4 font-medium">Người dùng</th>
-                    <th className="px-6 py-4 font-medium">Thao tác</th>
+                    <th className="px-6 py-4 font-medium">Người dùng / Vai trò</th>
+                    <th className="px-6 py-4 font-medium">Thao tác / Kết quả</th>
                     <th className="px-6 py-4 font-medium">Đối tượng</th>
                     <th className="px-6 py-4 font-medium">Chi tiết</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {logs.map((log) => (
-                    <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                        {formatDate(log.created_at)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900">{log.user_name || 'N/A'}</div>
-                        <div className="text-xs text-gray-500">{log.user_id}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {renderActionBadge(log.action)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-gray-900">{ENTITY_LABELS[log.entity_type] || log.entity_type}</div>
-                        {log.entity_id && <div className="text-xs text-gray-500 truncate max-w-[120px]">{log.entity_id}</div>}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="max-h-32 overflow-y-auto w-full min-w-[280px] p-2.5 bg-blue-50/30 rounded-lg border border-blue-100/50 shadow-sm">
-                          {renderDetails(log.details)}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {logs.map((log) => {
+                    let detailsObj = {};
+                    try {
+                      if (typeof log.details === 'string') {
+                        detailsObj = JSON.parse(log.details);
+                      } else {
+                        detailsObj = log.details || {};
+                      }
+                    } catch (e) {}
+
+                    const roleLabel = detailsObj.role ? formatDetailValue('role', detailsObj.role) : '';
+                    const statusLabel = detailsObj.status ? formatDetailValue('status', detailsObj.status) : '';
+
+                    return (
+                      <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                          {formatDate(log.created_at)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col items-start gap-1.5">
+                            <div>
+                              <div className="font-medium text-gray-900">{log.user_name || 'Hệ thống'}</div>
+                              <div className="text-xs text-gray-500">{log.user_id || 'N/A'}</div>
+                            </div>
+                            {roleLabel && (
+                              <div className="text-[10px] font-semibold text-blue-600 uppercase bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                {roleLabel}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex flex-col items-start gap-2">
+                            {renderActionBadge(log.action)}
+                            {statusLabel && (
+                              <div className="text-[10px] font-semibold text-emerald-600 uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                                {statusLabel}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-gray-900">{ENTITY_LABELS[log.entity_type] || log.entity_type}</div>
+                          {log.entity_id && <div className="text-xs text-gray-500 truncate max-w-[120px]">{log.entity_id}</div>}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="max-h-32 overflow-y-auto w-full min-w-[280px] p-2.5 bg-blue-50/30 rounded-lg border border-blue-100/50 shadow-sm">
+                            {renderDetails(log.details)}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}

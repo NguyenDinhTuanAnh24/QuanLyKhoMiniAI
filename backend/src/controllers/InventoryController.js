@@ -86,7 +86,7 @@ class InventoryController {
           action: type === 'IMPORT' ? 'IMPORT_STOCK' : 'EXPORT_STOCK',
           entity_type: 'PRODUCT',
           entity_id: items.length > 1 ? 'MULTIPLE' : items[0].product_id,
-          details: { item_count: items.length, note }
+          details: { role: req.user.role, status: 'Thành công', item_count: items.length, note }
         });
       }
 

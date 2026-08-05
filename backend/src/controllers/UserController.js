@@ -1,5 +1,6 @@
 const UserService = require('../services/UserService');
 const { z } = require('zod');
+const ActivityLogService = require('../services/ActivityLogService');
 
 const userSchema = z.object({
   user_id: z.string().optional(),
@@ -104,6 +105,16 @@ class UserController {
     try {
       const validatedData = userSchema.parse(req.body);
       const user = await UserService.createUser(validatedData);
+      
+      await ActivityLogService.logActivity({
+        user_id: req.user.user_id,
+        user_name: req.user.full_name,
+        action: 'CREATE_USER',
+        entity_type: 'USER',
+        entity_id: user.user_id,
+        details: validatedData
+      });
+      
       res.status(201).json({ success: true, data: user });
     } catch (error) {
       next(error);
@@ -114,6 +125,16 @@ class UserController {
     try {
       const validatedData = userUpdateSchema.parse(req.body);
       const user = await UserService.updateUser(req.params.id, validatedData);
+      
+      await ActivityLogService.logActivity({
+        user_id: req.user.user_id,
+        user_name: req.user.full_name,
+        action: 'UPDATE_USER',
+        entity_type: 'USER',
+        entity_id: req.params.id,
+        details: validatedData
+      });
+      
       res.json({ success: true, data: user });
     } catch (error) {
       next(error);
@@ -123,6 +144,16 @@ class UserController {
   async deleteUser(req, res, next) {
     try {
       await UserService.deleteUser(req.params.id);
+      
+      await ActivityLogService.logActivity({
+        user_id: req.user.user_id,
+        user_name: req.user.full_name,
+        action: 'DELETE_USER',
+        entity_type: 'USER',
+        entity_id: req.params.id,
+        details: { role: req.user.role, status: 'Thành công', user_id: req.params.id }
+      });
+      
       res.json({ success: true, message: 'Đã xóa người dùng thành công' });
     } catch (error) {
       next(error);
@@ -133,6 +164,16 @@ class UserController {
     try {
       const { status } = statusUpdateSchema.parse(req.body);
       const user = await UserService.updateStatus(req.params.id, status);
+      
+      await ActivityLogService.logActivity({
+        user_id: req.user.user_id,
+        user_name: req.user.full_name,
+        action: 'UPDATE_USER',
+        entity_type: 'USER',
+        entity_id: req.params.id,
+        details: { role: req.user.role, status: 'Thành công', status }
+      });
+      
       res.json({ success: true, data: user });
     } catch (error) {
       next(error);

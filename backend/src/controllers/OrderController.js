@@ -33,7 +33,7 @@ class OrderController {
         action: 'CREATE_ORDER',
         entity_type: 'ORDER',
         entity_id: result.order.order_id,
-        details: { total_amount: result.order.total_amount, customer_name: result.order.customer_name }
+        details: { role: req.user.role, status: 'Thành công', total_amount: result.order.total_amount, customer_name: result.order.customer_name }
       });
       
       res.status(201).json({ success: true, data: result.order });
