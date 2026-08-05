@@ -146,24 +146,6 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
     }
   };
 
-  const getPageTitle = (pathname) => {
-    if (pathname.includes("dashboard")) return "Tổng quan";
-    if (pathname.includes("products")) return "Quản lý sản phẩm";
-    if (pathname.includes("inventory-ops") || pathname.includes("warehouse") || pathname.includes("stock-movements")) return "Nhập / Xuất kho";
-    if (pathname.includes("sales") || pathname.includes("orders")) return "Đơn bán hàng";
-    if (pathname.includes("alerts") || pathname.includes("stock-alerts")) return "Cảnh báo tồn kho";
-    if (pathname.includes("ai")) return "AI Dự báo";
-    if (pathname.includes("reports")) return "Báo cáo";
-    if (pathname.includes("categories")) return "Quản lý danh mục";
-    if (pathname.includes("units")) return "Quản lý đơn vị tính";
-    if (pathname.includes("suppliers")) return "Quản lý nhà cung cấp";
-    if (pathname.includes("users")) return "Quản lý người dùng";
-    if (pathname.includes("settings")) return "Cài đặt hệ thống";
-    
-    return "Tổng quan";
-  };
-
-  const pageTitle = getPageTitle(location.pathname);
 
   const handleLogoutClick = () => {
     setIsDropdownOpen(false);
@@ -190,9 +172,6 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
         <button onClick={toggleSidebar} className="text-slate-500 hover:text-slate-700 lg:hidden focus:outline-none">
           <Menu className="w-5 h-5" />
         </button>
-        <div className="hidden md:block">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{pageTitle}</h1>
-        </div>
       </div>
 
       <div className="flex items-center gap-4">
