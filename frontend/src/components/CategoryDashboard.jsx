@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Filter, LayoutGrid, CheckCircle2, AlertCircle, List, Eye, Pencil, Trash2, X } from 'lucide-react';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService';
 import StatCard from './StatCard';
+import ConfirmModal from './ConfirmModal';
+import { useToast } from '../contexts/ToastContext';
 
 export default function CategoryDashboard() {
   const [categories, setCategories] = useState([]);
@@ -22,6 +24,10 @@ export default function CategoryDashboard() {
     description: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { showToast } = useToast();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   const loadCategories = async () => {
     setLoading(true);
@@ -71,32 +77,40 @@ export default function CategoryDashboard() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!formData.category_name) {
-      alert("Tên danh mục là bắt buộc");
+      showToast("Tên danh mục là bắt buộc", "error");
       return;
     }
     setIsSubmitting(true);
     try {
       if (editingCategory) {
         await updateCategory(editingCategory.category_id, formData);
+        showToast("Cập nhật danh mục thành công", "success");
       } else {
         await createCategory(formData);
+        showToast("Thêm danh mục thành công", "success");
       }
       closeModal();
       loadCategories();
     } catch (error) {
-      alert(error.response?.data?.message || "Đã xảy ra lỗi");
+      showToast(error.response?.data?.error?.message || error.response?.data?.message || "Đã xảy ra lỗi", "error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa danh mục này?")) return;
+  const handleDeleteClick = (id) => {
+    setCategoryToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setDeleteConfirmOpen(false);
     try {
-      await deleteCategory(id);
+      await deleteCategory(categoryToDelete);
+      showToast("Xóa danh mục thành công", "success");
       loadCategories();
     } catch (error) {
-      alert(error.response?.data?.message || "Đã xảy ra lỗi khi xóa");
+      showToast(error.response?.data?.error?.message || error.response?.data?.message || "Đã xảy ra lỗi khi xóa", "error");
     }
   };
 
@@ -192,7 +206,7 @@ export default function CategoryDashboard() {
                           <button onClick={() => openEditModal(category)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
                             <Pencil className="w-4 h-4" /> Sửa
                           </button>
-                          <button onClick={() => handleDelete(category.category_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
+                          <button onClick={() => handleDeleteClick(category.category_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
                             <Trash2 className="w-4 h-4" /> Xoá
                           </button>
                         </div>
@@ -285,6 +299,17 @@ export default function CategoryDashboard() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Xác nhận xóa"
+        message="Bạn có chắc chắn muốn xóa danh mục này không?"
+        confirmText="Xóa"
+        cancelText="Hủy"
+        isDanger={true}
+      />
     </div>
   );
 }

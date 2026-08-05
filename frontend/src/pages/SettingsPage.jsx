@@ -153,7 +153,7 @@ export default function SettingsPage() {
       showToast('Upload logo thành công', 'success');
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Lỗi khi tải ảnh lên';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Lỗi khi tải ảnh lên';
       showToast(msg, 'error');
     }
     e.target.value = '';
@@ -230,7 +230,7 @@ export default function SettingsPage() {
       }
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Không thể lưu cấu hình';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Không thể lưu cấu hình';
       showToast(msg, 'error');
     } finally {
       setSaving(false);
@@ -248,7 +248,7 @@ export default function SettingsPage() {
       }
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Lỗi khi kết nối AI';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Lỗi khi kết nối AI';
       showToast(msg, 'error');
     }
   };

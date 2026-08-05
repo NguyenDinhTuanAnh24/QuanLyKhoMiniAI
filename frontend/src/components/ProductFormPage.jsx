@@ -293,7 +293,7 @@ export default function ProductFormModal({ payload, onClose, onSuccess }) {
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || "Đã có lỗi xảy ra khi lưu sản phẩm.";
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || "Đã có lỗi xảy ra khi lưu sản phẩm.";
       
       if (msg.toLowerCase().includes('sku')) {
         showToast({

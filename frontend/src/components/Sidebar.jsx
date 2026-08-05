@@ -61,7 +61,7 @@ const menuGroups = [
   }
 ];
 
-export default function Sidebar({ activePage, onNavigate }) {
+export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
   const [expandedGroups, setExpandedGroups] = useState({});
 
   useEffect(() => {
@@ -98,8 +98,17 @@ export default function Sidebar({ activePage, onNavigate }) {
   const isAdminOrOwner = isAdmin || isOwner;
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0">
-      <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-40 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      
+      <aside className={`w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0 z-50 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 text-white rounded flex items-center justify-center font-bold text-lg">
             SR
@@ -150,6 +159,9 @@ export default function Sidebar({ activePage, onNavigate }) {
                         onClick={(e) => {
                           e.preventDefault();
                           onNavigate(item.id);
+                          if (window.innerWidth < 1024 && typeof setIsOpen === 'function') {
+                            setIsOpen(false);
+                          }
                         }}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                           isActive 
@@ -196,6 +208,9 @@ export default function Sidebar({ activePage, onNavigate }) {
                                   onClick={(e) => {
                                     e.preventDefault();
                                     onNavigate(child.id);
+                                    if (window.innerWidth < 1024 && typeof setIsOpen === 'function') {
+                                      setIsOpen(false);
+                                    }
                                   }}
                                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-colors ${
                                     isChildActive 
@@ -222,6 +237,7 @@ export default function Sidebar({ activePage, onNavigate }) {
           );
         })}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
