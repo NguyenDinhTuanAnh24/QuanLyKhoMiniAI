@@ -17,16 +17,21 @@ import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import ActivityLogsPage from './pages/ActivityLogsPage';
 import { ToastProvider } from './contexts/ToastContext';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 
-import { getToken } from './services/authService';
+
+import { isAuthenticated } from './services/authService';
 
 const ProtectedRoute = ({ children }) => {
-  const token = getToken();
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  const location = useLocation();
+  const isAuth = isAuthenticated();
+  
+  if (!isAuth) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 };
+
 
 function App() {
   const navigate = useNavigate();
@@ -56,25 +61,70 @@ function App() {
                   <Route path="/dashboard" element={<DashboardPage onNavigate={handleNavigate} />} />
                   
                   <Route path="/products" element={<ProductDashboard onNavigate={handleNavigate} />} />
-                  <Route path="/categories" element={<CategoryDashboard onNavigate={handleNavigate} />} />
-                  <Route path="/units" element={<UnitDashboard onNavigate={handleNavigate} />} />
-                  <Route path="/suppliers" element={<SupplierDashboard onNavigate={handleNavigate} />} />
-                  <Route path="/sales" element={<SalesPage onNavigate={handleNavigate} />} />
+                  <Route path="/categories" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <CategoryDashboard onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/units" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <UnitDashboard onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/suppliers" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <SupplierDashboard onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/sales" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER', 'SALES_STAFF']}>
+                      <SalesPage onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
                   
                   {/* Inventory Ops Routes */}
-                  <Route path="/inventory-ops" element={<InventoryOpsDashboard onNavigate={handleNavigate} />} />
+                  <Route path="/inventory-ops" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER', 'WAREHOUSE_STAFF']}>
+                      <InventoryOpsDashboard onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
                   <Route path="/warehouse" element={<Navigate to="/inventory-ops" replace />} />
                   <Route path="/stock" element={<Navigate to="/inventory-ops" replace />} />
                   <Route path="/import" element={<Navigate to="/inventory-ops" replace />} />
                   <Route path="/export" element={<Navigate to="/inventory-ops" replace />} />
 
                   {/* Placeholders for other main routes */}
-                  <Route path="/reports" element={<ReportsPage />} />
-                  <Route path="/ai-insights" element={<AIInsightsPage />} />
-                  <Route path="/alerts" element={<LowStockAlertDashboard onNavigate={handleNavigate} />} />
-                  <Route path="/users" element={<UserDashboard />} />
-                  <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/activity-logs" element={<ActivityLogsPage />} />
+                  <Route path="/reports" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <ReportsPage />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/ai-insights" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <AIInsightsPage />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/alerts" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER', 'WAREHOUSE_STAFF']}>
+                      <LowStockAlertDashboard onNavigate={handleNavigate} />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/users" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <UserDashboard />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <SettingsPage />
+                    </RoleProtectedRoute>
+                  } />
+                  <Route path="/activity-logs" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN', 'OWNER']}>
+                      <ActivityLogsPage />
+                    </RoleProtectedRoute>
+                  } />
+
 
                   {/* Default fallback for undefined routes */}
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />

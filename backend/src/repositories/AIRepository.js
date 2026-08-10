@@ -11,6 +11,8 @@ class AIRepository {
         product_name,
         stock_quantity,
         reorder_level,
+        import_price,
+        selling_price,
         category:categories(category_name),
         supplier:suppliers(supplier_name),
         unit:units(unit_name)
@@ -52,7 +54,8 @@ class AIRepository {
         unit_name: p.unit?.unit_name || null,
         sales_7d: 0,
         sales_30d: 0,
-        sales_90d: 0
+        sales_90d: 0,
+        last_sale_date: null
       };
       delete productMap[p.product_id].category;
       delete productMap[p.product_id].supplier;
@@ -73,6 +76,9 @@ class AIRepository {
           }
           if (diffDays <= 7) {
             productMap[item.product_id].sales_7d += item.quantity;
+          }
+          if (!productMap[item.product_id].last_sale_date || new Date(productMap[item.product_id].last_sale_date) < orderDate) {
+            productMap[item.product_id].last_sale_date = order.created_at;
           }
         }
       });

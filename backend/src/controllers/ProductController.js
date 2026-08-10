@@ -56,6 +56,15 @@ class ProductController {
     }
   }
 
+  async getProductStats(req, res, next) {
+    try {
+      const stats = await ProductService.getProductStats();
+      res.json({ success: true, data: stats });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getProductById(req, res, next) {
     try {
       const product = await ProductService.getProductById(req.params.id);

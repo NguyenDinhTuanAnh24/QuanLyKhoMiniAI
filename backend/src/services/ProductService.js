@@ -6,6 +6,10 @@ class ProductService {
     return await ProductRepository.findAndCountAll(filters, page, limit);
   }
 
+  async getProductStats() {
+    return await ProductRepository.getStats();
+  }
+
   async getProductById(id) {
     const product = await ProductRepository.findById(id);
     if (!product) {

@@ -47,12 +47,50 @@ export default function ProductDashboard({ onNavigate }) {
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const selectAllRef = React.useRef(null);
 
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    activeProducts: 0,
+    lowStockProducts: 0,
+    totalInventoryValue: 0
+  });
+  const [categoryList, setCategoryList] = useState([]);
+
+  const initData = async () => {
+    try {
+      const [catRes, statsRes] = await Promise.all([
+        getCategories(),
+        getProductStats()
+      ]);
+      if (catRes.data) setCategoryList(catRes.data);
+      if (statsRes.data) setStats(statsRes.data);
+    } catch (e) {
+      console.error('Lỗi tải data ban đầu:', e);
+    }
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
+
   const loadProducts = async () => {
     setLoading(true);
     try {
-      // Tạm lấy limit lớn để có đủ data làm frontend filter
-      const result = await getProducts({ limit: 1000, page: 1 });
+      const params = { 
+        limit: itemsPerPage, 
+        page: currentPage,
+        search: debouncedSearch,
+        category_id: selectedCategory,
+        status: selectedStatus,
+        stock_status: selectedStockStatus
+      };
+      const result = await getProducts(params);
       setProducts(result.data || []);
+      if (result.meta?.pagination) {
+        setTotalPages(result.meta.pagination.totalPages);
+        setTotalItems(result.meta.pagination.total);
+      }
     } catch (error) {
       console.error("Failed to load products", error);
     } finally {
@@ -62,7 +100,7 @@ export default function ProductDashboard({ onNavigate }) {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [currentPage, debouncedSearch, selectedCategory, selectedStatus, selectedStockStatus]);
 
   // Debounce search
   useEffect(() => {
@@ -72,73 +110,8 @@ export default function ProductDashboard({ onNavigate }) {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Extract unique categories from products
-  const categories = useMemo(() => {
-    const cats = new Set();
-    products.forEach(p => {
-      if (p.category_name) cats.add(p.category_name);
-      else if (p.category?.category_name) cats.add(p.category.category_name);
-    });
-    return Array.from(cats).sort();
-  }, [products]);
-
-  // Filtering logic
-  const filteredProducts = useMemo(() => {
-    return products.filter(p => {
-      // 1. Search
-      if (debouncedSearch) {
-        const query = debouncedSearch.toLowerCase();
-        const matchName = p.product_name?.toLowerCase().includes(query);
-        const matchNameEn = p.product_name_en?.toLowerCase().includes(query);
-        const matchSku = p.sku?.toLowerCase().includes(query);
-        const matchId = p.product_id?.toLowerCase().includes(query);
-        if (!matchName && !matchNameEn && !matchSku && !matchId) return false;
-      }
-      
-      // 2. Category
-      if (selectedCategory) {
-        const catName = p.category_name || p.category?.category_name;
-        if (p.category_id !== selectedCategory && catName !== selectedCategory) return false;
-      }
-      
-      // 3. Status
-      if (selectedStatus) {
-        const statusStr = p.status?.toLowerCase() || '';
-        if (selectedStatus === 'active' && !(statusStr === 'đang bán' || statusStr === 'active')) return false;
-        if (selectedStatus === 'inactive' && !(statusStr === 'tạm ngừng' || statusStr === 'tạm ngưng' || statusStr === 'inactive')) return false;
-      }
-      
-      // 4. Stock status
-      if (selectedStockStatus) {
-        const stock = p.stock_quantity || 0;
-        const reorder = p.reorder_level || 0;
-        if (selectedStockStatus === 'out') {
-          if (stock > 0) return false;
-        } else if (selectedStockStatus === 'low') {
-          if (stock <= 0 || stock > reorder) return false;
-        } else if (selectedStockStatus === 'in') {
-          if (stock <= reorder) return false;
-        }
-      }
-      
-      return true;
-    });
-  }, [products, debouncedSearch, selectedCategory, selectedStatus, selectedStockStatus]);
-
-  // Reset pagination when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filteredProducts.length]);
-
-  const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredProducts.slice(start, start + itemsPerPage);
-  }, [filteredProducts, currentPage]);
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
   // Checkbox logic
-  const visibleProductIds = paginatedProducts.map((p) => p.product_id);
+  const visibleProductIds = products.map((p) => p.product_id);
 
   const isAllVisibleSelected =
     visibleProductIds.length > 0 &&
@@ -234,11 +207,13 @@ export default function ProductDashboard({ onNavigate }) {
 
   const handleExportClick = async () => {
     try {
-      if (filteredProducts.length === 0) {
+      if (products.length === 0) {
         showToast({ type: 'warning', title: 'Cảnh báo', message: 'Không có dữ liệu để xuất' });
         return;
       }
-      await exportProductsToExcel(filteredProducts);
+      // Temporarily fetch all for export since we only have current page
+      const res = await getProducts({ limit: 10000, search: debouncedSearch, category_id: selectedCategory, status: selectedStatus });
+      await exportProductsToExcel(res.data || []);
       showToast({ type: 'success', title: 'Thành công', message: 'Xuất Excel thành công' });
     } catch (error) {
       console.error(error);
@@ -362,12 +337,6 @@ export default function ProductDashboard({ onNavigate }) {
     }
   };
 
-  // Tính toán thống kê toàn bộ (không bị ảnh hưởng bởi filter để tránh giật)
-  const totalProducts = products.length;
-  const activeProducts = products.filter(p => (p.stock_quantity || 0) > (p.reorder_level || 0)).length;
-  const lowStockProducts = products.filter(p => (p.stock_quantity || 0) <= (p.reorder_level || 0)).length;
-  const totalInventoryValue = products.reduce((sum, p) => sum + ((p.stock_quantity || 0) * (p.import_price || 0)), 0);
-
   const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val || 0);
   const formatCompactCurrency = (val) => {
     if (!val) return 'đ 0';
@@ -423,10 +392,10 @@ export default function ProductDashboard({ onNavigate }) {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={totalProducts} trend="up" trendLabel="+4 mới" />
-        <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={activeProducts} trend="up" trendLabel="91%" />
-        <StatCard icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={lowStockProducts} trend="down" trendLabel="9%" />
-        <StatCard icon={DollarSign} iconColorClass="bg-purple-50 text-purple-600" label="Tổng giá trị" value={formatCompactCurrency(totalInventoryValue)} trend="up" trendLabel="+5.2%" />
+        <StatCard icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={stats.totalProducts} trend="up" trendLabel="+4 mới" />
+        <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={stats.activeProducts} trend="up" trendLabel="91%" />
+        <StatCard icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={stats.lowStockProducts} trend="down" trendLabel="9%" />
+        <StatCard icon={DollarSign} iconColorClass="bg-purple-50 text-purple-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
       </div>
 
       {/* Filter Bar */}
@@ -448,8 +417,8 @@ export default function ProductDashboard({ onNavigate }) {
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
           <option value="">Tất cả danh mục</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categoryList.map(cat => (
+            <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
           ))}
         </select>
         
@@ -459,8 +428,8 @@ export default function ProductDashboard({ onNavigate }) {
           onChange={(e) => setSelectedStatus(e.target.value)}
         >
           <option value="">Tất cả trạng thái</option>
-          <option value="active">Đang bán</option>
-          <option value="inactive">Tạm ngưng</option>
+          <option value="Đang bán">Đang bán</option>
+          <option value="Tạm ngưng">Tạm ngưng</option>
         </select>
 
         <select 
@@ -506,7 +475,7 @@ export default function ProductDashboard({ onNavigate }) {
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-slate-500">Đang tải dữ liệu...</div>
-        ) : filteredProducts.length === 0 ? (
+        ) : products.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
               <Package className="w-8 h-8 text-slate-400" />
@@ -542,7 +511,7 @@ export default function ProductDashboard({ onNavigate }) {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-slate-100">
-                {paginatedProducts.map(product => {
+                {products.map(product => {
                   const badge = getProductBadge(product);
                   const isLowStock = product.stock_quantity <= (product.reorder_level || 0);
 
@@ -608,7 +577,7 @@ export default function ProductDashboard({ onNavigate }) {
           </div>
         ) : (
           <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-slate-50">
-            {paginatedProducts.map(product => {
+            {products.map(product => {
               const badge = getProductBadge(product);
               const isLowStock = product.stock_quantity <= (product.reorder_level || 0);
               
@@ -665,10 +634,10 @@ export default function ProductDashboard({ onNavigate }) {
         )}
         
         {/* Pagination Footer */}
-        {filteredProducts.length > 0 && (
+        {products.length > 0 && (
           <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
             <div className="text-sm text-slate-500">
-              Hiển thị <span className="font-medium text-slate-900">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-medium text-slate-900">{Math.min(currentPage * itemsPerPage, filteredProducts.length)}</span> trong tổng số <span className="font-medium text-slate-900">{filteredProducts.length}</span> sản phẩm
+              Hiển thị <span className="font-medium text-slate-900">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-medium text-slate-900">{Math.min(currentPage * itemsPerPage, totalItems)}</span> trong tổng số <span className="font-medium text-slate-900">{totalItems}</span> sản phẩm
             </div>
             {totalPages > 1 && (
               <div className="flex gap-1">

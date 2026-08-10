@@ -14,8 +14,8 @@ export default function AIForecastChart({ data }) {
       
       <div className="flex-1 w-full min-w-0 h-72 flex flex-col justify-center">
         {data && data.length > 0 ? (
-          <div className="w-full h-72 min-h-[288px]" style={{ minWidth: 0, minHeight: 288 }}>
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-full h-72 min-h-[288px] relative" style={{ minWidth: 0, minHeight: 288 }}>
+            <ResponsiveContainer width="100%" height={288}>
               <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                 <XAxis 

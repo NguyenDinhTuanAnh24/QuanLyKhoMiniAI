@@ -14,11 +14,24 @@ export function useToast() {
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback((options) => {
-    // support string or object
-    const toastConfig = typeof options === 'string' 
-      ? { message: options, type: arguments[1] || 'info' }
-      : options;
+  const addToast = useCallback((...args) => {
+    const options = args[0];
+    let toastConfig = options;
+    if (typeof options === 'string') {
+      const validTypes = ['success', 'error', 'warning', 'info'];
+      if (args.length >= 3) {
+        // e.g., addToast('info', 'Tự động chọn', 'Đã chọn...')
+        toastConfig = { type: args[0], title: args[1], message: args[2] };
+      } else if (args.length === 2) {
+        if (validTypes.includes(options)) {
+          toastConfig = { type: options, message: args[1] };
+        } else {
+          toastConfig = { message: options, type: args[1] };
+        }
+      } else {
+        toastConfig = { message: options, type: 'info' };
+      }
+    }
 
     const id = Date.now().toString() + Math.random().toString();
     setToasts(prev => [...prev, { id, ...toastConfig }]);

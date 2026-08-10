@@ -13,6 +13,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  if (isHandlingUnauthorized) {
+    return Promise.reject(new axios.Cancel('Đang xử lý đăng xuất, hủy request.'));
+  }
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

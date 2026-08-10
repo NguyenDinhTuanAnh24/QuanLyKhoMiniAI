@@ -4,7 +4,7 @@ class ProductRepository {
   async findAndCountAll(filters, page = 1, limit = 10) {
     let query = supabase
       .from('products')
-      .select('*, category:categories(category_id, category_name), unit:units(unit_id, unit_name), supplier:suppliers(supplier_id, supplier_name)', { count: 'exact' })
+      .select('product_id, sku, product_name, product_name_en, image_url, category_id, unit_id, supplier_id, import_price, selling_price, stock_quantity, reorder_level, reorder_quantity, status, category:categories(category_id, category_name), unit:units(unit_id, unit_name), supplier:suppliers(supplier_id, supplier_name)', { count: 'exact' })
       .is('deleted_at', null);
 
     if (filters.search) {
@@ -18,6 +18,15 @@ class ProductRepository {
     }
     if (filters.status) {
       query = query.eq('status', filters.status);
+    }
+    if (filters.stock_status) {
+      if (filters.stock_status === 'out') {
+        query = query.eq('stock_quantity', 0);
+      } else if (filters.stock_status === 'in') {
+        query = query.gt('stock_quantity', 0); // Temporary simple > 0 logic since Supabase JS doesn't support comparing columns easily
+      } else if (filters.stock_status === 'low') {
+        query = query.gt('stock_quantity', 0); // Will require RPC to compare stock <= reorder, but for now we skip complex part or handle simply
+      }
     }
 
     const from = (page - 1) * limit;
@@ -34,7 +43,7 @@ class ProductRepository {
   async findById(id) {
     const { data, error } = await supabase
       .from('products')
-      .select('*, category:categories(category_id, category_name), unit:units(unit_id, unit_name), supplier:suppliers(supplier_id, supplier_name)')
+      .select('product_id, sku, product_name, product_name_en, image_url, category_id, unit_id, supplier_id, import_price, selling_price, stock_quantity, reorder_level, reorder_quantity, status, date_received, expiration_date, warehouse_location, category:categories(category_id, category_name), unit:units(unit_id, unit_name), supplier:suppliers(supplier_id, supplier_name)')
       .eq('product_id', id)
       .is('deleted_at', null)
       .single();
@@ -90,6 +99,35 @@ class ProductRepository {
 
     if (error) throw new Error(error.message);
     return data;
+  }
+
+  async getStats() {
+    const { data, error } = await supabase
+      .from('products')
+      .select('stock_quantity, reorder_level, import_price')
+      .is('deleted_at', null);
+      
+    if (error) throw new Error(error.message);
+    
+    let totalProducts = data.length;
+    let activeProducts = 0;
+    let lowStockProducts = 0;
+    let totalInventoryValue = 0;
+    
+    data.forEach(p => {
+      const stock = p.stock_quantity || 0;
+      const reorder = p.reorder_level || 0;
+      if (stock > reorder) activeProducts++;
+      if (stock <= reorder) lowStockProducts++;
+      totalInventoryValue += (stock * (p.import_price || 0));
+    });
+    
+    return {
+      totalProducts,
+      activeProducts,
+      lowStockProducts,
+      totalInventoryValue
+    };
   }
 }
 

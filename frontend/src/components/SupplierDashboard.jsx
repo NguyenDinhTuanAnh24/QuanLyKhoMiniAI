@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Truck, CheckCircle2, FileText, DollarSign, Eye, Pencil, Trash2, X } from 'lucide-react';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '../services/supplierService';
 import StatCard from './StatCard';
+import ConfirmModal from './ConfirmModal';
+import { useToast } from '../contexts/ToastContext';
 
 export default function SupplierDashboard() {
   const [suppliers, setSuppliers] = useState([]);
@@ -27,6 +29,10 @@ export default function SupplierDashboard() {
     status: 'Đang hợp tác'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { showToast } = useToast();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [supplierToDelete, setSupplierToDelete] = useState(null);
 
   const loadSuppliers = async () => {
     setLoading(true);
@@ -102,32 +108,40 @@ export default function SupplierDashboard() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!formData.supplier_name) {
-      alert("Tên nhà cung cấp là bắt buộc");
+      showToast("Tên nhà cung cấp là bắt buộc", "error");
       return;
     }
     setIsSubmitting(true);
     try {
       if (editingSupplier) {
         await updateSupplier(editingSupplier.supplier_id, formData);
+        showToast("Cập nhật nhà cung cấp thành công", "success");
       } else {
         await createSupplier(formData);
+        showToast("Thêm nhà cung cấp thành công", "success");
       }
       closeModal();
       loadSuppliers();
     } catch (error) {
-      alert(error.response?.data?.message || "Đã xảy ra lỗi");
+      showToast(error.response?.data?.error?.message || error.response?.data?.message || "Đã xảy ra lỗi", "error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa nhà cung cấp này?")) return;
+  const handleDeleteClick = (id) => {
+    setSupplierToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setDeleteConfirmOpen(false);
     try {
-      await deleteSupplier(id);
+      await deleteSupplier(supplierToDelete);
+      showToast("Xóa nhà cung cấp thành công", "success");
       loadSuppliers();
     } catch (error) {
-      alert(error.response?.data?.message || "Đã xảy ra lỗi khi xóa");
+      showToast(error.response?.data?.error?.message || error.response?.data?.message || "Đã xảy ra lỗi khi xóa", "error");
     }
   };
 
@@ -247,7 +261,7 @@ export default function SupplierDashboard() {
                           <button onClick={() => openEditModal(supplier)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
                             <Pencil className="w-4 h-4" /> Sửa
                           </button>
-                          <button onClick={() => handleDelete(supplier.supplier_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
+                          <button onClick={() => handleDeleteClick(supplier.supplier_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
                             <Trash2 className="w-4 h-4" /> Xoá
                           </button>
                         </div>
@@ -390,6 +404,17 @@ export default function SupplierDashboard() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Xác nhận xóa"
+        message="Bạn có chắc chắn muốn xóa nhà cung cấp này không?"
+        confirmText="Xóa"
+        cancelText="Hủy"
+        isDanger={true}
+      />
     </div>
   );
 }

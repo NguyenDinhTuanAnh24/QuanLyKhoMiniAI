@@ -16,8 +16,9 @@ class AIInsightService {
     const baselineData = ForecastService.calculateBaseline(rawData, forecastDays);
 
     let runProvider = 'Rule-based';
+    let analysisMode = 'rule_based';
     const ruleBasedReport = ForecastService.buildDetailedReport(baselineData, forecastDays, 90);
-    let finalReport = { ...ruleBasedReport };
+    let finalReport = { ...ruleBasedReport, analysis_mode: analysisMode };
     
     let recommendations = baselineData.map(item => ({
         product_id: item.product_id,
@@ -30,7 +31,7 @@ class AIInsightService {
         reorder_level: item.reorder_level,
         sales_90d: item.sales_90d,
         avg_daily_sales_90d: item.avg_daily_sales_90d,
-        forecast_14d: item.forecast_14d,
+        forecast_14d: item.forecast_quantity,
         suggested_import_quantity: item.suggested_import_quantity,
         priority: item.priority,
         reason: item.reason,
@@ -55,39 +56,34 @@ class AIInsightService {
         finalReport.category_insights = aiInsight.category_insights || finalReport.category_insights;
         finalReport.supplier_insights = aiInsight.supplier_insights || finalReport.supplier_insights;
         finalReport.recommended_actions = aiInsight.recommended_actions || finalReport.recommended_actions;
+        analysisMode = 'gemini_enhanced';
+        finalReport.analysis_mode = analysisMode;
         
-        // Ghi đè số lượng và lý do từ AI nếu có
         if (aiInsight.urgent_import_products && Array.isArray(aiInsight.urgent_import_products)) {
           const baselineMap = new Map(
             baselineData.map(item => [String(item.product_id), item])
           );
 
-          finalReport.urgent_import_products = aiInsight.urgent_import_products.map(aiItem => {
-            const baseline = baselineMap.get(String(aiItem.product_id)) || {};
-            return {
-              ...baseline,
-              ...aiItem,
-              stock_quantity: Number(baseline.stock_quantity ?? aiItem.stock_quantity ?? 0),
-              reorder_level: Number(baseline.reorder_level ?? aiItem.reorder_level ?? 0),
-              sales_90d: Number(baseline.sales_90d ?? aiItem.sales_90d ?? 0),
-              avg_daily_sales_90d: Number(baseline.avg_daily_sales_90d ?? aiItem.avg_daily_sales_90d ?? 0),
-              forecast_14d: Number(baseline.forecast_14d ?? baseline.forecast_quantity ?? aiItem.forecast_14d ?? aiItem.forecast_quantity ?? 0),
-              suggested_import_quantity: Number(aiItem.suggested_import_quantity ?? aiItem.suggested_quantity ?? baseline.suggested_import_quantity ?? 0),
-              reason: aiItem.reason ?? baseline.reason ?? ''
-            };
-          });
-
           const aiRecMap = new Map();
           aiInsight.urgent_import_products.forEach(r => aiRecMap.set(String(r.product_id), r));
 
+          finalReport.urgent_import_products = finalReport.urgent_import_products.map(baseline => {
+            const aiOverride = aiRecMap.get(String(baseline.product_id));
+            if (aiOverride && aiOverride.reason) {
+              return {
+                ...baseline,
+                reason: aiOverride.reason
+              };
+            }
+            return baseline;
+          });
+
           recommendations = recommendations.map(rec => {
             const aiOverride = aiRecMap.get(String(rec.product_id));
-            if (aiOverride) {
+            if (aiOverride && aiOverride.reason) {
               return {
                 ...rec,
-                suggested_import_quantity: aiOverride.suggested_quantity !== undefined ? Math.max(0, aiOverride.suggested_quantity) : rec.suggested_import_quantity,
-                priority: aiOverride.priority || rec.priority,
-                reason: aiOverride.reason || rec.reason
+                reason: aiOverride.reason
               };
             }
             return rec;
@@ -96,9 +92,11 @@ class AIInsightService {
       } catch (error) {
         console.error('AI Analysis Failed, falling back to rule-based:', error.message);
         finalReport.overview_comment = `Dự báo nội bộ (AI tạm thời không khả dụng: ${error.message}). ` + finalReport.overview_comment;
+        finalReport.analysis_mode = 'rule_based';
       }
     } else if (aiEnabled && !process.env.GEMINI_API_KEY) {
       finalReport.overview_comment = 'Dự báo nội bộ (Chưa cấu hình API Key cho AI). ' + finalReport.overview_comment;
+      finalReport.analysis_mode = 'rule_based';
     }
 
     const finalSummary = JSON.stringify(finalReport);

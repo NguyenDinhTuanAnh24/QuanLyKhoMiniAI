@@ -25,6 +25,7 @@ const upload = multer({
     cb(null, true);
   },
 });
+router.get('/stats', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE, ...SALES), ProductController.getProductStats);
 router.get('/', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE, ...SALES), ProductController.getProducts);
 router.get('/:id', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE, ...SALES), ProductController.getProductById);
 router.post('/', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE), ProductController.createProduct);

@@ -153,7 +153,7 @@ export default function SettingsPage() {
       showToast('Upload logo thành công', 'success');
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Lỗi khi tải ảnh lên';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Lỗi khi tải ảnh lên';
       showToast(msg, 'error');
     }
     e.target.value = '';
@@ -163,19 +163,20 @@ export default function SettingsPage() {
     e.preventDefault();
     if (activeTab === 'security') {
       if (!pwdData.current_password) {
-        showToast('Vui lòng nhập mật khẩu hiện tại', 'error');
+        showToast({ type: 'error', title: 'Lỗi', message: 'Vui lòng nhập mật khẩu hiện tại' });
         return;
       }
-      if (pwdData.new_password.length < 6) {
-        showToast('Mật khẩu mới phải có ít nhất 6 ký tự', 'error');
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!passwordRegex.test(pwdData.new_password)) {
+        showToast({ type: 'error', title: 'Lỗi', message: 'Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số' });
         return;
       }
       if (pwdData.new_password !== pwdData.confirm_password) {
-        showToast('Mật khẩu mới không khớp', 'error');
+        showToast({ type: 'error', title: 'Lỗi', message: 'Mật khẩu mới không khớp' });
         return;
       }
       if (pwdData.new_password === pwdData.current_password) {
-        showToast('Mật khẩu mới không được trùng mật khẩu hiện tại', 'error');
+        showToast({ type: 'error', title: 'Lỗi', message: 'Mật khẩu mới không được trùng mật khẩu hiện tại' });
         return;
       }
       setIsConfirmOpen(true);
@@ -229,7 +230,7 @@ export default function SettingsPage() {
       }
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Không thể lưu cấu hình';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Không thể lưu cấu hình';
       showToast(msg, 'error');
     } finally {
       setSaving(false);
@@ -247,7 +248,7 @@ export default function SettingsPage() {
       }
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || 'Lỗi khi kết nối AI';
+      const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Lỗi khi kết nối AI';
       showToast(msg, 'error');
     }
   };

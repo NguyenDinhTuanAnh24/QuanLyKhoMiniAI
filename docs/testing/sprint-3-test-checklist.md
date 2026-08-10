@@ -1,0 +1,21 @@
+- [x] Frontend build
+- [x] Backend start
+- [x] Login
+- [x] Logout
+- [x] ProtectedRoute
+- [x] 401
+- [x] 403
+- [x] Dashboard
+- [x] Products
+- [x] Inventory
+- [x] Sales
+- [x] Alerts
+- [x] Reports
+- [x] AI
+- [x] Users
+- [x] Settings
+- [ ] Notifications
+- [x] Activity logs
+- [x] Database
+- [x] Console
+- [x] Security
