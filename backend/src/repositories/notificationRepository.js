@@ -1,132 +1,166 @@
 const supabase = require('../config/supabase');
+const crypto = require('crypto');
 
 class NotificationRepository {
-  async create(data) {
+  async createWithRecipients(notificationData, userIds) {
     try {
-      const { data: result, error } = await supabase
+      // Check dedup_key
+      if (notificationData.dedup_key) {
+        const { data: existing } = await supabase
+          .from('notifications')
+          .select('id')
+          .eq('dedup_key', notificationData.dedup_key)
+          .single();
+        if (existing) {
+          // It's a duplicate, just return it or silently ignore
+          return existing;
+        }
+      }
+
+      // 1. Insert into notifications
+      const { data: notif, error: notifErr } = await supabase
         .from('notifications')
-        .insert([data])
+        .insert([notificationData])
         .select()
         .single();
-        
-      if (error) {
-        if (error.code === 'PGRST205' || error.code === '42P01') {
-          console.warn(`[NotificationRepository] Table 'notifications' not found on Supabase. Please run database/schema.sql on Supabase SQL Editor.`);
-          return data;
-        }
-        throw error;
+
+      if (notifErr) {
+        throw notifErr;
       }
-      return result;
+
+      // 2. Insert into notification_recipients
+      if (userIds && userIds.length > 0) {
+        const recipients = userIds.map(userId => ({
+          id: `REC_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          notification_id: notif.id,
+          user_id: userId,
+          is_read: false
+        }));
+
+        const { error: recErr } = await supabase
+          .from('notification_recipients')
+          .insert(recipients);
+
+        if (recErr) {
+          console.error('[NotificationRepository] Error inserting recipients:', recErr);
+          // Don't throw, we at least saved the notification
+        }
+      }
+
+      return notif;
     } catch (err) {
       console.error('[NotificationRepository] Error creating notification:', err.message || err);
-      return data;
+      throw err; // DO NOT swallow error per prompt Phase 3
     }
   }
 
-  async findRecent(page = 1, limit = 15, userId = 'ALL') {
+  async findRecent(userId, page = 1, limit = 15, status = 'ALL', type = 'ALL') {
     try {
       const offset = (page - 1) * limit;
-      const { data, error, count } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact' })
-        .or(`user_id.eq.${userId},user_id.eq.ALL`)
+      let query = supabase
+        .from('notification_recipients')
+        .select('*, notifications!inner(*)', { count: 'exact' })
+        .eq('user_id', userId);
+
+      if (status === 'UNREAD') {
+        query = query.eq('is_read', false);
+      } else if (status === 'READ') {
+        query = query.eq('is_read', true);
+      }
+
+      if (type !== 'ALL') {
+        query = query.eq('notifications.type', type);
+      }
+
+      const { data, error, count } = await query
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
 
       if (error) {
-        if (error.code === 'PGRST205' || error.code === '42P01') {
-          console.warn(`[NotificationRepository] Table 'notifications' not found on Supabase. Returning empty list.`);
-          return { items: [], totalItems: 0 };
-        }
         throw error;
       }
-      return { items: data || [], totalItems: count || 0 };
+
+      // Flatten the response
+      const items = data.map(row => ({
+        ...row.notifications,
+        recipient_id: row.id,
+        is_read: row.is_read,
+        read_at: row.read_at
+      }));
+
+      const totalPages = Math.ceil(count / limit) || 0;
+      return { 
+        items: items || [], 
+        totalItems: count || 0,
+        totalPages: totalPages 
+      };
     } catch (err) {
       console.error('[NotificationRepository] Error finding recent notifications:', err.message || err);
-      return { items: [], totalItems: 0 };
+      throw err;
     }
   }
 
-  async countUnread(userId = 'ALL') {
+  async countUnread(userId) {
     try {
       const { count, error } = await supabase
-        .from('notifications')
+        .from('notification_recipients')
         .select('*', { count: 'exact', head: true })
-        .or(`user_id.eq.${userId},user_id.eq.ALL`)
+        .eq('user_id', userId)
         .eq('is_read', false);
 
       if (error) {
-        if (error.code === 'PGRST205' || error.code === '42P01') {
-          return 0;
-        }
         throw error;
       }
       return count || 0;
     } catch (err) {
       console.error('[NotificationRepository] Error counting unread notifications:', err.message || err);
-      return 0;
+      throw err;
     }
   }
 
-  async markAsRead(id) {
+  async markAsRead(notificationId, userId) {
     try {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('id', id);
+      const { data, error } = await supabase
+        .from('notification_recipients')
+        .update({ 
+          is_read: true,
+          read_at: new Date().toISOString()
+        })
+        .eq('notification_id', notificationId)
+        .eq('user_id', userId)
+        .select();
 
       if (error) {
-        if (error.code === 'PGRST205' || error.code === '42P01') {
-          return true;
-        }
         throw error;
+      }
+      if (!data || data.length === 0) {
+        return false;
       }
       return true;
     } catch (err) {
       console.error('[NotificationRepository] Error marking as read:', err.message || err);
-      return true;
+      throw err;
     }
   }
 
-  async markAllAsRead(userId = 'ALL') {
+  async markAllAsRead(userId) {
     try {
       const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .or(`user_id.eq.${userId},user_id.eq.ALL`)
+        .from('notification_recipients')
+        .update({ 
+          is_read: true,
+          read_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
         .eq('is_read', false);
 
-      if (error && error.code !== 'PGRST205' && error.code !== '42P01') {
+      if (error) {
         throw error;
       }
       return true;
     } catch (err) {
       console.error('[NotificationRepository] Error marking all as read:', err.message || err);
-      return true;
-    }
-  }
-
-  async findRecentLowStockByProductId(productId, hours = 24) {
-    try {
-      const cutoffTime = new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('id, created_at')
-        .eq('type', 'STOCK_LOW')
-        .ilike('message', `%(${productId})%`)
-        .gte('created_at', cutoffTime)
-        .limit(1);
-
-      if (error) {
-        if (error.code === 'PGRST205' || error.code === '42P01') {
-          return null;
-        }
-        throw error;
-      }
-      return data && data.length > 0 ? data[0] : null;
-    } catch (err) {
-      console.error('[NotificationRepository] Error finding recent low stock notification:', err.message || err);
-      return null;
+      throw err;
     }
   }
 }

@@ -120,11 +120,17 @@ class OrderService {
         await notificationService.createNotification({
           title: `Đơn bán hàng mới ${order.order_code}`,
           message: `Đơn hàng ${order.order_code} trị giá ${data.total_amount?.toLocaleString('vi-VN')}đ đã được tạo bởi ${data.customer_name || 'Khách lẻ'}`,
-          type: 'ORDER_NEW',
-          related_link: '/sales'
+          type: 'SALE_COMPLETED',
+          severity: 'INFO',
+          relatedType: 'ORDER',
+          relatedId: order.order_id,
+          recipientRoles: ['ADMIN', 'OWNER'],
+          metadata: {
+            order_id: order.order_id,
+          }
         });
       } catch (notiErr) {
-        console.error('Failed to create ORDER_NEW notification:', notiErr);
+        console.error('Failed to create SALE_COMPLETED notification:', notiErr);
       }
 
       return {
@@ -229,7 +235,15 @@ class OrderService {
           title: `Thanh toán thành công ${updatedOrder.order_code}`,
           message: `Đơn hàng ${updatedOrder.order_code} đã hoàn tất thanh toán trực tuyến qua PayOS`,
           type: 'PAYMENT_SUCCESS',
-          related_link: '/sales'
+          severity: 'INFO',
+          relatedType: 'ORDER',
+          relatedId: updatedOrder.order_id,
+          recipientRoles: ['ADMIN', 'OWNER'],
+          dedupKey: `PAYMENT_SUCCESS:ORDER:${updatedOrder.order_id}`,
+          metadata: {
+            order_id: updatedOrder.order_id,
+            payos_order_code: payosOrderCode
+          }
         });
       } catch (notiErr) {
         console.error('Failed to create PAYMENT_SUCCESS notification:', notiErr);
