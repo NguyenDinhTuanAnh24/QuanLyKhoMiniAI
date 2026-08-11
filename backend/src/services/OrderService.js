@@ -25,7 +25,7 @@ class OrderService {
     return await orderRepository.getProductConsumption(limit);
   }
 
-  async createOrder(data, user) {
+  async createOrder(data) {
     // 1. Check stock for all items first
     for (const item of data.items) {
       let product;
@@ -82,7 +82,7 @@ class OrderService {
       customer_id: customer_id,
       payment_method: data.payment_method,
       total_amount: data.total_amount,
-      created_by: user ? user.full_name : 'Nhân viên bán hàng',
+      created_by: 'Nhân viên bán hàng',
       payment_status: isBankTransfer ? 'PENDING_PAYMENT' : 'PAID',
       payos_order_code: isBankTransfer ? payos_order_code : null
     };
@@ -116,20 +116,21 @@ class OrderService {
         await this.deductStockAndRecordMovements(order, data.items);
       }
 
-      if (!isBankTransfer) {
-        try {
-          const creatorName = user ? user.full_name : 'Nhân viên bán hàng';
-          await notificationService.createNotification({
-            title: `Tạo đơn hàng mới #${order.order_code}`,
-            message: `Đơn hàng #${order.order_code} trị giá ${data.total_amount?.toLocaleString('vi-VN')}đ đã được tạo và thanh toán bằng tiền mặt bởi ${creatorName}.`,
-            type: 'ORDER_NEW',
-            related_link: '/sales',
-            targetRoles: ['Quản trị viên', 'Chủ cửa hàng'],
-            user_id: user?.user_id
-          });
-        } catch (notiErr) {
-          console.error('Failed to create ORDER_NEW notification:', notiErr);
-        }
+      try {
+        await notificationService.createNotification({
+          title: `Đơn bán hàng mới ${order.order_code}`,
+          message: `Đơn hàng ${order.order_code} trị giá ${data.total_amount?.toLocaleString('vi-VN')}đ đã được tạo bởi ${data.customer_name || 'Khách lẻ'}`,
+          type: 'SALE_COMPLETED',
+          severity: 'INFO',
+          relatedType: 'ORDER',
+          relatedId: order.order_id,
+          recipientRoles: ['ADMIN', 'OWNER'],
+          metadata: {
+            order_id: order.order_id,
+          }
+        });
+      } catch (notiErr) {
+        console.error('Failed to create SALE_COMPLETED notification:', notiErr);
       }
 
       return {
@@ -229,32 +230,20 @@ class OrderService {
         // Continue without throwing to not crash webhook handler, but stock will be inconsistent
       }
 
-      // Try to find the user_id of the creator to notify them
-      let creatorUserId = undefined;
-      if (updatedOrder.created_by) {
-        try {
-          const { data: creatorData } = await require('../config/supabase')
-            .from('app_users')
-            .select('user_id')
-            .eq('full_name', updatedOrder.created_by)
-            .limit(1)
-            .single();
-          if (creatorData) {
-            creatorUserId = creatorData.user_id;
-          }
-        } catch (e) {
-          console.error('Failed to find creator user_id:', e);
-        }
-      }
-
       try {
         await notificationService.createNotification({
           title: `Thanh toán thành công ${updatedOrder.order_code}`,
           message: `Đơn hàng ${updatedOrder.order_code} đã hoàn tất thanh toán trực tuyến qua PayOS`,
           type: 'PAYMENT_SUCCESS',
-          related_link: '/sales',
-          targetRoles: ['Quản trị viên', 'Chủ cửa hàng'],
-          user_id: creatorUserId
+          severity: 'INFO',
+          relatedType: 'ORDER',
+          relatedId: updatedOrder.order_id,
+          recipientRoles: ['ADMIN', 'OWNER'],
+          dedupKey: `PAYMENT_SUCCESS:ORDER:${updatedOrder.order_id}`,
+          metadata: {
+            order_id: updatedOrder.order_id,
+            payos_order_code: payosOrderCode
+          }
         });
       } catch (notiErr) {
         console.error('Failed to create PAYMENT_SUCCESS notification:', notiErr);

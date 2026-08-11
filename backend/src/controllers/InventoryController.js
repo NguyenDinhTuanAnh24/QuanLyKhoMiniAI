@@ -54,19 +54,22 @@ class InventoryController {
           await notificationService.createNotification({
             title: type === 'IMPORT' ? `Nhập kho: ${p.product_name || item.product_id}` : `Xuất kho: ${p.product_name || item.product_id}`,
             message: `Đã ${type === 'IMPORT' ? 'nhập' : 'xuất'} số lượng ${item.quantity} cho sản phẩm ${p.product_name || item.product_id}. Tồn kho mới: ${newStock}`,
-            type: type === 'IMPORT' ? 'STOCK_IMPORT' : 'STOCK_EXPORT',
-            related_link: '/inventory-ops',
-            targetRoles: ['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho']
+            type: type === 'IMPORT' ? 'STOCK_IMPORTED' : 'STOCK_EXPORTED',
+            severity: 'INFO',
+            relatedType: 'PRODUCT',
+            relatedId: item.product_id,
+            recipientRoles: ['ADMIN', 'OWNER', 'WAREHOUSE_STAFF'],
+            dedupKey: `STOCK_MOVEMENT:${type}:${item.product_id}:${timestampStr}${i}`
           });
 
-          if (newStock <= (p.reorder_level || 10)) {
-            await notificationService.checkAndCreateLowStockAlert(
-              item.product_id,
-              p.product_name || item.product_id,
-              newStock,
-              p.reorder_level || 10
-            );
-          }
+          await notificationService.checkAndCreateStockAlert({
+            productId: item.product_id,
+            productName: p.product_name || item.product_id,
+            oldStock: p.stock_quantity,
+            newStock: newStock,
+            reorderLevel: p.reorder_level || 10,
+            movementId: `MOV${timestampStr}${Math.floor(Math.random() * 100)}${i}`
+          });
         } catch (notiErr) {
           console.error('Failed to create notification inside InventoryController:', notiErr);
         }

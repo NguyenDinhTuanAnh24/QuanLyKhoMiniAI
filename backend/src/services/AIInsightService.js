@@ -2,6 +2,7 @@ const AIRepository = require('../repositories/AIRepository');
 const ForecastService = require('./ForecastService');
 const GeminiAIService = require('./GeminiAIService');
 const crypto = require('crypto');
+const notificationService = require('./NotificationService');
 
 class AIInsightService {
   async runAnalysis(settings) {
@@ -123,6 +124,52 @@ class AIInsightService {
     };
 
     await AIRepository.saveAnalysisRun(runData, dbRecommendations);
+
+    // Notifications
+    try {
+      // 1. Analysis Completed
+      await notificationService.createNotification({
+        type: 'AI_ANALYSIS_COMPLETED',
+        title: `Phân tích AI hoàn thành`,
+        message: `Đã hoàn thành phân tích AI (${runProvider}). Tổng cộng ${baselineData.length} sản phẩm, ${recommendations.length} đề xuất.`,
+        severity: 'INFO',
+        relatedType: 'AI_RUN',
+        relatedId: runId,
+        recipientRoles: ['ADMIN', 'OWNER', 'WAREHOUSE_STAFF'],
+        dedupKey: `AI_ANALYSIS_COMPLETED:RUN:${runId}`
+      });
+
+      // 2. High/Critical recommendations
+      const criticalRecs = dbRecommendations.filter(r => r.priority === 'HIGH' || r.priority === 'CRITICAL');
+      if (criticalRecs.length > 0) {
+        await notificationService.createNotification({
+          type: 'AI_REORDER_RECOMMENDATION',
+          title: `Cảnh báo AI: Nhập hàng gấp`,
+          message: `AI phát hiện ${criticalRecs.length} sản phẩm cần nhập gấp.`,
+          severity: 'HIGH',
+          relatedType: 'AI_RUN',
+          relatedId: runId,
+          recipientRoles: ['ADMIN', 'OWNER', 'WAREHOUSE_STAFF'],
+          dedupKey: `AI_REORDER_RECOMMENDATION:RUN:${runId}`
+        });
+      }
+
+      // 3. Slow-moving products
+      if (finalReport.slow_moving_products && finalReport.slow_moving_products.length > 0) {
+        await notificationService.createNotification({
+          type: 'AI_SLOW_MOVING',
+          title: `Cảnh báo AI: Hàng tồn đọng chậm luân chuyển`,
+          message: `AI phát hiện ${finalReport.slow_moving_products.length} sản phẩm có dấu hiệu ế/chậm luân chuyển.`,
+          severity: 'WARNING',
+          relatedType: 'AI_RUN',
+          relatedId: runId,
+          recipientRoles: ['ADMIN', 'OWNER', 'WAREHOUSE_STAFF'],
+          dedupKey: `AI_SLOW_MOVING:RUN:${runId}`
+        });
+      }
+    } catch (notiErr) {
+      console.error('[AIInsightService] Failed to create notifications, but analysis succeeded:', notiErr);
+    }
 
     return {
       run: runData,

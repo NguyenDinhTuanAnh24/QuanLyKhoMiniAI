@@ -18,6 +18,8 @@ import LoginPage from './pages/LoginPage';
 import ActivityLogsPage from './pages/ActivityLogsPage';
 import { ToastProvider } from './contexts/ToastContext';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
+import { NotificationProvider } from './contexts/NotificationContext';
+import Notifications from './pages/Notifications';
 
 
 import { isAuthenticated } from './services/authService';
@@ -55,10 +57,12 @@ function App() {
           path="/*"
           element={
             <ProtectedRoute>
-              <MainLayout activePage={activePage} onNavigate={handleNavigate}>
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<DashboardPage onNavigate={handleNavigate} />} />
+              <NotificationProvider>
+                <MainLayout activePage={activePage} onNavigate={handleNavigate}>
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    <Route path="/dashboard" element={<DashboardPage onNavigate={handleNavigate} />} />
+                    <Route path="/notifications" element={<Notifications />} />
                   
                   <Route path="/products" element={<ProductDashboard onNavigate={handleNavigate} />} />
                   <Route path="/categories" element={
@@ -130,6 +134,7 @@ function App() {
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </MainLayout>
+              </NotificationProvider>
             </ProtectedRoute>
           }
         />

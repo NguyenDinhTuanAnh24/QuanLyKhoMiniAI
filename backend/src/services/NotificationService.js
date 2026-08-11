@@ -1,92 +1,157 @@
 const notificationRepository = require('../repositories/notificationRepository');
-const supabase = require('../config/supabase');
+const supabase = require('../config/supabase'); // For querying app_users
 
 class NotificationService {
-  async createNotification({ user_id, targetRoles, title, message, type, related_link }) {
+  // Map abstract roles to the exact Vietnamese strings in the database
+  roleMap = {
+    'ADMIN': 'Quản trị viên',
+    'OWNER': 'Chủ cửa hàng',
+    'WAREHOUSE_STAFF': 'Nhân viên kho',
+    'SALES_STAFF': 'Nhân viên bán hàng'
+  };
+
+  /**
+   * Main orchestrator for creating notifications securely.
+   */
+  async createNotification({
+    type,
+    title,
+    message,
+    severity = 'INFO',
+    relatedType,
+    relatedId,
+    createdBy,
+    recipientRoles = [],
+    recipientUserIds = [],
+    excludeUserIds = [],
+    metadata = {},
+    dedupKey
+  }) {
     try {
-      let targetUserIds = [];
-
-      // If specific targetRoles are provided, query users who have those roles
-      if (targetRoles && Array.isArray(targetRoles) && targetRoles.length > 0) {
-        const { data: users, error } = await supabase
-          .from('app_users')
-          .select('user_id')
-          .in('role', targetRoles)
-          .eq('status', 'Đang hoạt động')
-          .is('deleted_at', null);
-          
-        if (!error && users && users.length > 0) {
-          targetUserIds = users.map(u => u.user_id);
-        }
-      } 
-      
-      // If a specific user_id is provided, add it to the list
-      if (user_id && user_id !== 'ALL') {
-        targetUserIds.push(user_id);
-      } 
-      // Fallback: everyone if nothing is specified (legacy behavior)
-      else if (targetUserIds.length === 0 && (!user_id || user_id === 'ALL')) {
-        targetUserIds = ['ALL'];
-      }
-
-      // Remove duplicates
-      targetUserIds = [...new Set(targetUserIds)];
-
-      if (targetUserIds.length === 0) return null;
-
-      const baseTimestamp = Date.now();
-      const payload = targetUserIds.map((uid, index) => ({
-        id: `NOTI-${baseTimestamp}-${index}-${Math.floor(Math.random() * 1000)}`,
-        user_id: uid,
-        title,
-        message,
-        type,
-        is_read: false,
-        related_link: related_link || '/'
-      }));
-
-      return await notificationRepository.create(payload);
-    } catch (err) {
-      console.error('[NotificationService] Error in createNotification:', err);
-      return null;
-    }
-  }
-
-  async checkAndCreateLowStockAlert(productId, productName, currentStock, reorderLevel) {
-    try {
-      // Logic Chống Spam: Kiểm tra trong 24h qua đã có thông báo STOCK_LOW nào cho productId này chưa
-      const existingAlert = await notificationRepository.findRecentLowStockByProductId(productId, 24);
-      if (existingAlert) {
-        console.log(`[NotificationService] Skip low stock alert for ${productId}: Cooldown active (24h)`);
+      if (!type || !title || !message) {
+        console.error('[NotificationService] Missing required fields for notification');
         return null;
       }
 
-      const isCritical = currentStock === 0 || currentStock <= (0.2 * reorderLevel);
-      const title = isCritical 
-        ? `[Nguy cấp] Hết/Sắp hết hàng: ${productName}` 
-        : `[Cảnh báo] Tồn kho thấp: ${productName}`;
-      const message = `Sản phẩm ${productName} (${productId}) hiện chỉ còn ${currentStock} (Ngưỡng an toàn: ${reorderLevel}). Vui lòng lên kế hoạch nhập hàng ngay!`;
+      // 1. Resolve users based on recipientRoles
+      let targetUserIds = new Set(recipientUserIds || []);
 
-      return await this.createNotification({
+      if (recipientRoles && recipientRoles.length > 0) {
+        const mappedRoles = recipientRoles.map(r => this.roleMap[r]).filter(Boolean);
+        if (mappedRoles.length > 0) {
+          // Fetch active users with these roles
+          const { data: users, error } = await supabase
+            .from('app_users')
+            .select('user_id')
+            .in('role', mappedRoles)
+            .eq('status', 'Đang hoạt động') // Only active users
+            .is('deleted_at', null);
+
+          if (!error && users) {
+            users.forEach(u => targetUserIds.add(u.user_id));
+          }
+        }
+      }
+
+      // 2. Exclude users
+      const excluded = new Set(excludeUserIds || []);
+      // Automatically exclude the person who triggered the action, unless it's a payment failure etc.
+      // We will rely on the caller to pass createdBy in excludeUserIds if they want it excluded,
+      // but by default, we can exclude createdBy if it's not a systemic failure to avoid self-spam.
+      if (createdBy && type !== 'PAYMENT_FAILED' && type !== 'PAYMENT_CANCELLED') {
+        excluded.add(createdBy);
+      }
+
+      const finalUserIds = Array.from(targetUserIds).filter(id => !excluded.has(id));
+
+      if (finalUserIds.length === 0) {
+        console.log(`[NotificationService] No eligible recipients found for ${type}`);
+        return null;
+      }
+
+      // 3. Generate Dedup Key if not provided
+      const finalDedupKey = dedupKey || `${type}:${relatedType || 'NONE'}:${relatedId || 'NONE'}:${Date.now()}`;
+
+      // 4. Construct payload
+      const id = `NOTI_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+      const payload = {
+        id,
+        type,
         title,
         message,
-        type: 'STOCK_LOW',
-        related_link: '/alerts',
-        targetRoles: ['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho']
-      });
+        severity,
+        related_type: relatedType,
+        related_id: relatedId,
+        created_by: createdBy,
+        metadata,
+        dedup_key: finalDedupKey
+      };
+
+      // 5. Call Repository
+      return await notificationRepository.createWithRecipients(payload, finalUserIds);
     } catch (err) {
-      console.error('[NotificationService] Error in checkAndCreateLowStockAlert:', err);
+      console.error('[NotificationService] Unexpected error in createNotification:', err);
+      // Suppress error to avoid breaking main business flow
       return null;
     }
   }
 
-  async getNotifications(page = 1, limit = 15, userId = 'ALL') {
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+  /**
+   * Helper to check inventory transitions and fire alerts safely
+   */
+  async checkAndCreateStockAlert({ productId, productName, oldStock, newStock, reorderLevel, movementId }) {
+    try {
+      const wasNormal = oldStock > reorderLevel;
+      const isLow = newStock <= reorderLevel && newStock > 0;
+      
+      const wasNotOut = oldStock > 0;
+      const isOut = newStock <= 0;
+
+      // 1. OUT OF STOCK transition
+      if (wasNotOut && isOut) {
+        await this.createNotification({
+          type: 'OUT_OF_STOCK',
+          title: `[Hết hàng] ${productName}`,
+          message: `Sản phẩm ${productName} (Mã: ${productId}) đã hết hàng.`,
+          severity: 'CRITICAL',
+          relatedType: 'PRODUCT',
+          relatedId: productId,
+          recipientRoles: ['ADMIN', 'OWNER', 'WAREHOUSE_STAFF', 'SALES_STAFF'],
+          metadata: { productId, productName, stock: newStock },
+          dedupKey: `OUT_OF_STOCK:PRODUCT:${productId}:MVMNT_${movementId}`
+        });
+        return; // Don't trigger low stock if it's out of stock
+      }
+
+      // 2. LOW STOCK transition
+      if (wasNormal && isLow) {
+        await this.createNotification({
+          type: 'LOW_STOCK',
+          title: `[Cảnh báo] Tồn kho thấp: ${productName}`,
+          message: `Sản phẩm ${productName} hiện chỉ còn ${newStock} (Ngưỡng: ${reorderLevel}).`,
+          severity: 'WARNING',
+          relatedType: 'PRODUCT',
+          relatedId: productId,
+          recipientRoles: ['ADMIN', 'OWNER', 'WAREHOUSE_STAFF'],
+          metadata: { productId, productName, stock: newStock, threshold: reorderLevel },
+          dedupKey: `LOW_STOCK:PRODUCT:${productId}:MVMNT_${movementId}`
+        });
+      }
+    } catch (err) {
+      console.error('[NotificationService] Error in checkAndCreateStockAlert:', err);
+    }
+  }
+
+  async getNotifications(userId, options = {}) {
+    if (!userId) throw new Error("userId is required for getNotifications");
     
-    const { items, totalItems } = await notificationRepository.findRecent(pageNum, limitNum, userId);
+    const pageNum = Math.max(1, parseInt(options.page || 1));
+    const limitNum = Math.min(50, Math.max(1, parseInt(options.limit || 15)));
+    const status = options.status || 'ALL';
+    const type = options.type || 'ALL';
+    
+    const { items, totalItems, totalPages } = await notificationRepository.findRecent(userId, pageNum, limitNum, status, type);
     const unreadCount = await notificationRepository.countUnread(userId);
-    const totalPages = Math.ceil(totalItems / limitNum) || 1;
 
     return {
       items,
@@ -100,11 +165,18 @@ class NotificationService {
     };
   }
 
-  async markAsRead(id) {
-    return await notificationRepository.markAsRead(id);
+  async getUnreadCount(userId) {
+    if (!userId) return 0;
+    return await notificationRepository.countUnread(userId);
   }
 
-  async markAllAsRead(userId = 'ALL') {
+  async markAsRead(notificationId, userId) {
+    if (!userId || !notificationId) return false;
+    return await notificationRepository.markAsRead(notificationId, userId);
+  }
+
+  async markAllAsRead(userId) {
+    if (!userId) return false;
     return await notificationRepository.markAllAsRead(userId);
   }
 }

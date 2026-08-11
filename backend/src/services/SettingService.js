@@ -1,5 +1,6 @@
 const SettingRepository = require('../repositories/SettingRepository');
 const { BusinessException } = require('../middleware/errorHandler');
+const notificationService = require('./NotificationService');
 
 class SettingService {
   async getSettings() {
@@ -18,7 +19,23 @@ class SettingService {
       throw new BusinessException('SETTINGS_NOT_FOUND', 'Cấu hình hệ thống chưa được khởi tạo');
     }
     
-    return await SettingRepository.updateSettings(settingsData);
+    const updatedSettings = await SettingRepository.updateSettings(settingsData);
+    
+    try {
+      await notificationService.createNotification({
+        type: 'SETTINGS_UPDATED',
+        title: `Cập nhật cấu hình`,
+        message: `Cấu hình hệ thống đã được thay đổi.`,
+        severity: 'INFO',
+        relatedType: 'SYSTEM',
+        relatedId: 'SETTINGS',
+        recipientRoles: ['ADMIN', 'OWNER']
+      });
+    } catch (notiErr) {
+      console.error('[SettingService] Notification error for SETTINGS_UPDATED:', notiErr);
+    }
+    
+    return updatedSettings;
   }
 
   async uploadStoreLogo(file) {

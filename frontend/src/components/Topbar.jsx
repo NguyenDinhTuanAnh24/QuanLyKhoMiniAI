@@ -5,17 +5,15 @@ import ConfirmModal from './ConfirmModal';
 import { logout, getUser } from '../services/authService';
 import { useToast } from '../contexts/ToastContext';
 import api from '../services/api';
-import supabase from '../config/supabase';
+import { useNotifications } from '../contexts/NotificationContext';
 
 export default function Topbar({ activePage, activePayload, onNavigate, toggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Notification state
+  // Notification state from context
+  const { notifications, unreadCount, markAsRead, markAllAsRead, fetchNotifications } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [loadingNoti, setLoadingNoti] = useState(false);
   const notiDropdownRef = useRef(null);
 
   // User & Auth state (from develop)
@@ -43,52 +41,7 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const fetchNotifications = async (silent = false) => {
-    if (!silent) setLoadingNoti(true);
-    try {
-      const res = await api.get('/notifications?page=1&limit=15');
-      if (res.data && res.data.success) {
-        setNotifications(res.data.data?.items || []);
-        setUnreadCount(res.data.data?.unreadCount || 0);
-      }
-    } catch (err) {
-      console.error('Failed to fetch notifications:', err);
-    } finally {
-      if (!silent) setLoadingNoti(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchNotifications();
-
-    // Thiết lập kênh Realtime lắng nghe INSERT trên bảng notifications
-    const channelName = `notifications-${Date.now()}`;
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        { 
-          event: 'INSERT', 
-          schema: 'public', 
-          table: 'notifications',
-          filter: user?.user_id ? `user_id=eq.${user.user_id}` : undefined
-        },
-        (payload) => {
-          // Optimistic update + lập tức đồng bộ dữ liệu từ API Backend
-          if (payload.new) {
-            setNotifications(prev => [payload.new, ...prev.slice(0, 14)]);
-            setUnreadCount(prev => prev + 1);
-          }
-          fetchNotifications(true);
-        }
-      )
-      .subscribe();
-
-    // Khử trùng lặp kênh (Cleanup) để tránh rò rỉ bộ nhớ (Memory Leak)
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  // Removed duplicate local realtime and fetch logic. Handled by NotificationContext.
 
   const handleToggleDropdown = (e) => {
     e.preventDefault();
@@ -105,13 +58,7 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
 
   const handleNotificationClick = async (noti) => {
     if (!noti.is_read) {
-      setNotifications(prev => prev.map(n => n.id === noti.id ? { ...n, is_read: true } : n));
-      setUnreadCount(prev => Math.max(0, prev - 1));
-      try {
-        await api.patch(`/notifications/${noti.id}/read`);
-      } catch (err) {
-        console.error('Failed to mark notification read:', err);
-      }
+      await markAsRead(noti.notification_id || noti.id);
     }
     setIsOpen(false);
     if (noti.related_link) {
@@ -120,26 +67,20 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
   };
 
   const handleMarkAllAsRead = async () => {
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-    setUnreadCount(0);
-    try {
-      await api.patch('/notifications/read-all');
-    } catch (err) {
-      console.error('Failed to mark all as read:', err);
-    }
+    await markAllAsRead();
   };
 
   const getNotiStyle = (type) => {
     switch (type) {
-      case 'ORDER_NEW':
+      case 'SALE_COMPLETED':
         return { bg: 'bg-blue-100 text-blue-600', icon: <ShoppingBag className="w-4 h-4" /> };
       case 'PAYMENT_SUCCESS':
         return { bg: 'bg-emerald-100 text-emerald-600', icon: <CheckCircle2 className="w-4 h-4" /> };
       case 'STOCK_LOW':
         return { bg: 'bg-rose-100 text-rose-600', icon: <AlertTriangle className="w-4 h-4" /> };
-      case 'STOCK_IMPORT':
+      case 'STOCK_IMPORTED':
         return { bg: 'bg-amber-100 text-amber-600', icon: <ArrowDownRight className="w-4 h-4" /> };
-      case 'STOCK_EXPORT':
+      case 'STOCK_EXPORTED':
         return { bg: 'bg-purple-100 text-purple-600', icon: <ArrowUpRight className="w-4 h-4" /> };
       default:
         return { bg: 'bg-slate-100 text-slate-600', icon: <Bell className="w-4 h-4" /> };
@@ -226,9 +167,7 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
 
               {/* Dropdown List */}
               <div className="max-h-96 overflow-y-auto divide-y divide-slate-100">
-                {loadingNoti && notifications.length === 0 ? (
-                  <div className="py-8 text-center text-slate-400 text-sm">Đang tải thông báo...</div>
-                ) : notifications.length === 0 ? (
+                {!notifications || notifications.length === 0 ? (
                   <div className="py-10 flex flex-col items-center justify-center text-slate-400">
                     <Bell className="w-10 h-10 text-slate-200 mb-2 stroke-1" />
                     <p className="text-sm font-medium text-slate-500">Không có thông báo mới</p>
@@ -239,7 +178,7 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
                     const style = getNotiStyle(noti.type);
                     return (
                       <div 
-                        key={noti.id}
+                        key={noti.recipient_id || noti.id}
                         onClick={() => handleNotificationClick(noti)}
                         className={`p-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 ${
                           !noti.is_read ? 'bg-blue-50/50 font-medium' : ''
