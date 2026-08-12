@@ -73,12 +73,12 @@ const generateOrders = (count, maxProducts) => {
 const run = () => {
     const seedersDir = __dirname;
     
-    // Generate 150 products (~ 2000 lines of JSON)
-    const products = generateProducts(150);
+    // Generate 100 products (~ 1500 lines of JSON)
+    const products = generateProducts(100);
     fs.writeFileSync(path.join(seedersDir, 'mock_products.json'), JSON.stringify(products, null, 4), 'utf-8');
     
-    // Generate 200 orders (~ 3000 lines of JSON)
-    const orders = generateOrders(200, 150);
+    // Generate 80 orders (~ 2500 lines of JSON)
+    const orders = generateOrders(80, 100);
     fs.writeFileSync(path.join(seedersDir, 'mock_orders.json'), JSON.stringify(orders, null, 4), 'utf-8');
     
     console.log('Mock data generated successfully in database/seeders/');
