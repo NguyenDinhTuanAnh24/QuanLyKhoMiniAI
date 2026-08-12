@@ -5,6 +5,11 @@ export const getSettings = async () => {
   return response.data;
 };
 
+export const getBranding = async () => {
+  const response = await api.get('/settings/branding');
+  return response.data;
+};
+
 export const updateSettings = async (settingsData) => {
   const response = await api.put('/settings', settingsData);
   return response.data;

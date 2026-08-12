@@ -78,7 +78,7 @@ export default function ImportsTab({ data, loading }) {
           label="Tổng giá trị nhập" 
           value={formatCurrency(summary.total_value)} 
           icon={DollarSign} 
-          iconColorClass="bg-indigo-50 text-indigo-600" 
+          iconColorClass="bg-blue-50 text-blue-600" 
         />
         <StatCard 
           label="NCC nhập nhiều nhất" 

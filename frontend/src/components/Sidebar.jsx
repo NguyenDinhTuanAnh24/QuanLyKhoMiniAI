@@ -14,9 +14,20 @@ import {
   Ruler,
   Truck,
   History,
-  ChevronDown
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { getUser } from '../services/authService';
+
+import { useBranding } from '../contexts/BrandingContext';
+
+const getBrandInitials = (name) => {
+  if (!name) return 'SR';
+  const words = name.trim().split(' ');
+  if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+};
 
 const menuGroups = [
   {
@@ -61,8 +72,9 @@ const menuGroups = [
   }
 ];
 
-export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
+export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen, isCollapsed, toggleCollapse }) {
   const [expandedGroups, setExpandedGroups] = useState({});
+  const { branding } = useBranding();
 
   useEffect(() => {
     const initialExpanded = {};
@@ -80,6 +92,9 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
   }, [activePage]);
 
   const toggleGroup = (itemId) => {
+    if (isCollapsed) {
+      toggleCollapse();
+    }
     setExpandedGroups(prev => ({
       ...prev,
       [itemId]: !prev[itemId]
@@ -109,18 +124,29 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
         />
       )}
       
-      <aside className={`w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0 z-50 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 text-white rounded flex items-center justify-center font-bold text-lg">
-            SR
-          </div>
-          <div>
-            <div className="font-bold text-slate-800 leading-tight">Smart Retail</div>
-            <div className="text-xs text-slate-500 leading-tight">Inventory AI</div>
-          </div>
+      <aside className={`bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0 z-40 transition-[width] duration-300 ease-in-out ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'} ${isCollapsed ? 'lg:w-[72px]' : 'lg:w-60'}`}>
+
+        <div className={`h-16 flex items-center border-b border-gray-200 shrink-0 ${isCollapsed ? 'justify-center px-0' : 'px-4 gap-3'}`}>
+          {branding?.logoUrl ? (
+            <div className={`rounded-xl flex items-center justify-center overflow-hidden shrink-0 bg-slate-50 border border-slate-200 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
+              <img src={branding.logoUrl} alt={branding.storeName} className="w-full h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+              <div className="w-full h-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm hidden rounded-xl">
+                {getBrandInitials(branding.storeName)}
+              </div>
+            </div>
+          ) : (
+            <div className={`bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-bold shrink-0 ${isCollapsed ? 'w-10 h-10 text-sm' : 'w-10 h-10 text-sm'}`}>
+              {getBrandInitials(branding?.storeName)}
+            </div>
+          )}
+          {!isCollapsed && (
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[15px] font-semibold leading-tight text-slate-900" title={branding?.storeName || 'Cửa hàng'}>
+                {branding?.storeName || 'Cửa hàng'}
+              </p>
+            </div>
+          )}
         </div>
-      </div>
       
       <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-6">
         {menuGroups.map((group, groupIdx) => {
@@ -145,10 +171,14 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
           if (visibleItems.length === 0) return null;
 
           return (
-            <div key={groupIdx} className="flex flex-col px-3">
-              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 px-3 mb-2">
-                {group.title}
-              </h3>
+            <div key={groupIdx} className={`flex flex-col ${isCollapsed ? 'px-2' : 'px-3'}`}>
+              {!isCollapsed ? (
+                <h3 className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">
+                  {group.title}
+                </h3>
+              ) : (
+                <div className="h-px bg-slate-100 my-2 mx-2"></div>
+              )}
               <div className="flex flex-col gap-1">
                 {visibleItems.map(item => {
                   if (!item.children) {
@@ -158,6 +188,7 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
                       <a 
                         key={item.id} 
                         href="#" 
+                        title={isCollapsed ? item.label : undefined}
                         onClick={(e) => {
                           e.preventDefault();
                           onNavigate(item.id);
@@ -165,40 +196,41 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
                             setIsOpen(false);
                           }
                         }}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                          isActive 
-                            ? 'bg-blue-50 text-blue-700' 
-                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        className={`flex items-center transition-colors ${
+                          isCollapsed 
+                            ? `justify-center w-10 h-10 mx-auto rounded-xl ${isActive ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`
+                            : `gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`
                         }`}
                       >
                         <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
-                        <span className="flex-1">{item.label}</span>
-                        {isActive && (
+                        {!isCollapsed && <span className="flex-1">{item.label}</span>}
+                        {!isCollapsed && isActive && (
                           <div className="absolute left-0 w-1 h-8 bg-blue-600 rounded-r-full"></div>
                         )}
                       </a>
                     );
                   } else {
                     const GroupIcon = item.icon;
-                    const isExpanded = expandedGroups[item.id];
+                    const isExpanded = expandedGroups[item.id] && !isCollapsed;
                     const hasActiveChild = item.children.some(child => isItemActive(child.id));
                     
                     return (
-                      <div key={item.id} className="flex flex-col">
+                      <div key={item.id} className="flex flex-col relative">
                         <button
+                          title={isCollapsed ? item.label : undefined}
                           onClick={() => toggleGroup(item.id)}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors w-full text-left ${
-                            hasActiveChild && !isExpanded
-                              ? 'text-blue-700 bg-slate-50'
-                              : 'text-slate-700 hover:bg-slate-50'
+                          className={`flex items-center transition-colors ${
+                            isCollapsed
+                              ? `justify-center w-10 h-10 mx-auto rounded-xl ${hasActiveChild ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`
+                              : `gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-left ${hasActiveChild && !isExpanded ? 'text-blue-700 bg-slate-50' : 'text-slate-700 hover:bg-slate-50'}`
                           }`}
                         >
                           <GroupIcon className={`w-5 h-5 ${hasActiveChild ? 'text-blue-600' : 'text-slate-400'}`} />
-                          <span className="flex-1">{item.label}</span>
-                          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? '' : '-rotate-90'}`} />
+                          {!isCollapsed && <span className="flex-1">{item.label}</span>}
+                          {!isCollapsed && <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? '' : '-rotate-90'}`} />}
                         </button>
                         
-                        {isExpanded && (
+                        {isExpanded && !isCollapsed && (
                           <div className="flex flex-col gap-1 mt-1 mb-2 px-2 pl-9">
                             {item.children.map(child => {
                               const ChildIcon = child.icon;
@@ -239,6 +271,21 @@ export default function Sidebar({ activePage, onNavigate, isOpen, setIsOpen }) {
           );
         })}
       </div>
+
+      {/* Toggle Collapse Button (Desktop) - Bottom */}
+      <div className="border-t border-gray-100 p-3 hidden lg:block shrink-0">
+        <button 
+          onClick={toggleCollapse} 
+          className={`flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors ${
+            isCollapsed ? 'justify-center w-10 h-10 mx-auto' : 'gap-3 px-3 py-2.5 w-full'
+          }`}
+          title={isCollapsed ? "Mở rộng" : undefined}
+        >
+          {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          {!isCollapsed && <span className="flex-1 text-left">Thu gọn</span>}
+        </button>
+      </div>
+
       </aside>
     </>
   );

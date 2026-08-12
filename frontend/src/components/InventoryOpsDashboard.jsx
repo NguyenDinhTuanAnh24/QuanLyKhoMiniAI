@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
-import { Package, Truck, ArrowLeftRight, CheckCircle2, DollarSign, Plus, Trash2, Search, ArrowRightLeft, AlertTriangle, FileText, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
+import { Package, Truck, ArrowLeftRight, CheckCircle2, DollarSign, Plus, Trash2, Search, ArrowRightLeft, AlertTriangle, FileText, ArrowDownToLine, ArrowUpFromLine, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getProducts } from '../services/productService';
 import { getSuppliers } from '../services/supplierService';
-import { createMovement, getMovements } from '../services/inventoryService';
+import { createMovement, getMovements, getImportPlan } from '../services/inventoryService';
 import ConfirmModal from './ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import StatCard from './StatCard';
 
 export default function InventoryOpsDashboard() {
+  const ITEMS_PER_PAGE = 10;
   const [activeTab, setActiveTab] = useState('import'); // 'import' or 'export'
   const { addToast } = useToast();
   
@@ -50,6 +51,8 @@ export default function InventoryOpsDashboard() {
       supplier_id: '',
       date: new Date().toISOString().split('T')[0],
       note: '',
+      plan_id: null,
+      plan_status: null,
       items: []
     };
   });
@@ -72,6 +75,8 @@ export default function InventoryOpsDashboard() {
   const [selectedProduct, setSelectedProduct] = useState('');
   const [qtyInput, setQtyInput] = useState('');
   const [priceInput, setPriceInput] = useState('');
+  const [importPlanPage, setImportPlanPage] = useState(1);
+  const [importPlanSearch, setImportPlanSearch] = useState('');
 
   // Confirmation Modal
   const [confirmModal, setConfirmModal] = useState({
@@ -80,6 +85,35 @@ export default function InventoryOpsDashboard() {
     data: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isImportPlan = Boolean(importForm.plan_id);
+  const normalizedImportPlanSearch = importPlanSearch.trim().toLowerCase();
+  const filteredImportItems = isImportPlan && normalizedImportPlanSearch
+    ? importForm.items.filter(item => {
+      const productName = String(item.product_name || '').toLowerCase();
+      const sku = String(item.sku || '').toLowerCase();
+      return productName.includes(normalizedImportPlanSearch) || sku.includes(normalizedImportPlanSearch);
+    })
+    : importForm.items;
+  const totalImportPlanPages = Math.max(1, Math.ceil(filteredImportItems.length / ITEMS_PER_PAGE));
+  const currentImportPlanPage = Math.min(importPlanPage, totalImportPlanPages);
+  const importPlanStartIndex = (currentImportPlanPage - 1) * ITEMS_PER_PAGE;
+  const visibleImportItems = isImportPlan
+    ? filteredImportItems.slice(importPlanStartIndex, importPlanStartIndex + ITEMS_PER_PAGE)
+    : importForm.items;
+  const totalImportQuantity = importForm.items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+  const totalImportAmount = importForm.items.reduce((sum, item) => sum + ((Number(item.quantity) || 0) * (Number(item.unit_price) || 0)), 0);
+
+  useEffect(() => {
+    setImportPlanPage(1);
+    setImportPlanSearch('');
+  }, [importForm.plan_id]);
+
+  useEffect(() => {
+    if (importPlanPage > totalImportPlanPages) {
+      setImportPlanPage(totalImportPlanPages);
+    }
+  }, [importPlanPage, totalImportPlanPages]);
 
   useEffect(() => {
     loadInitialData();
@@ -122,11 +156,53 @@ export default function InventoryOpsDashboard() {
           setQtyInput(String(suggestedQty));
           setPriceInput(String(unitPrice));
 
-          addToast('info', 'Đã chọn sẵn', `Đã điền thông tin sản phẩm ${prod.product_name} (${suggestedQty} ${prod.unit_name || 'SP'})`);
         }
       }
     }
   }, [products, searchParams, location, activeTab, suppliers]);
+
+  useEffect(() => {
+    const planId = searchParams.get('planId');
+    if (planId && products.length > 0 && activeTab === 'import' && (!importForm.plan_id || importForm.plan_id !== planId)) {
+      setLoading(true);
+      getImportPlan(planId).then(plan => {
+        if (plan) {
+          const items = plan.import_plan_items.map(item => ({
+            product_id: item.product_id,
+            product_name: item.products?.product_name || item.product_id,
+            suggested_quantity: item.suggested_quantity,
+            quantity: item.actual_quantity ?? item.suggested_quantity,
+            unit_price: item.products?.import_price || 0,
+            supplier_id: item.supplier_id || ''
+          }));
+          
+          const distinctSuppliers = new Set(items.map(i => i.supplier_id).filter(Boolean));
+          const newSupplierId = distinctSuppliers.size > 1 ? 'ALL' : (items[0]?.supplier_id || (suppliers.length > 0 ? suppliers[0].supplier_id : ''));
+
+          setImportForm(prev => ({
+            ...prev,
+            supplier_id: newSupplierId,
+            plan_id: plan.id,
+            plan_status: plan.status,
+            note: `Nhập kho từ kế hoạch AI (Mã: ${plan.id.slice(0, 8)})`,
+            items: items
+          }));
+          
+          if (plan.status === 'DRAFT') {
+            addToast('info', 'Tải kế hoạch', 'Đã tải kế hoạch nhập hàng từ AI.');
+          } else {
+            const statusMap = { 'COMPLETED': 'Đã nhập kho', 'PENDING': 'Chờ xử lý', 'CANCELLED': 'Đã hủy' };
+            addToast('warning', 'Lưu ý', `Kế hoạch nhập hàng này đang ở trạng thái ${statusMap[plan.status] || plan.status}.`);
+          }
+        }
+      }).catch(err => {
+        console.error(err);
+        addToast('error', 'Lỗi', 'Không thể tải chi tiết kế hoạch nhập hàng.');
+      }).finally(() => {
+        setLoading(false);
+      });
+    }
+  }, [searchParams, products, activeTab]);
 
   const loadInitialData = async () => {
     setLoading(true);
@@ -255,6 +331,17 @@ export default function InventoryOpsDashboard() {
     }
   };
 
+  const updateImportItem = (productId, field, value) => {
+    const nextValue = value === '' ? '' : Number(value);
+    setImportForm(prev => ({
+      ...prev,
+      items: prev.items.map(item => String(item.product_id) === String(productId)
+        ? { ...item, [field]: nextValue }
+        : item
+      )
+    }));
+  };
+
   const handleOpenConfirm = () => {
     if (activeTab === 'import') {
       if (!importForm.supplier_id) {
@@ -263,6 +350,10 @@ export default function InventoryOpsDashboard() {
       }
       if (importForm.items.length === 0) {
         addToast('error', 'Lỗi', 'Phiếu nhập phải có ít nhất 1 sản phẩm');
+        return;
+      }
+      if (importForm.items.some(item => !Number.isFinite(Number(item.quantity)) || Number(item.quantity) <= 0 || !Number.isFinite(Number(item.unit_price)) || Number(item.unit_price) < 0)) {
+        addToast('error', 'Lỗi', 'Số lượng phải lớn hơn 0 và giá nhập không được âm.');
         return;
       }
       setConfirmModal({
@@ -292,6 +383,7 @@ export default function InventoryOpsDashboard() {
       const payload = {
         type: confirmModal.type,
         note: form.note || (isImport ? `Nhập kho từ NCC` : `Xuất kho`),
+        plan_id: isImport ? form.plan_id : undefined,
         items: form.items.map(i => ({
           product_id: i.product_id,
           quantity: i.quantity,
@@ -305,7 +397,7 @@ export default function InventoryOpsDashboard() {
 
       // Reset
       if (isImport) {
-        setImportForm({ ...importForm, items: [], note: '' });
+        setImportForm({ supplier_id: '', date: new Date().toISOString().split('T')[0], items: [], note: '', plan_id: null, plan_status: null });
         try { sessionStorage.removeItem('inventory_ops_import_form'); } catch (e) { }
       } else {
         setExportForm({ ...exportForm, items: [], note: '' });
@@ -356,20 +448,49 @@ export default function InventoryOpsDashboard() {
           {/* Stats Import */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard icon={ArrowDownToLine} iconColorClass="bg-blue-50 text-blue-600" label="Tổng lượt nhập" value={stats.importTotal} />
-            <StatCard icon={DollarSign} iconColorClass="bg-purple-50 text-purple-600" label="Tổng giá trị nhập" value={formatCurrency(stats.importValue)} />
+            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị nhập" value={formatCurrency(stats.importValue)} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
               {/* Form Import */}
               <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                {/* Banner kế hoạch AI */}
+                {importForm.plan_id && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+                        <FileText className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-blue-900">Kế hoạch nhập từ AI</p>
+                          {(!importForm.plan_status || importForm.plan_status === 'DRAFT') && <span className="h-6 px-2.5 rounded-full text-xs font-medium flex items-center bg-blue-50 text-blue-700 border border-blue-200">Đã tạo</span>}
+                          {importForm.plan_status === 'COMPLETED' && <span className="h-6 px-2.5 rounded-full text-xs font-medium flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200">Đã nhập kho</span>}
+                          {importForm.plan_status === 'CANCELLED' && <span className="h-6 px-2.5 rounded-full text-xs font-medium flex items-center bg-slate-100 text-slate-600 border border-slate-200">Đã hủy</span>}
+                          {importForm.plan_status === 'PENDING' && <span className="h-6 px-2.5 rounded-full text-xs font-medium flex items-center bg-amber-50 text-amber-700 border border-amber-200">Chờ xử lý</span>}
+                        </div>
+                        <p className="text-xs text-blue-700 mt-0.5">
+                          Mã: {importForm.plan_id.slice(0, 8)} · {importForm.items.length} sản phẩm
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setConfirmModal({ isOpen: true, type: 'CANCEL_PLAN', data: null })}
+                      className="text-xs font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-white px-2 py-1 rounded border border-blue-100 hover:bg-blue-50 transition-colors"
+                    >
+                      Hủy kế hoạch
+                    </button>
+                  </div>
+                )}
                 <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2">Tạo Phiếu Nhập</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Nhà cung cấp *</label>
                     <select
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white disabled:opacity-60"
                       value={importForm.supplier_id}
+                      disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
                       onChange={(e) => {
                         const newSupplierId = e.target.value;
                         if (newSupplierId === 'ALL') {
@@ -396,8 +517,9 @@ export default function InventoryOpsDashboard() {
                     <label className="block text-sm font-medium text-slate-700 mb-1">Ngày nhập</label>
                     <input
                       type="date"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm disabled:opacity-60"
                       value={importForm.date}
+                      disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
                       onChange={(e) => setImportForm({ ...importForm, date: e.target.value })}
                     />
                   </div>
@@ -406,8 +528,9 @@ export default function InventoryOpsDashboard() {
                     <input
                       type="text"
                       placeholder="Ghi chú nhập kho..."
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm disabled:opacity-60"
                       value={importForm.note}
+                      disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
                       onChange={(e) => setImportForm({ ...importForm, note: e.target.value })}
                     />
                   </div>
@@ -475,52 +598,130 @@ export default function InventoryOpsDashboard() {
                 </div>
 
                 {/* List Items */}
+                {isImportPlan && (
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="search"
+                      value={importPlanSearch}
+                      onChange={event => {
+                        setImportPlanSearch(event.target.value);
+                        setImportPlanPage(1);
+                      }}
+                      placeholder="Tìm sản phẩm trong kế hoạch..."
+                      className="w-full rounded-lg border border-slate-200 py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      aria-label="Tìm sản phẩm trong kế hoạch"
+                    />
+                  </div>
+                )}
                 <div className="border border-slate-200 rounded-lg overflow-hidden">
-                  <table className="w-full text-left border-collapse min-w-full">
-                    <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-medium">
-                      <tr>
-                        <th className="p-3">Sản phẩm</th>
-                        <th className="p-3 text-center">SL</th>
-                        <th className="p-3 text-right">Giá nhập</th>
-                        <th className="p-3 text-right">Thành tiền</th>
-                        <th className="p-3 text-center w-12"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 text-sm">
-                      {importForm.items.length === 0 ? (
-                        <tr><td colSpan="5" className="p-6 text-center text-slate-400">Chưa có sản phẩm nào trong phiếu</td></tr>
-                      ) : (
-                        importForm.items.map(item => (
-                          <tr key={item.product_id} className="hover:bg-slate-50">
-                            <td className="p-3">
-                              <div className="font-medium text-slate-900">{item.product_name}</div>
-                              <div className="text-xs text-slate-500">{item.sku}</div>
-                            </td>
-                            <td className="p-3 text-center font-medium">{item.quantity}</td>
-                            <td className="p-3 text-right text-slate-600">{formatCurrency(item.unit_price)}</td>
-                            <td className="p-3 text-right font-medium text-blue-600">{formatCurrency(item.quantity * item.unit_price)}</td>
-                            <td className="p-3 text-center">
-                              <button onClick={() => removeItem(item.product_id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors">
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[680px]">
+                      <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-medium">
+                        <tr>
+                          <th className="p-3">Sản phẩm</th>
+                          <th className="p-3 text-center">SL thực nhập</th>
+                          <th className="p-3 text-right">Giá nhập</th>
+                          <th className="p-3 text-right">Thành tiền</th>
+                          <th className="p-3 text-center w-12"></th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-sm">
+                        {visibleImportItems.length === 0 ? (
+                          <tr><td colSpan="5" className="p-6 text-center text-slate-400">{normalizedImportPlanSearch ? 'Không tìm thấy sản phẩm phù hợp' : 'Chưa có sản phẩm nào trong phiếu'}</td></tr>
+                        ) : (
+                          visibleImportItems.map(item => (
+                            <tr key={item.product_id} className="hover:bg-slate-50">
+                              <td className="p-3">
+                                <div className="font-medium text-slate-900">{item.product_name}</div>
+                                <div className="text-xs text-slate-500">{item.sku}</div>
+                              </td>
+                              <td className="p-3 text-center">
+                                <div className="flex flex-col items-center gap-1">
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={item.quantity}
+                                    disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
+                                    onChange={event => updateImportItem(item.product_id, 'quantity', event.target.value)}
+                                    className="w-24 rounded-md border border-slate-200 px-2 py-1 text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:bg-slate-50"
+                                    aria-label={`Số lượng thực nhập của ${item.product_name}`}
+                                  />
+                                  {isImportPlan && item.suggested_quantity != null && (
+                                    <span className="text-[11px] text-slate-400">AI đề xuất: {item.suggested_quantity}</span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3 text-right">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={item.unit_price}
+                                  disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
+                                  onChange={event => updateImportItem(item.product_id, 'unit_price', event.target.value)}
+                                  className="w-32 rounded-md border border-slate-200 px-2 py-1 text-right text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:bg-slate-50"
+                                  aria-label={`Giá nhập của ${item.product_name}`}
+                                />
+                              </td>
+                              <td className="p-3 text-right font-medium text-blue-600">{formatCurrency((Number(item.quantity) || 0) * (Number(item.unit_price) || 0))}</td>
+                              <td className="p-3 text-center">
+                                {(!importForm.plan_id || importForm.plan_status === 'DRAFT') && (
+                                <button onClick={() => removeItem(item.product_id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" aria-label={`Xóa ${item.product_name}`}>
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  {isImportPlan && (
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-200 bg-white px-3 py-3 text-xs text-slate-500">
+                      <span>
+                        {filteredImportItems.length === 0
+                          ? 'Hiển thị 0–0 / 0 kết quả'
+                          : `Hiển thị ${importPlanStartIndex + 1}–${Math.min(importPlanStartIndex + ITEMS_PER_PAGE, filteredImportItems.length)} / ${filteredImportItems.length} ${normalizedImportPlanSearch ? 'kết quả' : 'sản phẩm'}`}
+                      </span>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setImportPlanPage(page => Math.max(1, page - 1))}
+                          disabled={currentImportPlanPage === 1}
+                          className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 font-medium text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                          aria-label="Trang trước"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          <span className="hidden sm:inline">Trước</span>
+                        </button>
+                        <span className="min-w-[88px] text-center font-medium text-slate-700">Trang {currentImportPlanPage} / {totalImportPlanPages}</span>
+                        <button
+                          type="button"
+                          onClick={() => setImportPlanPage(page => Math.min(totalImportPlanPages, page + 1))}
+                          disabled={currentImportPlanPage === totalImportPlanPages}
+                          className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 font-medium text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                          aria-label="Trang sau"
+                        >
+                          <span className="hidden sm:inline">Sau</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Summary */}
                 <div className="flex justify-between items-center bg-slate-50 p-4 rounded-lg border border-slate-200">
                   <div className="text-sm text-slate-600">
-                    Tổng số lượng: <span className="font-bold text-slate-900">{importForm.items.reduce((a, b) => a + b.quantity, 0)}</span>
+                    Tổng số lượng: <span className="font-bold text-slate-900">{totalImportQuantity}</span>
                   </div>
                   <div className="text-base text-slate-600">
-                    Tổng tiền: <span className="text-xl font-bold text-blue-600">{formatCurrency(importForm.items.reduce((a, b) => a + (b.quantity * b.unit_price), 0))}</span>
+                    Tổng tiền: <span className="text-xl font-bold text-blue-600">{formatCurrency(totalImportAmount)}</span>
                   </div>
                 </div>
 
+                {(!importForm.plan_id || importForm.plan_status === 'DRAFT') && (
                 <div className="flex justify-end pt-2">
                   <button
                     onClick={handleOpenConfirm}
@@ -530,6 +731,7 @@ export default function InventoryOpsDashboard() {
                     <CheckCircle2 className="w-4 h-4" /> Xác nhận nhập kho
                   </button>
                 </div>
+                )}
               </div>
             </div>
 
@@ -568,7 +770,7 @@ export default function InventoryOpsDashboard() {
           {/* Stats Export */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard icon={ArrowUpFromLine} iconColorClass="bg-blue-50 text-blue-600" label="Tổng lượt xuất" value={stats.exportTotal} />
-            <StatCard icon={DollarSign} iconColorClass="bg-purple-50 text-purple-600" label="Tổng giá trị xuất" value={formatCurrency(stats.exportValue)} />
+            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị xuất" value={formatCurrency(stats.exportValue)} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -726,13 +928,18 @@ export default function InventoryOpsDashboard() {
             <div className="px-6 py-4 flex items-center gap-3 bg-blue-50 text-blue-700">
               <AlertTriangle className="w-6 h-6" />
               <h3 className="font-bold text-lg">
-                Xác nhận {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'} kho
+                {confirmModal.type === 'CANCEL_PLAN' ? 'Hủy kế hoạch nhập' : `Xác nhận ${confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'} kho`}
               </h3>
             </div>
 
             <div className="p-6 space-y-4 text-slate-600 text-sm">
-              <p>Bạn có chắc chắn muốn {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'} các sản phẩm này {confirmModal.type === 'IMPORT' ? 'vào' : 'khỏi'} kho không?</p>
+              {confirmModal.type === 'CANCEL_PLAN' ? (
+                <p>Bạn có chắc muốn hủy kế hoạch nhập này? Tồn kho sẽ không bị thay đổi.</p>
+              ) : (
+                <p>Bạn có chắc chắn muốn {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'} các sản phẩm này {confirmModal.type === 'IMPORT' ? 'vào' : 'khỏi'} kho không?</p>
+              )}
 
+                {confirmModal.type !== 'CANCEL_PLAN' && (
               <div className="bg-slate-50 p-4 rounded-lg space-y-2 border border-slate-100">
                 {confirmModal.type === 'IMPORT' && confirmModal.data.supplier_id && (
                   <div className="flex justify-between">
@@ -758,18 +965,20 @@ export default function InventoryOpsDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Tổng số lượng {confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'}:</span>
-                  <span className="font-medium text-slate-900">{confirmModal.data.items.reduce((a, b) => a + b.quantity, 0)}</span>
+                  <span className="font-medium text-slate-900">{confirmModal.data.items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)}</span>
                 </div>
                 {confirmModal.type === 'IMPORT' && (
                   <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
                     <span className="text-slate-500">Tổng giá trị:</span>
                     <span className="font-bold text-blue-600">
-                      {formatCurrency(confirmModal.data.items.reduce((a, b) => a + (b.quantity * b.unit_price), 0))}
+                      {formatCurrency(confirmModal.data.items.reduce((sum, item) => sum + ((Number(item.quantity) || 0) * (Number(item.unit_price) || 0)), 0))}
                     </span>
                   </div>
                 )}
               </div>
+              )}
 
+              {confirmModal.type !== 'CANCEL_PLAN' && confirmModal.data?.items && (
               <div className="border border-slate-200 rounded-lg overflow-hidden">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
@@ -801,6 +1010,7 @@ export default function InventoryOpsDashboard() {
                   </tbody>
                 </table>
               </div>
+              )}
             </div>
 
             <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
@@ -810,15 +1020,23 @@ export default function InventoryOpsDashboard() {
                 onClick={() => setConfirmModal({ isOpen: false, type: '', data: null })}
                 className="px-4 py-2 border border-slate-200 text-slate-700 bg-white rounded-lg hover:bg-slate-50 font-medium disabled:opacity-50"
               >
-                Hủy
+                {confirmModal.type === 'CANCEL_PLAN' ? 'Quay lại' : 'Hủy'}
               </button>
               <button
                 type="button"
-                onClick={handleSubmit}
+                onClick={() => {
+                  if (confirmModal.type === 'CANCEL_PLAN') {
+                    setImportForm({ supplier_id: '', date: new Date().toISOString().split('T')[0], note: '', plan_id: null, plan_status: null, items: [] });
+                    setConfirmModal({ isOpen: false, type: '', data: null });
+                    addToast('info', 'Đã hủy', 'Đã hủy kế hoạch nhập, bạn có thể tạo phiếu mới.');
+                  } else {
+                    handleSubmit();
+                  }
+                }}
                 disabled={isSubmitting}
-                className="px-4 py-2 text-white rounded-lg font-medium disabled:opacity-50 flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                className={`px-4 py-2 text-white rounded-lg font-medium disabled:opacity-50 flex items-center gap-2 ${confirmModal.type === 'CANCEL_PLAN' ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}`}
               >
-                {isSubmitting ? 'Đang xử lý...' : `Xác nhận ${confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'}`}
+                {isSubmitting ? 'Đang xử lý...' : confirmModal.type === 'CANCEL_PLAN' ? 'Xác nhận hủy' : `Xác nhận ${confirmModal.type === 'IMPORT' ? 'nhập' : 'xuất'}`}
               </button>
             </div>
           </div>

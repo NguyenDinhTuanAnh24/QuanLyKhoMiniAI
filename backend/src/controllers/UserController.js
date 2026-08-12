@@ -44,9 +44,10 @@ class UserController {
     try {
       const schema = z.object({
         oldPassword: z.string().min(1, 'Mật khẩu cũ là bắt buộc'),
-        newPassword: z.string().min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự')
+        newPassword: z.string().min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự'),
+        logoutOthers: z.boolean().optional()
       });
-      const { oldPassword, newPassword } = schema.parse(req.body);
+      const { oldPassword, newPassword, logoutOthers } = schema.parse(req.body);
 
       const user = await UserService.getUserById(req.user.user_id);
       const bcrypt = require('bcryptjs');
@@ -79,9 +80,14 @@ class UserController {
         details: { status: 'Thành công' }
       });
 
+      let message = "Cập nhật mật khẩu thành công.";
+      if (logoutOthers) {
+        message = "Mật khẩu đã được cập nhật nhưng không thể đăng xuất các thiết bị khác do giới hạn bảo mật hiện tại.";
+      }
+
       res.json({
         success: true,
-        message: "Cập nhật mật khẩu thành công."
+        message: message
       });
     } catch (error) {
       if (error instanceof z.ZodError) {

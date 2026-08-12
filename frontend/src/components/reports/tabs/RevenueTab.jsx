@@ -61,7 +61,7 @@ export default function RevenueTab({ data, loading }) {
           label="Giá trị TB/đơn" 
           value={formatCurrency(summary.avg_order_value)} 
           icon={Tag} 
-          iconColorClass="bg-purple-50 text-purple-600" 
+          iconColorClass="bg-blue-50 text-blue-600" 
         />
         <StatCard 
           label="Lợi nhuận ước tính" 
@@ -140,7 +140,7 @@ export default function RevenueTab({ data, loading }) {
                     cursor={{ fill: '#f1f5f9' }}
                     contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   />
-                  <Bar dataKey="revenue" fill="#8b5cf6" radius={[0, 4, 4, 0]} barSize={24} />
+                  <Bar dataKey="revenue" fill="var(--color-primary-chart)" radius={[0, 4, 4, 0]} barSize={24} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (

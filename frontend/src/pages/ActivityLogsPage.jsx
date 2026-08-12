@@ -7,6 +7,8 @@ import PageHeader from '../components/PageHeader';
 
 const ACTION_LABELS = {
   'LOGIN': 'Đăng nhập',
+  'LOGOUT': 'Đăng xuất',
+  'CHANGE_PASSWORD': 'Đổi mật khẩu',
   'CREATE_PRODUCT': 'Thêm sản phẩm',
   'UPDATE_PRODUCT': 'Cập nhật sản phẩm',
   'DELETE_PRODUCT': 'Xóa sản phẩm',
@@ -75,7 +77,7 @@ const ActivityLogsPage = () => {
     if (action.includes('CREATE') || action.includes('IMPORT')) color = 'bg-green-50 text-green-700 border-green-200';
     if (action.includes('UPDATE')) color = 'bg-blue-50 text-blue-700 border-blue-200';
     if (action.includes('DELETE') || action.includes('EXPORT')) color = 'bg-red-50 text-red-700 border-red-200';
-    if (action.includes('LOGIN')) color = 'bg-purple-50 text-purple-700 border-purple-200';
+    if (action.includes('LOGIN')) color = 'bg-blue-50 text-blue-700 border-blue-200';
 
     return (
       <span className={`px-2.5 py-1 text-xs font-medium border rounded-full ${color}`}>
@@ -177,6 +179,8 @@ const ActivityLogsPage = () => {
     // Các giá trị Role
     if (value === 'OWNER') return 'Chủ cửa hàng';
     if (value === 'ADMIN') return 'Quản trị viên';
+    if (value === 'WAREHOUSE_STAFF') return 'Nhân viên kho';
+    if (value === 'SALES_STAFF') return 'Nhân viên bán hàng';
     
     // Các giá trị Status
     if (value === 'Active' || value === 'ACTIVE') return 'Hoạt động';
@@ -224,29 +228,29 @@ const ActivityLogsPage = () => {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="max-w-[1600px] mx-auto space-y-6">
         <PageHeader 
           title="Nhật ký hoạt động" 
           subtitle="Theo dõi các thay đổi và thao tác trong hệ thống"
           icon={History}
         />
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-4 border-b border-gray-100 flex flex-wrap gap-4 items-center justify-between">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+          <div className="p-4 border-b border-slate-200 flex flex-wrap gap-4 items-center justify-between">
             <div className="flex gap-4 items-center flex-1">
               <div className="relative w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Tìm kiếm..."
-                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors h-10"
                 />
               </div>
               <select
                 name="action"
                 value={filters.action}
                 onChange={handleFilterChange}
-                className="pl-3 pr-8 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                className="pl-3 pr-8 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors h-10 bg-white"
               >
                 <option value="">Tất cả thao tác</option>
                 {Object.entries(ACTION_LABELS).map(([key, label]) => (
@@ -257,7 +261,7 @@ const ActivityLogsPage = () => {
                 name="entity_type"
                 value={filters.entity_type}
                 onChange={handleFilterChange}
-                className="pl-3 pr-8 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                className="pl-3 pr-8 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors h-10 bg-white"
               >
                 <option value="">Tất cả đối tượng</option>
                 {Object.entries(ENTITY_LABELS).map(([key, label]) => (
@@ -267,7 +271,7 @@ const ActivityLogsPage = () => {
             </div>
             <button 
               onClick={fetchLogs}
-              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors"
+              className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors h-10 w-10 flex items-center justify-center"
               title="Làm mới"
             >
               <Filter className="w-4 h-4" />
@@ -281,13 +285,13 @@ const ActivityLogsPage = () => {
                 <p className="text-gray-500">Đang tải dữ liệu...</p>
               </div>
             ) : logs.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-slate-500">
                 Không tìm thấy nhật ký hoạt động nào
               </div>
             ) : (
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500">
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500">
                     <th className="px-6 py-4 font-medium whitespace-nowrap">Thời gian</th>
                     <th className="px-6 py-4 font-medium">Người dùng / Vai trò</th>
                     <th className="px-6 py-4 font-medium">Thao tác / Kết quả</th>
@@ -295,7 +299,7 @@ const ActivityLogsPage = () => {
                     <th className="px-6 py-4 font-medium">Chi tiết</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-slate-100">
                   {logs.map((log) => {
                     let detailsObj = {};
                     try {
@@ -310,15 +314,15 @@ const ActivityLogsPage = () => {
                     const statusLabel = detailsObj.status ? formatDetailValue('status', detailsObj.status) : '';
 
                     return (
-                      <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                      <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="px-6 py-4 whitespace-nowrap text-slate-600">
                           {formatDate(log.created_at)}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col items-start gap-1.5">
                             <div>
-                              <div className="font-medium text-gray-900">{log.user_name || 'Hệ thống'}</div>
-                              <div className="text-xs text-gray-500">{log.user_id || 'N/A'}</div>
+                              <div className="font-medium text-slate-900">{log.user_name || 'Hệ thống'}</div>
+                              <div className="text-xs text-slate-500">{log.user_id || 'N/A'}</div>
                             </div>
                             {roleLabel && (
                               <div className="text-[10px] font-semibold text-blue-600 uppercase bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
@@ -338,8 +342,9 @@ const ActivityLogsPage = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-gray-900">{ENTITY_LABELS[log.entity_type] || log.entity_type}</div>
-                          {log.entity_id && <div className="text-xs text-gray-500 truncate max-w-[120px]">{log.entity_id}</div>}
+                          <span className="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200">
+                            {ENTITY_LABELS[log.entity_type] || log.entity_type}
+                          </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="max-h-32 overflow-y-auto w-full min-w-[280px] p-2.5 bg-blue-50/30 rounded-lg border border-blue-100/50 shadow-sm">

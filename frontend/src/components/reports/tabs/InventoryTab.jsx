@@ -48,7 +48,7 @@ export default function InventoryTab({ data, loading }) {
           label="Tổng giá trị tồn kho" 
           value={formatCurrency(summary.inventory_value)} 
           icon={Archive} 
-          iconColorClass="bg-indigo-50 text-indigo-600" 
+          iconColorClass="bg-blue-50 text-blue-600" 
         />
         <StatCard 
           label="Sản phẩm cần nhập" 

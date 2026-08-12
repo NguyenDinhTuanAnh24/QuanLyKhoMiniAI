@@ -52,9 +52,19 @@ export const getAIForecast = async (params = {}) => {
 export const runAIAnalysis = async (settings = {}) => {
   try {
     const response = await api.post('/ai/analyze', { settings });
-    return response.data?.data || null;
+    return response.data;
   } catch (error) {
     console.error('Error running AI analysis:', error);
+    throw error;
+  }
+};
+
+export const getAnalysisProgress = async (runId) => {
+  try {
+    const response = await api.get(`/ai/analysis-runs/${runId}`);
+    return response.data?.data || null;
+  } catch (error) {
+    console.error('Error fetching AI analysis progress:', error);
     throw error;
   }
 };
@@ -89,6 +99,16 @@ export const ignoreAIRecommendation = async (id) => {
     return response.data;
   } catch (error) {
     console.error('Error ignoring AI recommendation:', error);
+    throw error;
+  }
+};
+
+export const applyBulkAIRecommendations = async (analysisRunId) => {
+  try {
+    const response = await api.post('/ai/recommendations/apply-bulk', { analysis_run_id: analysisRunId });
+    return response.data;
+  } catch (error) {
+    console.error('Error applying bulk AI recommendations:', error);
     throw error;
   }
 };

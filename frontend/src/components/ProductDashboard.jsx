@@ -395,7 +395,7 @@ export default function ProductDashboard({ onNavigate }) {
         <StatCard icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={stats.totalProducts} trend="up" trendLabel="+4 mới" />
         <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={stats.activeProducts} trend="up" trendLabel="91%" />
         <StatCard icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={stats.lowStockProducts} trend="down" trendLabel="9%" />
-        <StatCard icon={DollarSign} iconColorClass="bg-purple-50 text-purple-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
+        <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
       </div>
 
       {/* Filter Bar */}

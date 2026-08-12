@@ -8,7 +8,7 @@ class InventoryController {
    */
   async createMovement(req, res, next) {
     try {
-      const { items, type, note } = req.body;
+      const { items, type, note, plan_id } = req.body;
 
       // 1. Validate Input Payload
       if (!Array.isArray(items) || items.length === 0) {
@@ -193,9 +193,27 @@ class InventoryController {
             role: req.user ? req.user.role : 'UNKNOWN',
             status: 'Thành công',
             item_count: items.length,
-            note: note || ''
+            note: note || '',
+            plan_id: plan_id || null
           }
         });
+
+        // Step D.1: Complete Import Plan if exists
+        if (plan_id && type === 'IMPORT') {
+          try {
+            await supabase
+              .from('import_plans')
+              .update({ status: 'COMPLETED', completed_at: new Date().toISOString() })
+              .eq('id', plan_id);
+              
+            await supabase
+              .from('ai_recommendations')
+              .update({ status: 'COMPLETED' })
+              .eq('application_id', plan_id);
+          } catch (planErr) {
+            console.error('Failed to update import plan status:', planErr);
+          }
+        }
 
         return res.status(201).json({
           success: true,
@@ -386,6 +404,35 @@ class InventoryController {
         timestamp: new Date().toISOString(),
         data: integrityResult
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getImportPlan(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { data, error } = await supabase
+        .from('import_plans')
+        .select(`
+          *,
+          import_plan_items (
+            *,
+            products (product_name, sku, import_price),
+            suppliers (supplier_name)
+          )
+        `)
+        .eq('id', id)
+        .single();
+        
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return res.status(404).json({ success: false, message: 'Không tìm thấy kế hoạch nhập.' });
+        }
+        throw error;
+      }
+      
+      res.json({ success: true, data });
     } catch (error) {
       next(error);
     }

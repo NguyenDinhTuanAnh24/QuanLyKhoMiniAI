@@ -69,9 +69,9 @@ export default function Notifications() {
       case 'STOCK_LOW':
         return { bg: 'bg-rose-100 text-rose-600', icon: <AlertTriangle className="w-5 h-5" /> };
       case 'STOCK_IMPORTED':
-        return { bg: 'bg-indigo-100 text-indigo-600', icon: <ArrowDownRight className="w-5 h-5" /> };
+        return { bg: 'bg-blue-100 text-blue-600', icon: <ArrowDownRight className="w-5 h-5" /> };
       case 'STOCK_EXPORTED':
-        return { bg: 'bg-purple-100 text-purple-600', icon: <ArrowUpRight className="w-5 h-5" /> };
+        return { bg: 'bg-blue-100 text-blue-600', icon: <ArrowUpRight className="w-5 h-5" /> };
       default:
         return { bg: 'bg-slate-100 text-slate-600', icon: <Info className="w-5 h-5" /> };
     }

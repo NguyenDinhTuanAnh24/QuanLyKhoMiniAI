@@ -11,7 +11,6 @@ const settingsSchema = z.object({
   low_stock_warning_days: z.number().int().min(0).optional(),
   default_reorder_level: z.number().int().min(0).optional(),
   auto_stock_alert_enabled: z.boolean().optional(),
-  allow_negative_stock: z.boolean().optional(),
   ai_enabled: z.boolean().optional(),
   ai_provider: z.string().optional(),
   ai_model: z.string().optional(),
@@ -30,6 +29,15 @@ class SettingController {
     try {
       const settings = await SettingService.getSettings();
       res.json({ success: true, data: settings });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getBranding(req, res, next) {
+    try {
+      const branding = await SettingService.getBranding();
+      res.json({ success: true, data: branding });
     } catch (error) {
       next(error);
     }

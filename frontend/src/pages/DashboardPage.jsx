@@ -23,6 +23,7 @@ import {
 import dashboardService from '../services/dashboardService';
 import { useToast } from '../contexts/ToastContext';
 import { getUser } from '../services/authService';
+import LazyRevealSection from '../components/common/LazyRevealSection';
 
 const DashboardPage = ({ onNavigate }) => {
   const navigate = useNavigate();
@@ -114,7 +115,6 @@ const DashboardPage = ({ onNavigate }) => {
       {/* Header (Figma style) */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <div className="text-sm text-slate-400 mb-1">Dashboard</div>
           <h1 className="text-2xl font-bold text-slate-800 mb-2">Tổng quan hệ thống</h1>
           <p className="text-slate-500 text-sm">Xin chào, {userName}! Đây là tóm tắt hoạt động hôm nay.</p>
         </div>
@@ -175,7 +175,7 @@ const DashboardPage = ({ onNavigate }) => {
         {!isStaff && (
           <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
             <div className="flex justify-between items-start">
-              <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500">
+              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
                 <Warehouse size={20} />
               </div>
               <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
@@ -289,7 +289,8 @@ const DashboardPage = ({ onNavigate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Giao dịch gần đây (span 2) */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-0 overflow-hidden flex flex-col">
+        <LazyRevealSection minHeight={300} className="lg:col-span-2">
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-0 overflow-hidden flex flex-col h-full">
           <div className="p-5 border-b border-slate-100 flex justify-between items-center">
             <h3 className="text-base font-bold text-slate-800">Giao dịch gần đây</h3>
             <button 
@@ -333,9 +334,11 @@ const DashboardPage = ({ onNavigate }) => {
             )}
           </div>
         </div>
+        </LazyRevealSection>
 
         {/* Cảnh báo tồn kho */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 flex flex-col">
+        <LazyRevealSection minHeight={300} className="h-full">
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 flex flex-col h-full">
           <div className="flex justify-between items-center mb-4">
             <div>
               <h3 className="text-base font-bold text-slate-800">Cảnh báo tồn kho</h3>
@@ -387,6 +390,7 @@ const DashboardPage = ({ onNavigate }) => {
             + Tạo phiếu nhập hàng nhanh
           </button>
         </div>
+        </LazyRevealSection>
       </div>
 
       {/* Row 4: Sản phẩm bán chạy hôm nay & Thao tác nhanh */}
@@ -394,7 +398,8 @@ const DashboardPage = ({ onNavigate }) => {
         
         {/* Sản phẩm bán chạy hôm nay (span 2) */}
         {!isStaff && (
-          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+          <LazyRevealSection minHeight={300} className="lg:col-span-2">
+          <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 h-full">
             <h3 className="text-base font-bold text-slate-800 mb-6">Sản phẩm bán chạy hôm nay</h3>
             
             {(!top_selling || top_selling.length === 0) ? (
@@ -429,10 +434,12 @@ const DashboardPage = ({ onNavigate }) => {
               </div>
             )}
           </div>
+          </LazyRevealSection>
         )}
 
         {/* Thao tác nhanh */}
-        <div className={`${isStaff ? 'lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4' : ''} bg-white rounded-xl border border-slate-100 shadow-sm p-6`}>
+        <LazyRevealSection minHeight={300} className={`${isStaff ? 'lg:col-span-3' : 'h-full'}`}>
+        <div className={`h-full grid ${isStaff ? 'grid-cols-1 md:grid-cols-3 gap-4' : 'grid-cols-1'} bg-white rounded-xl border border-slate-100 shadow-sm p-6`}>
           <h3 className={`text-base font-bold text-slate-800 mb-4 ${isStaff ? 'col-span-full' : ''}`}>Thao tác nhanh</h3>
           
           <div className={`${isStaff ? 'contents' : 'space-y-3'}`}>
@@ -464,15 +471,15 @@ const DashboardPage = ({ onNavigate }) => {
 
             <button 
               onClick={() => onNavigate ? onNavigate('products') : navigate('/products')}
-              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-purple-200 hover:bg-purple-50/50 transition-colors group"
+              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group"
             >
               <div className="flex items-center gap-3">
-                <div className="p-1.5 bg-purple-50 text-purple-500 rounded-md group-hover:bg-purple-100">
+                <div className="p-1.5 bg-blue-50 text-blue-500 rounded-md group-hover:bg-blue-100">
                   <Package size={16} />
                 </div>
                 <span className="text-sm font-medium text-slate-700">Thêm sản phẩm mới</span>
               </div>
-              <ArrowRight size={14} className="text-slate-400 group-hover:text-purple-500" />
+              <ArrowRight size={14} className="text-slate-400 group-hover:text-blue-500" />
             </button>
 
             {!isStaff && (
@@ -491,6 +498,7 @@ const DashboardPage = ({ onNavigate }) => {
             )}
           </div>
         </div>
+        </LazyRevealSection>
         
       </div>
     </div>

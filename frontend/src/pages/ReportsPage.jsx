@@ -9,6 +9,7 @@ import RevenueTab from '../components/reports/tabs/RevenueTab';
 import InventoryTab from '../components/reports/tabs/InventoryTab';
 import TopSellingTab from '../components/reports/tabs/TopSellingTab';
 import ImportsTab from '../components/reports/tabs/ImportsTab';
+import LazyRevealSection from '../components/common/LazyRevealSection';
 
 export default function ReportsPage() {
   const { showToast } = useToast();
@@ -433,12 +434,12 @@ export default function ReportsPage() {
             </button>
           </div>
         ) : (
-          <>
+          <LazyRevealSection minHeight={400} key={activeTab}>
             {activeTab === 'revenue' && <RevenueTab data={revenueData} loading={loading} />}
             {activeTab === 'inventory' && <InventoryTab data={inventoryData} loading={loading} />}
             {activeTab === 'top-selling' && <TopSellingTab data={topSellingData} loading={loading} />}
             {activeTab === 'imports' && <ImportsTab data={importsData} loading={loading} />}
-          </>
+          </LazyRevealSection>
         )}
       </div>
     </div>

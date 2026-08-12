@@ -1,0 +1,10 @@
+-- Add progress tracking fields to ai_analysis_runs table
+ALTER TABLE public.ai_analysis_runs 
+ADD COLUMN IF NOT EXISTS phase TEXT DEFAULT 'QUEUED',
+ADD COLUMN IF NOT EXISTS progress INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS progress_message TEXT,
+ADD COLUMN IF NOT EXISTS error_message TEXT,
+ADD COLUMN IF NOT EXISTS result_data JSONB,
+ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ DEFAULT NOW(),
+ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ,
+ADD COLUMN IF NOT EXISTS failed_at TIMESTAMPTZ;

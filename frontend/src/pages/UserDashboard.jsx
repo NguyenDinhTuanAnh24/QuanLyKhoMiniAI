@@ -185,7 +185,7 @@ export default function UserDashboard() {
         <StatCard icon={Users} iconColorClass="bg-blue-50 text-blue-600" label="Tổng người dùng" value={stats.total} />
         <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={stats.active} />
         <StatCard icon={ShieldAlert} iconColorClass="bg-red-50 text-red-600" label="Tạm khóa" value={stats.locked} />
-        <StatCard icon={Shield} iconColorClass="bg-purple-50 text-purple-600" label="Quản trị viên" value={stats.admins} />
+        <StatCard icon={Shield} iconColorClass="bg-blue-50 text-blue-600" label="Quản trị viên" value={stats.admins} />
       </div>
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3">

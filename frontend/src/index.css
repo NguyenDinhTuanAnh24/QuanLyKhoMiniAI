@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --color-primary-chart: #3b82f6; /* blue-500 */
+    --color-forecast-chart: #60a5fa; /* blue-400 */
+  }
+
   body {
     @apply bg-gray-50 text-gray-900;
   }

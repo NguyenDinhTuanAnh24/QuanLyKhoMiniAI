@@ -12,6 +12,17 @@ class SettingService {
     return settings;
   }
 
+  async getBranding() {
+    const settings = await SettingRepository.getSettings();
+    if (!settings) {
+      return { store_name: 'Cửa hàng của tôi', store_logo_url: null };
+    }
+    return {
+      store_name: settings.store_name,
+      store_logo_url: settings.store_logo_url
+    };
+  }
+
   async updateSettings(settingsData) {
     // Kiểm tra xem đã có dòng DEFAULT chưa
     const existing = await SettingRepository.getSettings();

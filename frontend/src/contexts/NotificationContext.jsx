@@ -10,14 +10,20 @@ export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const requestInFlightRef = React.useRef(false);
   
   const user = getUser();
+  const userId = user?.user_id;
   const { showToast } = useToast();
 
   const fetchNotifications = useCallback(async (silent = false) => {
-    if (!user) return;
-    if (!silent) setLoading(true);
+    if (!userId) return;
+    if (requestInFlightRef.current) return;
+    
     try {
+      requestInFlightRef.current = true;
+      if (!silent) setLoading(true);
+      
       const res = await api.get('/notifications?page=1&limit=15');
       if (res.data && res.data.success) {
         setNotifications(res.data.data?.items || []);
@@ -34,17 +40,18 @@ export function NotificationProvider({ children }) {
     } catch (err) {
       console.error('Failed to fetch notifications:', err);
     } finally {
+      requestInFlightRef.current = false;
       if (!silent) setLoading(false);
     }
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
 
     fetchNotifications();
 
     // Listen to notification_recipients table for this specific user
-    const channelName = `user-notifications-${user.user_id}-${Date.now()}`;
+    const channelName = `user-notifications-${userId}`;
     const channel = supabase
       .channel(channelName)
       .on(
@@ -53,7 +60,7 @@ export function NotificationProvider({ children }) {
           event: 'INSERT', 
           schema: 'public', 
           table: 'notification_recipients',
-          filter: `user_id=eq.${user.user_id}`
+          filter: `user_id=eq.${userId}`
         },
         (payload) => {
           if (payload.new) {
@@ -72,7 +79,7 @@ export function NotificationProvider({ children }) {
           event: 'UPDATE', 
           schema: 'public', 
           table: 'notification_recipients',
-          filter: `user_id=eq.${user.user_id}`
+          filter: `user_id=eq.${userId}`
         },
         (payload) => {
           if (payload.new) {
@@ -86,7 +93,7 @@ export function NotificationProvider({ children }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, fetchNotifications, showToast]);
+  }, [userId, fetchNotifications, showToast]);
 
   const markAsRead = async (id) => {
     // Optimistic UI update

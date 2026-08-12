@@ -20,6 +20,7 @@ class ForecastService {
       
       const requiredStock = forecastQty + reorderLvl;
       const suggestedImportQty = Math.max(0, requiredStock - currentStock);
+      const overstockQty = Math.max(0, currentStock - requiredStock);
 
       // 4. Ước tính số ngày tồn kho
       const daysOfStock = avgDailySales > 0 ? Math.ceil(currentStock / avgDailySales) : 999;
@@ -31,23 +32,27 @@ class ForecastService {
       if (currentStock <= 0) {
         priority = 'CRITICAL';
         reason = 'Sản phẩm đã hết hàng. Cần nhập gấp để đáp ứng nhu cầu.';
-      } else if (currentStock <= reorderLvl && forecastQty > currentStock) {
+      } else if (daysOfStock <= 3) {
+        priority = 'CRITICAL';
+        reason = `Tồn kho chỉ đủ bán trong ${daysOfStock} ngày tới. Rủi ro hết hàng rất cao.`;
+      } else if (daysOfStock <= 7 || currentStock <= reorderLvl) {
         priority = 'HIGH';
-        reason = `Tồn kho dưới mức tối thiểu (${reorderLvl}) và nguy cơ thiếu hàng cao trong ${forecastDays} ngày tới.`;
-      } else if (currentStock <= reorderLvl) {
+        reason = `Tồn kho dưới mức an toàn hoặc dự kiến hết trong 7 ngày tới.`;
+      } else if (forecastQty > currentStock) {
         priority = 'MEDIUM';
-        reason = `Tồn kho dưới mức an toàn (${reorderLvl}).`;
-      } else if (daysOfStock <= forecastDays) {
-        priority = 'MEDIUM';
-        reason = `Số lượng tồn kho ước tính chỉ đủ bán trong ${daysOfStock} ngày tới.`;
+        reason = `Tồn kho hiện tại thấp hơn tổng nhu cầu dự báo.`;
+      } else if (overstockQty > 0 && daysOfStock > 60) {
+        priority = 'LOW';
+        reason = `Sản phẩm có dấu hiệu dư thừa, đủ bán trong ${daysOfStock} ngày.`;
       }
 
       return {
         product_id: p.product_id,
         sku: p.sku,
         product_name: p.product_name,
+        supplier_id: p.supplier_id || null,
         category_name: p.category_name,
-        supplier_name: p.supplier_name,
+        supplier_name: p.supplier_name || 'Chưa xác định nhà cung cấp',
         unit_name: p.unit_name,
         stock_quantity: currentStock,
         reorder_level: reorderLvl,
@@ -61,6 +66,7 @@ class ForecastService {
         forecast_14d: forecastQty,
         days_of_stock: daysOfStock,
         suggested_import_quantity: suggestedImportQty,
+        overstock_quantity: overstockQty,
         priority,
         reason,
         status: p.status || 'PENDING'
@@ -76,6 +82,7 @@ class ForecastService {
     const need_import_count = forecastItems.filter(p => p.suggested_import_quantity > 0).length;
     const low_stock_count = forecastItems.filter(p => p.stock_quantity <= p.reorder_level).length;
     const slow_moving_count = forecastItems.filter(p => p.avg_daily_sales < 0.1 && p.stock_quantity > 0).length;
+    const out_of_stock_count = forecastItems.filter(p => p.stock_quantity <= 0).length;
     
     const total_forecast_quantity = forecastItems.reduce((acc, p) => acc + (p.forecast_quantity || 0), 0);
     const total_suggested_import_quantity = forecastItems.reduce((acc, p) => acc + (p.suggested_import_quantity || 0), 0);
@@ -123,6 +130,54 @@ class ForecastService {
       });
     }
 
+    // Aggregate Supplier Insights
+    const supplierMap = new Map();
+    forecastItems.forEach(p => {
+      const sId = p.supplier_id || 'UNKNOWN';
+      if (!supplierMap.has(sId)) {
+        supplierMap.set(sId, {
+          supplier_id: p.supplier_id || null,
+          supplier_name: p.supplier_name,
+          product_count: 0,
+          need_import_count: 0,
+          total_suggested_import_quantity: 0,
+          low_stock_count: 0,
+          out_of_stock_count: 0,
+          total_stock_quantity: 0
+        });
+      }
+      const sData = supplierMap.get(sId);
+      sData.product_count += 1;
+      sData.total_stock_quantity += p.stock_quantity;
+      if (p.suggested_import_quantity > 0) sData.need_import_count += 1;
+      sData.total_suggested_import_quantity += p.suggested_import_quantity;
+      if (p.stock_quantity <= p.reorder_level) sData.low_stock_count += 1;
+      if (p.stock_quantity <= 0) sData.out_of_stock_count += 1;
+    });
+    
+    const supplier_insights = Array.from(supplierMap.values());
+
+    let status = 'STABLE';
+    if (need_import_count > 0 || out_of_stock_count > 0) status = 'CRITICAL';
+    else if (low_stock_count > 0 || slow_moving_count > 5) status = 'WARNING';
+
+    const overview = `Dựa trên dữ liệu ${historyDays} ngày qua, tổng nhu cầu dự báo là ${total_forecast_quantity} đơn vị. Hệ thống đề xuất nhập thêm ${total_suggested_import_quantity} đơn vị để đảm bảo không bị gián đoạn kinh doanh. Tình hình tồn kho hiện tại đang ở mức ${status === 'STABLE' ? 'ổn định' : status === 'WARNING' ? 'cần chú ý' : 'khẩn cấp'}.`;
+
+    const key_findings = [];
+    if (need_import_count > 0) key_findings.push(`Có ${need_import_count} mặt hàng đang thuộc nhóm cần nhập ưu tiên.`);
+    if (top_selling_products.length > 0) key_findings.push(`Ghi nhận ${top_selling_products.length} mặt hàng có tốc độ bán nổi bật trong kỳ phân tích.`);
+    if (slow_moving_products.length > 0) key_findings.push(`Phát hiện ${slow_moving_products.length} mặt hàng thuộc nhóm bán chậm và cần xem xét giảm nhập.`);
+    if (low_stock_count > 0) key_findings.push(`Có ${low_stock_count} sản phẩm có mức tồn thấp hơn ngưỡng an toàn.`);
+
+    const risks = [];
+    if (low_stock_count > 0) risks.push(`Nguy cơ thiếu hàng ở những mặt hàng tồn dưới mức an toàn (${low_stock_count} mặt hàng).`);
+    if (slow_moving_count > 0) risks.push(`Có ${slow_moving_count} mặt hàng có tốc độ quay vòng thấp, làm tăng chi phí lưu kho.`);
+    if (out_of_stock_count > 0) risks.push(`Có ${out_of_stock_count} mặt hàng đã hết hoàn toàn trong kho, gây mất doanh thu trực tiếp.`);
+
+    const opportunities = [];
+    if (top_selling_products.length > 0) opportunities.push(`Ưu tiên ngân sách cho nhóm ${top_selling_products.length} mặt hàng có nhu cầu và tốc độ bán tốt.`);
+    if (slow_moving_count > 0) opportunities.push(`Giảm nhập hoặc tổ chức khuyến mại cho nhóm bán chậm để thu hồi vốn.`);
+
     return {
       summary: {
         total_products,
@@ -134,15 +189,19 @@ class ForecastService {
         total_forecast_quantity,
         total_suggested_import_quantity
       },
-      overview_comment: `Dựa trên dữ liệu ${historyDays} ngày qua, tổng nhu cầu dự kiến trong ${forecastDays} ngày tới là ${total_forecast_quantity} sản phẩm. Cần bổ sung ${total_suggested_import_quantity} đơn vị để đảm bảo không bị gián đoạn kinh doanh.`,
-      inventory_comment: `Hiện tại có ${low_stock_count} sản phẩm nằm dưới mức tồn kho an toàn và ${slow_moving_count} sản phẩm có dấu hiệu tồn đọng kéo dài.`,
-      sales_comment: `Có ${top_selling_products.length} mặt hàng đang là chủ lực doanh thu. Cần ưu tiên nguồn vốn để nhập các mặt hàng này.`,
+      executive_summary: {
+        status,
+        overview,
+        key_findings,
+        risks,
+        opportunities,
+        recommended_actions
+      },
       urgent_import_products,
       top_selling_products,
       slow_moving_products,
       category_insights: [],
-      supplier_insights: [],
-      recommended_actions
+      supplier_insights
     };
   }
 }

@@ -17,12 +17,20 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
   const notiDropdownRef = useRef(null);
 
   // User & Auth state (from develop)
-  const user = getUser();
+  const [user, setUser] = useState(getUser());
   const { showToast } = useToast();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const userDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUser(getUser());
+    };
+    window.addEventListener('userUpdated', handleUserUpdate);
+    return () => window.removeEventListener('userUpdated', handleUserUpdate);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -81,12 +89,18 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
       case 'STOCK_IMPORTED':
         return { bg: 'bg-amber-100 text-amber-600', icon: <ArrowDownRight className="w-4 h-4" /> };
       case 'STOCK_EXPORTED':
-        return { bg: 'bg-purple-100 text-purple-600', icon: <ArrowUpRight className="w-4 h-4" /> };
+        return { bg: 'bg-blue-100 text-blue-600', icon: <ArrowUpRight className="w-4 h-4" /> };
       default:
         return { bg: 'bg-slate-100 text-slate-600', icon: <Bell className="w-4 h-4" /> };
     }
   };
 
+  const getAvatarInitials = (name) => {
+    if (!name) return 'U';
+    const parts = name.trim().split(' ');
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
 
   const handleLogoutClick = () => {
     setIsDropdownOpen(false);
@@ -209,13 +223,6 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
                 )}
               </div>
 
-              {/* Dropdown Footer */}
-              <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 text-center flex items-center justify-center gap-1">
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-[11px] text-slate-400">
-                  Supabase Realtime Active • <strong className="text-slate-600 font-medium">Smart Retail AI</strong>
-                </span>
-              </div>
             </div>
           )}
         </div>
@@ -231,8 +238,11 @@ export default function Topbar({ activePage, activePayload, onNavigate, toggleSi
               <span className="text-sm font-medium text-slate-900 leading-none truncate w-full text-right">{user?.full_name || 'Admin'}</span>
               <span className="text-xs text-slate-500 mt-1 truncate w-full text-right">{user?.role || 'Quản trị viên'}</span>
             </div>
-            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
-              <User className="w-5 h-5" />
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt={user.full_name} className="w-9 h-9 rounded-full object-cover border border-slate-200" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+            ) : null}
+            <div className={`w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 ${user?.avatar_url ? 'hidden' : ''} font-bold text-sm shrink-0`}>
+              {getAvatarInitials(user?.full_name)}
             </div>
           </button>
 

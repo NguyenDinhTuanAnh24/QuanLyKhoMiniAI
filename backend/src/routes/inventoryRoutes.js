@@ -14,6 +14,7 @@ router.use(authMiddleware);
 
 router.post('/movements', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE), idempotencyMiddleware, InventoryController.createMovement);
 router.get('/movements', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE, ...SALES), InventoryController.getMovements);
+router.get('/import-plans/:id', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE), InventoryController.getImportPlan);
 router.get('/low-stock-alerts', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE, ...SALES), InventoryController.getLowStockAlerts);
 router.get('/integrity-check', authorizeRoles(...ADMIN_OWNER, ...WAREHOUSE, ...SALES), InventoryController.checkDataIntegrity);
 

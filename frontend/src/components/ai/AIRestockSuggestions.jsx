@@ -14,7 +14,7 @@ export default function AIRestockSuggestions({ suggestions }) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm h-full flex flex-col">
       <div className="p-5 border-b border-slate-100 flex items-center gap-2 bg-slate-50 rounded-t-xl">
-        <ShoppingCart className="w-5 h-5 text-indigo-600" />
+        <ShoppingCart className="w-5 h-5 text-blue-600" />
         <h3 className="text-lg font-bold text-slate-900">Gợi ý đặt hàng</h3>
       </div>
       
@@ -39,7 +39,7 @@ export default function AIRestockSuggestions({ suggestions }) {
                     </div>
                   </td>
                   <td className="py-3 px-2 text-center text-slate-600">{item.stock}</td>
-                  <td className="py-3 px-2 text-center font-medium text-indigo-600">{item.forecast}</td>
+                  <td className="py-3 px-2 text-center font-medium text-blue-600">{item.forecast}</td>
                   <td className="py-3 px-2 text-center font-bold text-red-600">+{item.suggested}</td>
                   <td className="py-3 px-2 text-center">
                     <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${getPriorityBadge(item.priority)}`}>

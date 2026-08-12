@@ -1,5 +1,6 @@
 const orderRepository = require('../repositories/orderRepository');
 const notificationService = require('./NotificationService');
+const SettingService = require('./SettingService');
 
 
 class OrderService {
@@ -190,16 +191,41 @@ class OrderService {
     await orderRepository.insertStockMovements(movementsToInsert);
 
     // Check Low Stock Alerts
+    let auto_stock_alert_enabled = true;
+    try {
+      const settings = await SettingService.getSettings();
+      if (settings && settings.auto_stock_alert_enabled === false) {
+        auto_stock_alert_enabled = false;
+      }
+    } catch (e) {
+      console.error('Failed to fetch settings for auto_stock_alert_enabled', e);
+    }
+
     for (const item of items) {
       try {
         const pData = await orderRepository.getProductStock(item.product_id);
-        if (pData && pData.stock_quantity <= pData.reorder_level) {
-          await notificationService.checkAndCreateLowStockAlert(
-            item.product_id, 
-            pData.product_name || item.product_id, 
-            pData.stock_quantity, 
-            pData.reorder_level
-          );
+        const oldStock = originalStocks[item.product_id] || 0;
+        const newStock = oldStock - item.quantity;
+        const reorderLevel = pData?.reorder_level || 0;
+        const productName = pData?.product_name || item.product_id;
+
+        const isLow = newStock <= reorderLevel && newStock > 0;
+        const isOut = newStock <= 0;
+
+        // Skip sending LOW_STOCK if disabled, but still allow OUT_OF_STOCK
+        if (!isOut && isLow && !auto_stock_alert_enabled) {
+           continue; 
+        }
+
+        if (pData) {
+          await notificationService.checkAndCreateStockAlert({
+            productId: item.product_id, 
+            productName: productName, 
+            oldStock: oldStock, 
+            newStock: newStock,
+            reorderLevel: reorderLevel,
+            movementId: order.order_id
+          });
         }
       } catch (lowErr) {
         console.error('Failed to check low stock alert in OrderService:', lowErr);

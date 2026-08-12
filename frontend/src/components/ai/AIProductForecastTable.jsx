@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, RefreshCcw, ArrowRight, Eye, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Search, Filter, RefreshCcw, ArrowRight, Eye, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 export default function AIProductForecastTable({ categories, data = [], onApplySuggestion }) {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,7 +11,7 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 10;
 
   const filterAndPaginateData = () => {
     setLoading(true);
@@ -64,12 +66,12 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
     setCurrentPage(1);
   }, [searchTerm, selectedCategory, selectedRisk]);
 
-  const getRiskBadgeClass = (risk) => {
-    switch(risk) {
-      case 'Hết hàng': return 'bg-red-100 text-red-700 border-red-200';
-      case 'Rủi ro cao': return 'bg-orange-100 text-orange-700 border-orange-200';
-      case 'Cần nhập': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'Ổn định': return 'bg-green-100 text-green-700 border-green-200';
+  const getPriorityBadgeClass = (priority) => {
+    switch(priority) {
+      case 'CRITICAL': return 'bg-red-100 text-red-700 border-red-200';
+      case 'HIGH': return 'bg-orange-100 text-orange-700 border-orange-200';
+      case 'MEDIUM': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'LOW': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       default: return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
@@ -88,13 +90,9 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col w-full min-w-0">
-      <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-        <h3 className="text-lg font-bold text-slate-900">Dự báo nhu cầu từng sản phẩm (tuần tới)</h3>
-      </div>
-      
+    <div className="flex flex-col w-full min-w-0">
       {/* Filters */}
-      <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-3 bg-white">
+      <div className="p-5 flex flex-col sm:flex-row gap-4 bg-white mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -102,7 +100,7 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
             placeholder="Tìm tên sản phẩm hoặc SKU..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white h-10"
           />
         </div>
         <div className="flex gap-3">
@@ -111,7 +109,7 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none truncate"
+              className="w-full pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none truncate h-10"
             >
               <option value="">Tất cả danh mục</option>
               {categories.map((c, i) => (
@@ -122,7 +120,7 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
           <select
             value={selectedRisk}
             onChange={(e) => setSelectedRisk(e.target.value)}
-            className="w-36 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="w-36 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white h-10"
           >
             <option value="">Trạng thái</option>
             <option value="Hết hàng">Hết hàng</option>
@@ -132,7 +130,7 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
           </select>
           <button 
             onClick={resetFilters}
-            className="p-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+            className="p-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors h-10 w-10 flex items-center justify-center"
             title="Đặt lại bộ lọc"
           >
             <RefreshCcw className="w-4 h-4" />
@@ -146,11 +144,11 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500">
               <th className="p-4 font-semibold">Sản phẩm</th>
-              <th className="p-4 font-semibold text-center">Tồn</th>
-              <th className="p-4 font-semibold text-center">Đã bán 90N</th>
+              <th className="p-4 font-semibold text-center">Tồn kho</th>
+              <th className="p-4 font-semibold text-center">Mức an toàn</th>
               <th className="p-4 font-semibold text-center">TB/ngày</th>
               <th className="p-4 font-semibold text-center">Dự báo</th>
-              <th className="p-4 font-semibold text-center">Nên nhập</th>
+              <th className="p-4 font-semibold text-center">Gợi ý kho</th>
               <th className="p-4 font-semibold text-center">Ưu tiên</th>
               <th className="p-4 font-semibold text-right">Hành động</th>
             </tr>
@@ -178,15 +176,21 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
                       {item.stock_quantity ?? 0}
                     </span>
                   </td>
-                  <td className="p-4 text-center font-medium text-slate-700">{item.sales_90d ?? 0}</td>
-                  <td className="p-4 text-center font-medium text-slate-700">{item.avg_daily_sales_90d ?? 0}</td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.reorder_level ?? 0}</td>
+                  <td className="p-4 text-center font-medium text-slate-700">{item.avg_daily_sales_90d ?? item.avg_daily_sales ?? 0}</td>
                   <td className="p-4 text-center font-medium text-slate-700">{item.forecast_quantity ?? item.forecast_14d ?? 0}</td>
-                  <td className="p-4 text-center font-bold text-blue-600">
-                    {(item.suggested_import_quantity ?? 0) > 0 ? `+${item.suggested_import_quantity}` : '-'}
+                  <td className="p-4 text-center font-bold">
+                    {(item.suggested_import_quantity ?? 0) > 0 ? (
+                      <span className="text-red-600">Nhập {item.suggested_import_quantity}</span>
+                    ) : (item.overstock_quantity ?? 0) > 0 ? (
+                      <span className="text-slate-500">Dư {item.overstock_quantity}</span>
+                    ) : (
+                      <span className="text-emerald-600">Vừa đủ</span>
+                    )}
                   </td>
                   <td className="p-4 text-center">
-                    <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${getRiskBadgeClass(item.priority === 'Cao' ? 'Hết hàng' : (item.priority === 'Trung bình' ? 'Cần nhập' : 'Ổn định'))}`}>
-                      {item.priority || 'Thấp'}
+                    <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${getPriorityBadgeClass(item.priority)}`}>
+                      {item.priority || 'LOW'}
                     </div>
                   </td>
                   <td className="p-4 text-right">
@@ -197,13 +201,31 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      {item.suggested_import_quantity > 0 && (
+                      {(!item.status || item.status === 'PENDING') && item.suggested_import_quantity > 0 && (
                         <button 
                           onClick={() => onApplySuggestion(item)}
-                          className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors flex items-center gap-1"
+                          className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors flex items-center gap-1 shrink-0"
                         >
                           <span>Áp dụng</span>
                           <ArrowRight className="w-3 h-3" />
+                        </button>
+                      )}
+                      {item.status === 'APPLIED' && (
+                        <button 
+                          onClick={() => navigate(`/inventory-ops?tab=import&planId=${item.application_id}`)}
+                          className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded transition-colors flex items-center gap-1 shrink-0"
+                        >
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>Đã áp dụng</span>
+                        </button>
+                      )}
+                      {item.status === 'COMPLETED' && (
+                        <button 
+                          onClick={() => navigate(`/inventory-ops?tab=import&planId=${item.application_id}`)}
+                          className="px-3 py-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded transition-colors flex items-center gap-1 shrink-0"
+                        >
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>Đã nhập kho</span>
                         </button>
                       )}
                     </div>

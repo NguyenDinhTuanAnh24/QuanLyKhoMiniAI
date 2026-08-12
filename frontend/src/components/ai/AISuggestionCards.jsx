@@ -34,7 +34,7 @@ export default function AISuggestionCards({ data = [], onApplySuggestion }) {
   return (
     <div className="mt-6 w-full min-w-0">
       <div className="flex items-center gap-2 mb-4">
-        <Zap className="w-5 h-5 text-indigo-500" />
+        <Zap className="w-5 h-5 text-blue-500" />
         <h3 className="font-bold text-slate-800 text-lg">Gợi ý nhập hàng từ AI</h3>
       </div>
       

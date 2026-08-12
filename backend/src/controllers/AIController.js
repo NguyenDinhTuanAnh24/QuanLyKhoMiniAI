@@ -41,15 +41,24 @@ class AIController {
 
   async analyze(req, res) {
     try {
-      // Giả sử settings được gửi từ client hoặc lấy từ DB settings
-      // Trong app này settings lưu trong DB. Tạm thời nhận ai_enabled từ request hoặc cấu hình mặc định bật.
       const settings = req.body.settings || { ai_enabled: true, ai_forecast_days: 14 };
       
       const result = await AIInsightService.runAnalysis(settings);
       res.json({ success: true, data: result });
     } catch (error) {
-      console.error('Error running AI analysis:', error);
-      res.status(500).json({ success: false, message: 'Lỗi khi phân tích bằng AI', error: error.message });
+      console.error('Error starting AI analysis:', error);
+      res.status(500).json({ success: false, message: 'Lỗi khi khởi chạy phân tích AI', error: error.message });
+    }
+  }
+
+  async getAnalysisProgress(req, res) {
+    try {
+      const { runId } = req.params;
+      const progress = await AIInsightService.getAnalysisProgress(runId);
+      res.json({ success: true, data: progress });
+    } catch (error) {
+      console.error('Error getting AI analysis progress:', error);
+      res.status(500).json({ success: false, message: 'Lỗi khi lấy trạng thái phân tích', error: error.message });
     }
   }
 
@@ -66,10 +75,46 @@ class AIController {
   async applyRecommendation(req, res) {
     try {
       const { id } = req.params;
-      const data = await AIInsightService.updateRecommendationStatus(id, 'APPLIED');
-      res.json({ success: true, message: 'Đã áp dụng gợi ý', data });
+      const userId = req.user ? req.user.id : 'SYSTEM';
+      const planId = await AIInsightService.applyRecommendation(id, userId);
+      res.json({ 
+        success: true, 
+        message: 'Đã tạo phiếu nhập nháp từ gợi ý AI', 
+        data: {
+          recommendation_id: id,
+          status: 'APPLIED',
+          application: {
+            type: 'IMPORT_PLAN',
+            id: planId
+          }
+        } 
+      });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi khi cập nhật trạng thái', error: error.message });
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async applyBulkRecommendations(req, res) {
+    try {
+      const { analysis_run_id } = req.body;
+      if (!analysis_run_id) throw new Error('Thiếu mã phiên phân tích (analysis_run_id) hợp lệ');
+      
+      const userId = req.user ? req.user.id : 'SYSTEM';
+      const result = await AIInsightService.applyBulkRecommendations(analysis_run_id, userId);
+      
+      res.json({
+        success: true,
+        message: `Đã tạo kế hoạch nhập hàng cho ${result.count} sản phẩm.`,
+        data: {
+          application: {
+            type: 'IMPORT_PLAN',
+            id: result.planId
+          },
+          count: result.count
+        }
+      });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
     }
   }
 

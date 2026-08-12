@@ -17,6 +17,9 @@ const upload = multer({
 
 router.use(authMiddleware);
 
+// Public branding endpoint (for all authenticated users)
+router.get('/branding', SettingController.getBranding);
+
 // All settings routes restricted to Admin and Owner
 router.use(authorizeRoles(...ADMIN_OWNER));
 
