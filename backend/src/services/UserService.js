@@ -26,9 +26,17 @@ class UserService {
       throw new BusinessException('DUPLICATE_EMAIL', 'Email này đã được sử dụng');
     }
 
-    // Hash default password 123456
-    const salt = await bcrypt.genSalt(10);
-    userData.password_hash = await bcrypt.hash('123456', salt);
+    // If a password is provided, hash it; otherwise require a password during creation
+    if (userData.password) {
+      const salt = await bcrypt.genSalt(10);
+      userData.password_hash = await bcrypt.hash(userData.password, salt);
+      // Remove plain password to avoid storing it
+      delete userData.password;
+    } else {
+      // Throw an error to enforce password on new accounts
+      const { BusinessException } = require('../middleware/errorHandler');
+      throw new BusinessException('PASSWORD_REQUIRED', 'Mật khẩu là bắt buộc khi tạo tài khoản mới');
+    }
 
     return await UserRepository.create(userData);
   }

@@ -190,6 +190,45 @@ class OrderRepository {
 
     return result;
   }
+
+  // Scan for orphan data across orders, order_items, stock_movements, and products
+  async scanDataIntegrity() {
+    // Orphan order_items (order_id not existing in orders)
+    const { data: items, error: errItems } = await supabase
+      .from('order_items')
+      .select('order_item_id, order_id');
+    if (errItems) throw errItems;
+
+    const { data: orders, error: errOrders } = await supabase
+      .from('orders')
+      .select('order_id');
+    if (errOrders) throw errOrders;
+
+    const orderIdSet = new Set((orders || []).map(o => o.order_id));
+    const orphanOrderItems = (items || []).filter(i => !orderIdSet.has(i.order_id));
+
+    // Orphan stock_movements (product_id not existing in products)
+    const { data: movements, error: errMov } = await supabase
+      .from('stock_movements')
+      .select('movement_id, product_id');
+    if (errMov) throw errMov;
+
+    const { data: products, error: errProd } = await supabase
+      .from('products')
+      .select('product_id');
+    if (errProd) throw errProd;
+
+    const productIdSet = new Set((products || []).map(p => p.product_id));
+    const orphanStockMovements = (movements || []).filter(m => !productIdSet.has(m.product_id));
+
+    // Orphan products (no related order_items nor stock_movements)
+    const productHasOrders = new Set((items || []).map(i => i.product_id));
+    const productHasMovements = new Set((movements || []).map(m => m.product_id));
+    const orphanProducts = (products || []).filter(p => !productHasOrders.has(p.product_id) && !productHasMovements.has(p.product_id));
+
+    return { orphanOrderItems, orphanStockMovements, orphanProducts };
+  }
+
 }
 
 module.exports = new OrderRepository();

@@ -8,6 +8,12 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Mật khẩu là bắt buộc')
 });
 
+const changePasswordSchema = z.object({
+  email: z.string().email('Email không hợp lệ'),
+  oldPassword: z.string().min(1, 'Mật khẩu cũ là bắt buộc'),
+  newPassword: z.string().min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự')
+});
+
 class AuthController {
   async login(req, res, next) {
     try {
@@ -98,6 +104,62 @@ class AuthController {
       }
       res.json({ success: true, message: 'Đăng xuất thành công' });
     } catch (error) {
+      next(error);
+    }
+  }
+
+  async changePassword(req, res, next) {
+    try {
+      const { email, oldPassword, newPassword } = changePasswordSchema.parse(req.body);
+
+      if (oldPassword === newPassword) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu mới không được trùng với mật khẩu hiện tại' });
+      }
+
+      // Tìm user theo email
+      const user = await UserRepository.findByEmail(email);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản với email này' });
+      }
+
+      if (user.status !== 'Đang hoạt động') {
+        return res.status(403).json({ success: false, message: 'Tài khoản đã bị khoá, không thể đổi mật khẩu' });
+      }
+
+      // Kiểm tra mật khẩu cũ
+      let isValid = false;
+      if (user.password_hash) {
+        isValid = await bcrypt.compare(oldPassword, user.password_hash);
+      } else {
+        // Mật khẩu mặc định chưa được hash
+        isValid = oldPassword === '123456';
+      }
+
+      if (!isValid) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu cũ không chính xác' });
+      }
+
+      // Hash mật khẩu mới
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      await UserRepository.update(user.user_id, { password_hash: hashedPassword });
+
+      // Log activity
+      const ActivityLogService = require('../services/ActivityLogService');
+      await ActivityLogService.logActivity({
+        user_id: user.user_id,
+        user_name: user.full_name,
+        action: 'CHANGE_PASSWORD',
+        entity_type: 'USER',
+        entity_id: user.user_id,
+        details: { status: 'Thành công', email }
+      });
+
+      res.json({ success: true, message: 'Đổi mật khẩu thành công! Vui lòng đăng nhập lại với mật khẩu mới.' });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ success: false, message: error.errors?.[0]?.message || 'Dữ liệu không hợp lệ' });
+      }
       next(error);
     }
   }

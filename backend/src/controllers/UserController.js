@@ -42,28 +42,51 @@ class UserController {
 
   async updateMyPassword(req, res, next) {
     try {
-      const { oldPassword, newPassword } = req.body;
-      if (!oldPassword || !newPassword) {
-        return res.status(400).json({ success: false, message: 'Vui lòng nhập đầy đủ mật khẩu cũ và mới' });
-      }
-      
+      const schema = z.object({
+        oldPassword: z.string().min(1, 'Mật khẩu cũ là bắt buộc'),
+        newPassword: z.string().min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự')
+      });
+      const { oldPassword, newPassword } = schema.parse(req.body);
+
       const user = await UserService.getUserById(req.user.user_id);
       const bcrypt = require('bcryptjs');
-      const isValid = await bcrypt.compare(oldPassword, user.password_hash);
-      
-      if (!isValid) {
-        return res.status(400).json({ success: false, message: 'Mật khẩu cũ không chính xác' });
-      }
-      
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-      await UserService.updateUser(req.user.user_id, { password_hash: hashedPassword });
-      
+       // Kiểm tra mật khẩu hiện tại (có hoặc không có hash)
+       let isValid = false;
+       if (user.password_hash) {
+         // So sánh bằng bcrypt nếu đã có hash
+         isValid = await bcrypt.compare(oldPassword, user.password_hash);
+       } else {
+         // Trường hợp người dùng chưa có password_hash (mật khẩu mặc định 123456)
+         isValid = oldPassword === '123456';
+       }
+
+       if (!isValid) {
+         return res.status(400).json({ success: false, message: 'Mật khẩu cũ không chính xác' });
+       }
+
+       const salt = await bcrypt.genSalt(10);
+       const hashedPassword = await bcrypt.hash(newPassword, salt);
+       // Cập nhật password_hash mới (gán đè, xóa password cũ tự động)
+       await UserService.updateUser(req.user.user_id, { password_hash: hashedPassword });
+
+      // Log activity for password change
+      await ActivityLogService.logActivity({
+        user_id: req.user.user_id,
+        user_name: req.user.full_name,
+        action: 'CHANGE_PASSWORD',
+        entity_type: 'USER',
+        entity_id: req.user.user_id,
+        details: { status: 'Thành công' }
+      });
+
       res.json({
         success: true,
         message: "Cập nhật mật khẩu thành công."
       });
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ success: false, message: error.errors?.[0]?.message || 'Dữ liệu không hợp lệ' });
+      }
       next(error);
     }
   }

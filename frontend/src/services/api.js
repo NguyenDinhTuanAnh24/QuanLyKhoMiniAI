@@ -26,7 +26,9 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use((response) => response, (error) => {
-  if (error.response && !error.config.url.includes('/auth/login')) {
+  const url = error.config?.url || '';
+  const isAuthPublicRoute = url.includes('/auth/login') || url.includes('/auth/change-password');
+  if (error.response && !isAuthPublicRoute) {
     if (error.response.status === 401) {
       if (!isHandlingUnauthorized) {
         isHandlingUnauthorized = true;
