@@ -1,0 +1,6238 @@
+[
+    {
+        "id": 1,
+        "order_code": "ORD00001",
+        "customer_name": "Khách hàng 1",
+        "customer_phone": "0988381467",
+        "total_amount": 804000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 116,
+                "quantity": 8,
+                "unit_price": 27000,
+                "subtotal": 216000
+            },
+            {
+                "product_id": 99,
+                "quantity": 3,
+                "unit_price": 43000,
+                "subtotal": 129000
+            },
+            {
+                "product_id": 135,
+                "quantity": 9,
+                "unit_price": 51000,
+                "subtotal": 459000
+            }
+        ],
+        "created_at": "2026-06-08T19:18:25.124Z",
+        "created_by": 2
+    },
+    {
+        "id": 2,
+        "order_code": "ORD00002",
+        "customer_name": "Khách hàng 2",
+        "customer_phone": "0928170618",
+        "total_amount": 513000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 67,
+                "quantity": 8,
+                "unit_price": 57000,
+                "subtotal": 456000
+            },
+            {
+                "product_id": 127,
+                "quantity": 3,
+                "unit_price": 19000,
+                "subtotal": 57000
+            }
+        ],
+        "created_at": "2026-05-10T07:15:53.823Z",
+        "created_by": 5
+    },
+    {
+        "id": 3,
+        "order_code": "ORD00003",
+        "customer_name": "Khách hàng 3",
+        "customer_phone": "0909864798",
+        "total_amount": 1189000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 149,
+                "quantity": 4,
+                "unit_price": 56000,
+                "subtotal": 224000
+            },
+            {
+                "product_id": 13,
+                "quantity": 8,
+                "unit_price": 51000,
+                "subtotal": 408000
+            },
+            {
+                "product_id": 85,
+                "quantity": 8,
+                "unit_price": 37000,
+                "subtotal": 296000
+            },
+            {
+                "product_id": 8,
+                "quantity": 1,
+                "unit_price": 16000,
+                "subtotal": 16000
+            },
+            {
+                "product_id": 119,
+                "quantity": 7,
+                "unit_price": 35000,
+                "subtotal": 245000
+            }
+        ],
+        "created_at": "2026-07-01T13:29:05.998Z",
+        "created_by": 4
+    },
+    {
+        "id": 4,
+        "order_code": "ORD00004",
+        "customer_name": "Khách hàng 4",
+        "customer_phone": "0923572138",
+        "total_amount": 74000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 150,
+                "quantity": 2,
+                "unit_price": 37000,
+                "subtotal": 74000
+            }
+        ],
+        "created_at": "2026-05-11T01:54:43.926Z",
+        "created_by": 5
+    },
+    {
+        "id": 5,
+        "order_code": "ORD00005",
+        "customer_name": "Khách hàng 5",
+        "customer_phone": "0960122260",
+        "total_amount": 972000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 29,
+                "quantity": 10,
+                "unit_price": 53000,
+                "subtotal": 530000
+            },
+            {
+                "product_id": 17,
+                "quantity": 6,
+                "unit_price": 14000,
+                "subtotal": 84000
+            },
+            {
+                "product_id": 51,
+                "quantity": 8,
+                "unit_price": 29000,
+                "subtotal": 232000
+            },
+            {
+                "product_id": 58,
+                "quantity": 6,
+                "unit_price": 21000,
+                "subtotal": 126000
+            }
+        ],
+        "created_at": "2026-06-19T00:01:05.916Z",
+        "created_by": 4
+    },
+    {
+        "id": 6,
+        "order_code": "ORD00006",
+        "customer_name": "Khách hàng 6",
+        "customer_phone": "0941276124",
+        "total_amount": 924000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 132,
+                "quantity": 9,
+                "unit_price": 12000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 3,
+                "quantity": 7,
+                "unit_price": 32000,
+                "subtotal": 224000
+            },
+            {
+                "product_id": 27,
+                "quantity": 5,
+                "unit_price": 24000,
+                "subtotal": 120000
+            },
+            {
+                "product_id": 126,
+                "quantity": 8,
+                "unit_price": 59000,
+                "subtotal": 472000
+            }
+        ],
+        "created_at": "2026-06-01T07:42:39.439Z",
+        "created_by": 4
+    },
+    {
+        "id": 7,
+        "order_code": "ORD00007",
+        "customer_name": "Khách hàng 7",
+        "customer_phone": "0964585147",
+        "total_amount": 424000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 143,
+                "quantity": 4,
+                "unit_price": 23000,
+                "subtotal": 92000
+            },
+            {
+                "product_id": 106,
+                "quantity": 9,
+                "unit_price": 18000,
+                "subtotal": 162000
+            },
+            {
+                "product_id": 139,
+                "quantity": 5,
+                "unit_price": 34000,
+                "subtotal": 170000
+            }
+        ],
+        "created_at": "2026-06-11T12:05:19.361Z",
+        "created_by": 3
+    },
+    {
+        "id": 8,
+        "order_code": "ORD00008",
+        "customer_name": "Khách hàng 8",
+        "customer_phone": "0942148275",
+        "total_amount": 432000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 17,
+                "quantity": 8,
+                "unit_price": 54000,
+                "subtotal": 432000
+            }
+        ],
+        "created_at": "2026-05-05T08:40:56.721Z",
+        "created_by": 2
+    },
+    {
+        "id": 9,
+        "order_code": "ORD00009",
+        "customer_name": "Khách hàng 9",
+        "customer_phone": "0974110869",
+        "total_amount": 1015000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 6,
+                "quantity": 8,
+                "unit_price": 15000,
+                "subtotal": 120000
+            },
+            {
+                "product_id": 79,
+                "quantity": 7,
+                "unit_price": 19000,
+                "subtotal": 133000
+            },
+            {
+                "product_id": 109,
+                "quantity": 3,
+                "unit_price": 45000,
+                "subtotal": 135000
+            },
+            {
+                "product_id": 130,
+                "quantity": 10,
+                "unit_price": 42000,
+                "subtotal": 420000
+            },
+            {
+                "product_id": 101,
+                "quantity": 9,
+                "unit_price": 23000,
+                "subtotal": 207000
+            }
+        ],
+        "created_at": "2026-06-14T07:58:57.039Z",
+        "created_by": 2
+    },
+    {
+        "id": 10,
+        "order_code": "ORD00010",
+        "customer_name": "Khách hàng 10",
+        "customer_phone": "0963148148",
+        "total_amount": 594000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 23,
+                "quantity": 10,
+                "unit_price": 39000,
+                "subtotal": 390000
+            },
+            {
+                "product_id": 127,
+                "quantity": 4,
+                "unit_price": 51000,
+                "subtotal": 204000
+            }
+        ],
+        "created_at": "2026-06-07T00:21:26.909Z",
+        "created_by": 2
+    },
+    {
+        "id": 11,
+        "order_code": "ORD00011",
+        "customer_name": "Khách hàng 11",
+        "customer_phone": "0990022535",
+        "total_amount": 919000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 34,
+                "quantity": 6,
+                "unit_price": 30000,
+                "subtotal": 180000
+            },
+            {
+                "product_id": 35,
+                "quantity": 8,
+                "unit_price": 57000,
+                "subtotal": 456000
+            },
+            {
+                "product_id": 7,
+                "quantity": 4,
+                "unit_price": 27000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 29,
+                "quantity": 7,
+                "unit_price": 25000,
+                "subtotal": 175000
+            }
+        ],
+        "created_at": "2026-07-19T22:49:22.310Z",
+        "created_by": 1
+    },
+    {
+        "id": 12,
+        "order_code": "ORD00012",
+        "customer_name": "Khách hàng 12",
+        "customer_phone": "0979713612",
+        "total_amount": 430000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 122,
+                "quantity": 4,
+                "unit_price": 25000,
+                "subtotal": 100000
+            },
+            {
+                "product_id": 32,
+                "quantity": 6,
+                "unit_price": 23000,
+                "subtotal": 138000
+            },
+            {
+                "product_id": 117,
+                "quantity": 1,
+                "unit_price": 26000,
+                "subtotal": 26000
+            },
+            {
+                "product_id": 44,
+                "quantity": 4,
+                "unit_price": 14000,
+                "subtotal": 56000
+            },
+            {
+                "product_id": 99,
+                "quantity": 2,
+                "unit_price": 55000,
+                "subtotal": 110000
+            }
+        ],
+        "created_at": "2026-05-06T00:47:40.397Z",
+        "created_by": 4
+    },
+    {
+        "id": 13,
+        "order_code": "ORD00013",
+        "customer_name": "Khách hàng 13",
+        "customer_phone": "0936908934",
+        "total_amount": 920000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 109,
+                "quantity": 5,
+                "unit_price": 59000,
+                "subtotal": 295000
+            },
+            {
+                "product_id": 93,
+                "quantity": 1,
+                "unit_price": 55000,
+                "subtotal": 55000
+            },
+            {
+                "product_id": 41,
+                "quantity": 4,
+                "unit_price": 22000,
+                "subtotal": 88000
+            },
+            {
+                "product_id": 6,
+                "quantity": 6,
+                "unit_price": 45000,
+                "subtotal": 270000
+            },
+            {
+                "product_id": 55,
+                "quantity": 4,
+                "unit_price": 53000,
+                "subtotal": 212000
+            }
+        ],
+        "created_at": "2026-08-06T09:54:54.267Z",
+        "created_by": 5
+    },
+    {
+        "id": 14,
+        "order_code": "ORD00014",
+        "customer_name": "Khách hàng 14",
+        "customer_phone": "0994129697",
+        "total_amount": 33000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 110,
+                "quantity": 3,
+                "unit_price": 11000,
+                "subtotal": 33000
+            }
+        ],
+        "created_at": "2026-05-10T05:29:18.318Z",
+        "created_by": 1
+    },
+    {
+        "id": 15,
+        "order_code": "ORD00015",
+        "customer_name": "Khách hàng 15",
+        "customer_phone": "0971475133",
+        "total_amount": 80000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 62,
+                "quantity": 5,
+                "unit_price": 16000,
+                "subtotal": 80000
+            }
+        ],
+        "created_at": "2026-05-10T02:42:46.809Z",
+        "created_by": 3
+    },
+    {
+        "id": 16,
+        "order_code": "ORD00016",
+        "customer_name": "Khách hàng 16",
+        "customer_phone": "0965495372",
+        "total_amount": 1135000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 127,
+                "quantity": 6,
+                "unit_price": 39000,
+                "subtotal": 234000
+            },
+            {
+                "product_id": 125,
+                "quantity": 7,
+                "unit_price": 49000,
+                "subtotal": 343000
+            },
+            {
+                "product_id": 73,
+                "quantity": 9,
+                "unit_price": 54000,
+                "subtotal": 486000
+            },
+            {
+                "product_id": 20,
+                "quantity": 2,
+                "unit_price": 36000,
+                "subtotal": 72000
+            }
+        ],
+        "created_at": "2026-05-12T04:10:30.551Z",
+        "created_by": 2
+    },
+    {
+        "id": 17,
+        "order_code": "ORD00017",
+        "customer_name": "Khách hàng 17",
+        "customer_phone": "0904155234",
+        "total_amount": 729000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 127,
+                "quantity": 2,
+                "unit_price": 21000,
+                "subtotal": 42000
+            },
+            {
+                "product_id": 67,
+                "quantity": 4,
+                "unit_price": 33000,
+                "subtotal": 132000
+            },
+            {
+                "product_id": 113,
+                "quantity": 10,
+                "unit_price": 16000,
+                "subtotal": 160000
+            },
+            {
+                "product_id": 48,
+                "quantity": 5,
+                "unit_price": 51000,
+                "subtotal": 255000
+            },
+            {
+                "product_id": 66,
+                "quantity": 7,
+                "unit_price": 20000,
+                "subtotal": 140000
+            }
+        ],
+        "created_at": "2026-07-23T19:36:34.853Z",
+        "created_by": 5
+    },
+    {
+        "id": 18,
+        "order_code": "ORD00018",
+        "customer_name": "Khách hàng 18",
+        "customer_phone": "0996550090",
+        "total_amount": 248000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 35,
+                "quantity": 8,
+                "unit_price": 31000,
+                "subtotal": 248000
+            }
+        ],
+        "created_at": "2026-07-21T06:30:48.931Z",
+        "created_by": 4
+    },
+    {
+        "id": 19,
+        "order_code": "ORD00019",
+        "customer_name": "Khách hàng 19",
+        "customer_phone": "0922970676",
+        "total_amount": 767000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 75,
+                "quantity": 8,
+                "unit_price": 49000,
+                "subtotal": 392000
+            },
+            {
+                "product_id": 26,
+                "quantity": 5,
+                "unit_price": 45000,
+                "subtotal": 225000
+            },
+            {
+                "product_id": 21,
+                "quantity": 10,
+                "unit_price": 15000,
+                "subtotal": 150000
+            }
+        ],
+        "created_at": "2026-06-24T06:31:17.772Z",
+        "created_by": 2
+    },
+    {
+        "id": 20,
+        "order_code": "ORD00020",
+        "customer_name": "Khách hàng 20",
+        "customer_phone": "0935680949",
+        "total_amount": 300000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 147,
+                "quantity": 3,
+                "unit_price": 24000,
+                "subtotal": 72000
+            },
+            {
+                "product_id": 21,
+                "quantity": 4,
+                "unit_price": 36000,
+                "subtotal": 144000
+            },
+            {
+                "product_id": 61,
+                "quantity": 4,
+                "unit_price": 21000,
+                "subtotal": 84000
+            }
+        ],
+        "created_at": "2026-05-24T01:58:05.548Z",
+        "created_by": 4
+    },
+    {
+        "id": 21,
+        "order_code": "ORD00021",
+        "customer_name": "Khách hàng 21",
+        "customer_phone": "0966217294",
+        "total_amount": 730000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 59,
+                "quantity": 4,
+                "unit_price": 15000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 110,
+                "quantity": 3,
+                "unit_price": 31000,
+                "subtotal": 93000
+            },
+            {
+                "product_id": 7,
+                "quantity": 9,
+                "unit_price": 17000,
+                "subtotal": 153000
+            },
+            {
+                "product_id": 59,
+                "quantity": 6,
+                "unit_price": 17000,
+                "subtotal": 102000
+            },
+            {
+                "product_id": 28,
+                "quantity": 7,
+                "unit_price": 46000,
+                "subtotal": 322000
+            }
+        ],
+        "created_at": "2026-05-14T10:39:21.444Z",
+        "created_by": 3
+    },
+    {
+        "id": 22,
+        "order_code": "ORD00022",
+        "customer_name": "Khách hàng 22",
+        "customer_phone": "0926385736",
+        "total_amount": 1250000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 101,
+                "quantity": 9,
+                "unit_price": 40000,
+                "subtotal": 360000
+            },
+            {
+                "product_id": 25,
+                "quantity": 10,
+                "unit_price": 32000,
+                "subtotal": 320000
+            },
+            {
+                "product_id": 107,
+                "quantity": 10,
+                "unit_price": 57000,
+                "subtotal": 570000
+            }
+        ],
+        "created_at": "2026-04-30T11:31:52.029Z",
+        "created_by": 4
+    },
+    {
+        "id": 23,
+        "order_code": "ORD00023",
+        "customer_name": "Khách hàng 23",
+        "customer_phone": "0921527496",
+        "total_amount": 56000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 22,
+                "quantity": 2,
+                "unit_price": 28000,
+                "subtotal": 56000
+            }
+        ],
+        "created_at": "2026-07-05T09:54:21.077Z",
+        "created_by": 1
+    },
+    {
+        "id": 24,
+        "order_code": "ORD00024",
+        "customer_name": "Khách hàng 24",
+        "customer_phone": "0978684320",
+        "total_amount": 570000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 6,
+                "quantity": 5,
+                "unit_price": 36000,
+                "subtotal": 180000
+            },
+            {
+                "product_id": 70,
+                "quantity": 2,
+                "unit_price": 45000,
+                "subtotal": 90000
+            },
+            {
+                "product_id": 85,
+                "quantity": 10,
+                "unit_price": 30000,
+                "subtotal": 300000
+            }
+        ],
+        "created_at": "2026-07-08T23:14:35.574Z",
+        "created_by": 4
+    },
+    {
+        "id": 25,
+        "order_code": "ORD00025",
+        "customer_name": "Khách hàng 25",
+        "customer_phone": "0970625904",
+        "total_amount": 496000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 129,
+                "quantity": 9,
+                "unit_price": 54000,
+                "subtotal": 486000
+            },
+            {
+                "product_id": 146,
+                "quantity": 1,
+                "unit_price": 10000,
+                "subtotal": 10000
+            }
+        ],
+        "created_at": "2026-07-03T21:32:03.913Z",
+        "created_by": 4
+    },
+    {
+        "id": 26,
+        "order_code": "ORD00026",
+        "customer_name": "Khách hàng 26",
+        "customer_phone": "0926569197",
+        "total_amount": 1128000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 56,
+                "quantity": 7,
+                "unit_price": 56000,
+                "subtotal": 392000
+            },
+            {
+                "product_id": 35,
+                "quantity": 8,
+                "unit_price": 43000,
+                "subtotal": 344000
+            },
+            {
+                "product_id": 133,
+                "quantity": 8,
+                "unit_price": 24000,
+                "subtotal": 192000
+            },
+            {
+                "product_id": 9,
+                "quantity": 5,
+                "unit_price": 40000,
+                "subtotal": 200000
+            }
+        ],
+        "created_at": "2026-06-12T04:00:16.755Z",
+        "created_by": 3
+    },
+    {
+        "id": 27,
+        "order_code": "ORD00027",
+        "customer_name": "Khách hàng 27",
+        "customer_phone": "0988774048",
+        "total_amount": 524000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 7,
+                "quantity": 4,
+                "unit_price": 41000,
+                "subtotal": 164000
+            },
+            {
+                "product_id": 76,
+                "quantity": 7,
+                "unit_price": 29000,
+                "subtotal": 203000
+            },
+            {
+                "product_id": 126,
+                "quantity": 5,
+                "unit_price": 14000,
+                "subtotal": 70000
+            },
+            {
+                "product_id": 67,
+                "quantity": 3,
+                "unit_price": 29000,
+                "subtotal": 87000
+            }
+        ],
+        "created_at": "2026-07-25T03:57:27.617Z",
+        "created_by": 5
+    },
+    {
+        "id": 28,
+        "order_code": "ORD00028",
+        "customer_name": "Khách hàng 28",
+        "customer_phone": "0950691450",
+        "total_amount": 821000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 58,
+                "quantity": 2,
+                "unit_price": 53000,
+                "subtotal": 106000
+            },
+            {
+                "product_id": 87,
+                "quantity": 10,
+                "unit_price": 26000,
+                "subtotal": 260000
+            },
+            {
+                "product_id": 39,
+                "quantity": 2,
+                "unit_price": 42000,
+                "subtotal": 84000
+            },
+            {
+                "product_id": 72,
+                "quantity": 1,
+                "unit_price": 21000,
+                "subtotal": 21000
+            },
+            {
+                "product_id": 51,
+                "quantity": 7,
+                "unit_price": 50000,
+                "subtotal": 350000
+            }
+        ],
+        "created_at": "2026-04-25T17:06:12.180Z",
+        "created_by": 2
+    },
+    {
+        "id": 29,
+        "order_code": "ORD00029",
+        "customer_name": "Khách hàng 29",
+        "customer_phone": "0996810119",
+        "total_amount": 486000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 58,
+                "quantity": 9,
+                "unit_price": 54000,
+                "subtotal": 486000
+            }
+        ],
+        "created_at": "2026-04-24T14:39:30.427Z",
+        "created_by": 3
+    },
+    {
+        "id": 30,
+        "order_code": "ORD00030",
+        "customer_name": "Khách hàng 30",
+        "customer_phone": "0912767022",
+        "total_amount": 431000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 104,
+                "quantity": 4,
+                "unit_price": 52000,
+                "subtotal": 208000
+            },
+            {
+                "product_id": 29,
+                "quantity": 5,
+                "unit_price": 42000,
+                "subtotal": 210000
+            },
+            {
+                "product_id": 44,
+                "quantity": 1,
+                "unit_price": 13000,
+                "subtotal": 13000
+            }
+        ],
+        "created_at": "2026-05-23T18:44:29.275Z",
+        "created_by": 4
+    },
+    {
+        "id": 31,
+        "order_code": "ORD00031",
+        "customer_name": "Khách hàng 31",
+        "customer_phone": "0961907681",
+        "total_amount": 138000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 94,
+                "quantity": 2,
+                "unit_price": 48000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 16,
+                "quantity": 2,
+                "unit_price": 21000,
+                "subtotal": 42000
+            }
+        ],
+        "created_at": "2026-06-30T08:02:18.986Z",
+        "created_by": 5
+    },
+    {
+        "id": 32,
+        "order_code": "ORD00032",
+        "customer_name": "Khách hàng 32",
+        "customer_phone": "0978975878",
+        "total_amount": 544000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 60,
+                "quantity": 8,
+                "unit_price": 26000,
+                "subtotal": 208000
+            },
+            {
+                "product_id": 127,
+                "quantity": 7,
+                "unit_price": 48000,
+                "subtotal": 336000
+            }
+        ],
+        "created_at": "2026-05-15T06:12:09.257Z",
+        "created_by": 3
+    },
+    {
+        "id": 33,
+        "order_code": "ORD00033",
+        "customer_name": "Khách hàng 33",
+        "customer_phone": "0962429064",
+        "total_amount": 522000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 55,
+                "quantity": 7,
+                "unit_price": 11000,
+                "subtotal": 77000
+            },
+            {
+                "product_id": 126,
+                "quantity": 1,
+                "unit_price": 27000,
+                "subtotal": 27000
+            },
+            {
+                "product_id": 88,
+                "quantity": 1,
+                "unit_price": 48000,
+                "subtotal": 48000
+            },
+            {
+                "product_id": 150,
+                "quantity": 3,
+                "unit_price": 38000,
+                "subtotal": 114000
+            },
+            {
+                "product_id": 89,
+                "quantity": 8,
+                "unit_price": 32000,
+                "subtotal": 256000
+            }
+        ],
+        "created_at": "2026-04-22T06:36:16.714Z",
+        "created_by": 1
+    },
+    {
+        "id": 34,
+        "order_code": "ORD00034",
+        "customer_name": "Khách hàng 34",
+        "customer_phone": "0979638844",
+        "total_amount": 85000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 69,
+                "quantity": 5,
+                "unit_price": 13000,
+                "subtotal": 65000
+            },
+            {
+                "product_id": 79,
+                "quantity": 1,
+                "unit_price": 20000,
+                "subtotal": 20000
+            }
+        ],
+        "created_at": "2026-05-05T14:14:04.205Z",
+        "created_by": 3
+    },
+    {
+        "id": 35,
+        "order_code": "ORD00035",
+        "customer_name": "Khách hàng 35",
+        "customer_phone": "0982755421",
+        "total_amount": 611000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 3,
+                "quantity": 1,
+                "unit_price": 27000,
+                "subtotal": 27000
+            },
+            {
+                "product_id": 69,
+                "quantity": 2,
+                "unit_price": 54000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 10,
+                "quantity": 7,
+                "unit_price": 50000,
+                "subtotal": 350000
+            },
+            {
+                "product_id": 101,
+                "quantity": 3,
+                "unit_price": 42000,
+                "subtotal": 126000
+            }
+        ],
+        "created_at": "2026-06-13T05:02:17.340Z",
+        "created_by": 5
+    },
+    {
+        "id": 36,
+        "order_code": "ORD00036",
+        "customer_name": "Khách hàng 36",
+        "customer_phone": "0967992264",
+        "total_amount": 390000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 112,
+                "quantity": 10,
+                "unit_price": 11000,
+                "subtotal": 110000
+            },
+            {
+                "product_id": 65,
+                "quantity": 1,
+                "unit_price": 32000,
+                "subtotal": 32000
+            },
+            {
+                "product_id": 38,
+                "quantity": 8,
+                "unit_price": 31000,
+                "subtotal": 248000
+            }
+        ],
+        "created_at": "2026-08-10T07:13:36.237Z",
+        "created_by": 2
+    },
+    {
+        "id": 37,
+        "order_code": "ORD00037",
+        "customer_name": "Khách hàng 37",
+        "customer_phone": "0984879423",
+        "total_amount": 694000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 122,
+                "quantity": 10,
+                "unit_price": 59000,
+                "subtotal": 590000
+            },
+            {
+                "product_id": 85,
+                "quantity": 4,
+                "unit_price": 26000,
+                "subtotal": 104000
+            }
+        ],
+        "created_at": "2026-05-03T01:38:50.100Z",
+        "created_by": 1
+    },
+    {
+        "id": 38,
+        "order_code": "ORD00038",
+        "customer_name": "Khách hàng 38",
+        "customer_phone": "0946635409",
+        "total_amount": 982000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 114,
+                "quantity": 10,
+                "unit_price": 35000,
+                "subtotal": 350000
+            },
+            {
+                "product_id": 113,
+                "quantity": 8,
+                "unit_price": 26000,
+                "subtotal": 208000
+            },
+            {
+                "product_id": 98,
+                "quantity": 4,
+                "unit_price": 26000,
+                "subtotal": 104000
+            },
+            {
+                "product_id": 59,
+                "quantity": 5,
+                "unit_price": 36000,
+                "subtotal": 180000
+            },
+            {
+                "product_id": 141,
+                "quantity": 7,
+                "unit_price": 20000,
+                "subtotal": 140000
+            }
+        ],
+        "created_at": "2026-07-30T21:07:07.737Z",
+        "created_by": 3
+    },
+    {
+        "id": 39,
+        "order_code": "ORD00039",
+        "customer_name": "Khách hàng 39",
+        "customer_phone": "0935390015",
+        "total_amount": 376000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 90,
+                "quantity": 3,
+                "unit_price": 47000,
+                "subtotal": 141000
+            },
+            {
+                "product_id": 106,
+                "quantity": 1,
+                "unit_price": 52000,
+                "subtotal": 52000
+            },
+            {
+                "product_id": 108,
+                "quantity": 1,
+                "unit_price": 45000,
+                "subtotal": 45000
+            },
+            {
+                "product_id": 88,
+                "quantity": 1,
+                "unit_price": 38000,
+                "subtotal": 38000
+            },
+            {
+                "product_id": 137,
+                "quantity": 10,
+                "unit_price": 10000,
+                "subtotal": 100000
+            }
+        ],
+        "created_at": "2026-06-25T19:39:30.666Z",
+        "created_by": 2
+    },
+    {
+        "id": 40,
+        "order_code": "ORD00040",
+        "customer_name": "Khách hàng 40",
+        "customer_phone": "0910325043",
+        "total_amount": 534000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 134,
+                "quantity": 8,
+                "unit_price": 18000,
+                "subtotal": 144000
+            },
+            {
+                "product_id": 89,
+                "quantity": 3,
+                "unit_price": 54000,
+                "subtotal": 162000
+            },
+            {
+                "product_id": 92,
+                "quantity": 4,
+                "unit_price": 57000,
+                "subtotal": 228000
+            }
+        ],
+        "created_at": "2026-07-12T03:54:29.025Z",
+        "created_by": 2
+    },
+    {
+        "id": 41,
+        "order_code": "ORD00041",
+        "customer_name": "Khách hàng 41",
+        "customer_phone": "0998110669",
+        "total_amount": 167000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 46,
+                "quantity": 2,
+                "unit_price": 31000,
+                "subtotal": 62000
+            },
+            {
+                "product_id": 104,
+                "quantity": 5,
+                "unit_price": 21000,
+                "subtotal": 105000
+            }
+        ],
+        "created_at": "2026-07-27T06:51:16.156Z",
+        "created_by": 3
+    },
+    {
+        "id": 42,
+        "order_code": "ORD00042",
+        "customer_name": "Khách hàng 42",
+        "customer_phone": "0925713057",
+        "total_amount": 432000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 18,
+                "quantity": 9,
+                "unit_price": 48000,
+                "subtotal": 432000
+            }
+        ],
+        "created_at": "2026-07-26T19:00:43.353Z",
+        "created_by": 5
+    },
+    {
+        "id": 43,
+        "order_code": "ORD00043",
+        "customer_name": "Khách hàng 43",
+        "customer_phone": "0965069516",
+        "total_amount": 709000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 2,
+                "quantity": 5,
+                "unit_price": 53000,
+                "subtotal": 265000
+            },
+            {
+                "product_id": 136,
+                "quantity": 6,
+                "unit_price": 17000,
+                "subtotal": 102000
+            },
+            {
+                "product_id": 100,
+                "quantity": 5,
+                "unit_price": 45000,
+                "subtotal": 225000
+            },
+            {
+                "product_id": 21,
+                "quantity": 3,
+                "unit_price": 24000,
+                "subtotal": 72000
+            },
+            {
+                "product_id": 104,
+                "quantity": 1,
+                "unit_price": 45000,
+                "subtotal": 45000
+            }
+        ],
+        "created_at": "2026-06-01T01:31:48.831Z",
+        "created_by": 2
+    },
+    {
+        "id": 44,
+        "order_code": "ORD00044",
+        "customer_name": "Khách hàng 44",
+        "customer_phone": "0903965552",
+        "total_amount": 585000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 149,
+                "quantity": 6,
+                "unit_price": 50000,
+                "subtotal": 300000
+            },
+            {
+                "product_id": 50,
+                "quantity": 5,
+                "unit_price": 57000,
+                "subtotal": 285000
+            }
+        ],
+        "created_at": "2026-05-04T23:06:47.680Z",
+        "created_by": 2
+    },
+    {
+        "id": 45,
+        "order_code": "ORD00045",
+        "customer_name": "Khách hàng 45",
+        "customer_phone": "0964660515",
+        "total_amount": 401000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 111,
+                "quantity": 5,
+                "unit_price": 14000,
+                "subtotal": 70000
+            },
+            {
+                "product_id": 47,
+                "quantity": 4,
+                "unit_price": 22000,
+                "subtotal": 88000
+            },
+            {
+                "product_id": 74,
+                "quantity": 9,
+                "unit_price": 13000,
+                "subtotal": 117000
+            },
+            {
+                "product_id": 133,
+                "quantity": 2,
+                "unit_price": 41000,
+                "subtotal": 82000
+            },
+            {
+                "product_id": 30,
+                "quantity": 1,
+                "unit_price": 44000,
+                "subtotal": 44000
+            }
+        ],
+        "created_at": "2026-06-09T00:11:44.414Z",
+        "created_by": 1
+    },
+    {
+        "id": 46,
+        "order_code": "ORD00046",
+        "customer_name": "Khách hàng 46",
+        "customer_phone": "0948699620",
+        "total_amount": 1390000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 128,
+                "quantity": 10,
+                "unit_price": 28000,
+                "subtotal": 280000
+            },
+            {
+                "product_id": 148,
+                "quantity": 9,
+                "unit_price": 28000,
+                "subtotal": 252000
+            },
+            {
+                "product_id": 122,
+                "quantity": 9,
+                "unit_price": 51000,
+                "subtotal": 459000
+            },
+            {
+                "product_id": 108,
+                "quantity": 7,
+                "unit_price": 57000,
+                "subtotal": 399000
+            }
+        ],
+        "created_at": "2026-05-28T12:02:59.893Z",
+        "created_by": 5
+    },
+    {
+        "id": 47,
+        "order_code": "ORD00047",
+        "customer_name": "Khách hàng 47",
+        "customer_phone": "0937628604",
+        "total_amount": 1225000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 111,
+                "quantity": 10,
+                "unit_price": 30000,
+                "subtotal": 300000
+            },
+            {
+                "product_id": 111,
+                "quantity": 5,
+                "unit_price": 12000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 64,
+                "quantity": 10,
+                "unit_price": 51000,
+                "subtotal": 510000
+            },
+            {
+                "product_id": 54,
+                "quantity": 4,
+                "unit_price": 49000,
+                "subtotal": 196000
+            },
+            {
+                "product_id": 94,
+                "quantity": 3,
+                "unit_price": 53000,
+                "subtotal": 159000
+            }
+        ],
+        "created_at": "2026-05-25T07:02:51.147Z",
+        "created_by": 3
+    },
+    {
+        "id": 48,
+        "order_code": "ORD00048",
+        "customer_name": "Khách hàng 48",
+        "customer_phone": "0901524663",
+        "total_amount": 234000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 49,
+                "quantity": 9,
+                "unit_price": 26000,
+                "subtotal": 234000
+            }
+        ],
+        "created_at": "2026-07-20T19:18:43.798Z",
+        "created_by": 5
+    },
+    {
+        "id": 49,
+        "order_code": "ORD00049",
+        "customer_name": "Khách hàng 49",
+        "customer_phone": "0992240155",
+        "total_amount": 132000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 97,
+                "quantity": 6,
+                "unit_price": 22000,
+                "subtotal": 132000
+            }
+        ],
+        "created_at": "2026-06-11T14:20:53.637Z",
+        "created_by": 3
+    },
+    {
+        "id": 50,
+        "order_code": "ORD00050",
+        "customer_name": "Khách hàng 50",
+        "customer_phone": "0948090676",
+        "total_amount": 110000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 142,
+                "quantity": 3,
+                "unit_price": 28000,
+                "subtotal": 84000
+            },
+            {
+                "product_id": 73,
+                "quantity": 1,
+                "unit_price": 26000,
+                "subtotal": 26000
+            }
+        ],
+        "created_at": "2026-07-14T05:14:38.460Z",
+        "created_by": 3
+    },
+    {
+        "id": 51,
+        "order_code": "ORD00051",
+        "customer_name": "Khách hàng 51",
+        "customer_phone": "0960487883",
+        "total_amount": 624000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 33,
+                "quantity": 9,
+                "unit_price": 17000,
+                "subtotal": 153000
+            },
+            {
+                "product_id": 59,
+                "quantity": 8,
+                "unit_price": 20000,
+                "subtotal": 160000
+            },
+            {
+                "product_id": 56,
+                "quantity": 5,
+                "unit_price": 47000,
+                "subtotal": 235000
+            },
+            {
+                "product_id": 129,
+                "quantity": 4,
+                "unit_price": 19000,
+                "subtotal": 76000
+            }
+        ],
+        "created_at": "2026-05-22T02:20:32.059Z",
+        "created_by": 4
+    },
+    {
+        "id": 52,
+        "order_code": "ORD00052",
+        "customer_name": "Khách hàng 52",
+        "customer_phone": "0960495866",
+        "total_amount": 367000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 111,
+                "quantity": 9,
+                "unit_price": 25000,
+                "subtotal": 225000
+            },
+            {
+                "product_id": 122,
+                "quantity": 1,
+                "unit_price": 17000,
+                "subtotal": 17000
+            },
+            {
+                "product_id": 118,
+                "quantity": 5,
+                "unit_price": 25000,
+                "subtotal": 125000
+            }
+        ],
+        "created_at": "2026-07-03T15:15:40.353Z",
+        "created_by": 3
+    },
+    {
+        "id": 53,
+        "order_code": "ORD00053",
+        "customer_name": "Khách hàng 53",
+        "customer_phone": "0904902790",
+        "total_amount": 454000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 112,
+                "quantity": 2,
+                "unit_price": 38000,
+                "subtotal": 76000
+            },
+            {
+                "product_id": 57,
+                "quantity": 10,
+                "unit_price": 13000,
+                "subtotal": 130000
+            },
+            {
+                "product_id": 107,
+                "quantity": 8,
+                "unit_price": 31000,
+                "subtotal": 248000
+            }
+        ],
+        "created_at": "2026-08-07T16:23:56.637Z",
+        "created_by": 1
+    },
+    {
+        "id": 54,
+        "order_code": "ORD00054",
+        "customer_name": "Khách hàng 54",
+        "customer_phone": "0988250526",
+        "total_amount": 588000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 121,
+                "quantity": 5,
+                "unit_price": 54000,
+                "subtotal": 270000
+            },
+            {
+                "product_id": 85,
+                "quantity": 6,
+                "unit_price": 53000,
+                "subtotal": 318000
+            }
+        ],
+        "created_at": "2026-07-23T04:52:45.281Z",
+        "created_by": 4
+    },
+    {
+        "id": 55,
+        "order_code": "ORD00055",
+        "customer_name": "Khách hàng 55",
+        "customer_phone": "0946468540",
+        "total_amount": 156000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 37,
+                "quantity": 3,
+                "unit_price": 26000,
+                "subtotal": 78000
+            },
+            {
+                "product_id": 53,
+                "quantity": 2,
+                "unit_price": 39000,
+                "subtotal": 78000
+            }
+        ],
+        "created_at": "2026-05-02T13:47:34.560Z",
+        "created_by": 1
+    },
+    {
+        "id": 56,
+        "order_code": "ORD00056",
+        "customer_name": "Khách hàng 56",
+        "customer_phone": "0904444478",
+        "total_amount": 995000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 88,
+                "quantity": 3,
+                "unit_price": 35000,
+                "subtotal": 105000
+            },
+            {
+                "product_id": 123,
+                "quantity": 7,
+                "unit_price": 29000,
+                "subtotal": 203000
+            },
+            {
+                "product_id": 148,
+                "quantity": 1,
+                "unit_price": 45000,
+                "subtotal": 45000
+            },
+            {
+                "product_id": 131,
+                "quantity": 4,
+                "unit_price": 58000,
+                "subtotal": 232000
+            },
+            {
+                "product_id": 46,
+                "quantity": 10,
+                "unit_price": 41000,
+                "subtotal": 410000
+            }
+        ],
+        "created_at": "2026-07-09T05:30:12.428Z",
+        "created_by": 5
+    },
+    {
+        "id": 57,
+        "order_code": "ORD00057",
+        "customer_name": "Khách hàng 57",
+        "customer_phone": "0960364967",
+        "total_amount": 1306000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 33,
+                "quantity": 10,
+                "unit_price": 50000,
+                "subtotal": 500000
+            },
+            {
+                "product_id": 147,
+                "quantity": 3,
+                "unit_price": 22000,
+                "subtotal": 66000
+            },
+            {
+                "product_id": 123,
+                "quantity": 2,
+                "unit_price": 53000,
+                "subtotal": 106000
+            },
+            {
+                "product_id": 133,
+                "quantity": 5,
+                "unit_price": 53000,
+                "subtotal": 265000
+            },
+            {
+                "product_id": 128,
+                "quantity": 9,
+                "unit_price": 41000,
+                "subtotal": 369000
+            }
+        ],
+        "created_at": "2026-05-27T13:35:58.724Z",
+        "created_by": 2
+    },
+    {
+        "id": 58,
+        "order_code": "ORD00058",
+        "customer_name": "Khách hàng 58",
+        "customer_phone": "0987389740",
+        "total_amount": 1008000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 141,
+                "quantity": 10,
+                "unit_price": 54000,
+                "subtotal": 540000
+            },
+            {
+                "product_id": 114,
+                "quantity": 9,
+                "unit_price": 52000,
+                "subtotal": 468000
+            }
+        ],
+        "created_at": "2026-05-03T15:28:39.468Z",
+        "created_by": 4
+    },
+    {
+        "id": 59,
+        "order_code": "ORD00059",
+        "customer_name": "Khách hàng 59",
+        "customer_phone": "0919946405",
+        "total_amount": 895000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 74,
+                "quantity": 2,
+                "unit_price": 23000,
+                "subtotal": 46000
+            },
+            {
+                "product_id": 93,
+                "quantity": 10,
+                "unit_price": 57000,
+                "subtotal": 570000
+            },
+            {
+                "product_id": 93,
+                "quantity": 9,
+                "unit_price": 31000,
+                "subtotal": 279000
+            }
+        ],
+        "created_at": "2026-07-19T07:02:41.076Z",
+        "created_by": 5
+    },
+    {
+        "id": 60,
+        "order_code": "ORD00060",
+        "customer_name": "Khách hàng 60",
+        "customer_phone": "0968813846",
+        "total_amount": 252000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 43,
+                "quantity": 6,
+                "unit_price": 30000,
+                "subtotal": 180000
+            },
+            {
+                "product_id": 33,
+                "quantity": 3,
+                "unit_price": 24000,
+                "subtotal": 72000
+            }
+        ],
+        "created_at": "2026-05-30T19:35:34.120Z",
+        "created_by": 5
+    },
+    {
+        "id": 61,
+        "order_code": "ORD00061",
+        "customer_name": "Khách hàng 61",
+        "customer_phone": "0935059121",
+        "total_amount": 816000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 125,
+                "quantity": 5,
+                "unit_price": 33000,
+                "subtotal": 165000
+            },
+            {
+                "product_id": 59,
+                "quantity": 5,
+                "unit_price": 48000,
+                "subtotal": 240000
+            },
+            {
+                "product_id": 106,
+                "quantity": 9,
+                "unit_price": 33000,
+                "subtotal": 297000
+            },
+            {
+                "product_id": 35,
+                "quantity": 6,
+                "unit_price": 19000,
+                "subtotal": 114000
+            }
+        ],
+        "created_at": "2026-05-30T09:28:15.618Z",
+        "created_by": 3
+    },
+    {
+        "id": 62,
+        "order_code": "ORD00062",
+        "customer_name": "Khách hàng 62",
+        "customer_phone": "0933329258",
+        "total_amount": 88000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 107,
+                "quantity": 6,
+                "unit_price": 10000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 129,
+                "quantity": 1,
+                "unit_price": 28000,
+                "subtotal": 28000
+            }
+        ],
+        "created_at": "2026-06-21T13:59:46.551Z",
+        "created_by": 5
+    },
+    {
+        "id": 63,
+        "order_code": "ORD00063",
+        "customer_name": "Khách hàng 63",
+        "customer_phone": "0985188109",
+        "total_amount": 430000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 11,
+                "quantity": 7,
+                "unit_price": 16000,
+                "subtotal": 112000
+            },
+            {
+                "product_id": 58,
+                "quantity": 3,
+                "unit_price": 36000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 83,
+                "quantity": 5,
+                "unit_price": 18000,
+                "subtotal": 90000
+            },
+            {
+                "product_id": 55,
+                "quantity": 10,
+                "unit_price": 12000,
+                "subtotal": 120000
+            }
+        ],
+        "created_at": "2026-06-19T07:25:34.296Z",
+        "created_by": 3
+    },
+    {
+        "id": 64,
+        "order_code": "ORD00064",
+        "customer_name": "Khách hàng 64",
+        "customer_phone": "0900714602",
+        "total_amount": 1066000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 121,
+                "quantity": 10,
+                "unit_price": 40000,
+                "subtotal": 400000
+            },
+            {
+                "product_id": 73,
+                "quantity": 7,
+                "unit_price": 51000,
+                "subtotal": 357000
+            },
+            {
+                "product_id": 90,
+                "quantity": 4,
+                "unit_price": 16000,
+                "subtotal": 64000
+            },
+            {
+                "product_id": 107,
+                "quantity": 7,
+                "unit_price": 35000,
+                "subtotal": 245000
+            }
+        ],
+        "created_at": "2026-07-25T06:30:00.747Z",
+        "created_by": 4
+    },
+    {
+        "id": 65,
+        "order_code": "ORD00065",
+        "customer_name": "Khách hàng 65",
+        "customer_phone": "0914627387",
+        "total_amount": 566000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 69,
+                "quantity": 7,
+                "unit_price": 42000,
+                "subtotal": 294000
+            },
+            {
+                "product_id": 53,
+                "quantity": 5,
+                "unit_price": 32000,
+                "subtotal": 160000
+            },
+            {
+                "product_id": 24,
+                "quantity": 7,
+                "unit_price": 16000,
+                "subtotal": 112000
+            }
+        ],
+        "created_at": "2026-06-28T05:28:59.631Z",
+        "created_by": 4
+    },
+    {
+        "id": 66,
+        "order_code": "ORD00066",
+        "customer_name": "Khách hàng 66",
+        "customer_phone": "0915797641",
+        "total_amount": 176000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 48,
+                "quantity": 8,
+                "unit_price": 22000,
+                "subtotal": 176000
+            }
+        ],
+        "created_at": "2026-05-10T01:25:25.313Z",
+        "created_by": 4
+    },
+    {
+        "id": 67,
+        "order_code": "ORD00067",
+        "customer_name": "Khách hàng 67",
+        "customer_phone": "0923803340",
+        "total_amount": 292000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 119,
+                "quantity": 4,
+                "unit_price": 55000,
+                "subtotal": 220000
+            },
+            {
+                "product_id": 131,
+                "quantity": 6,
+                "unit_price": 12000,
+                "subtotal": 72000
+            }
+        ],
+        "created_at": "2026-08-01T14:24:00.381Z",
+        "created_by": 1
+    },
+    {
+        "id": 68,
+        "order_code": "ORD00068",
+        "customer_name": "Khách hàng 68",
+        "customer_phone": "0956411400",
+        "total_amount": 181000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 24,
+                "quantity": 6,
+                "unit_price": 10000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 136,
+                "quantity": 4,
+                "unit_price": 19000,
+                "subtotal": 76000
+            },
+            {
+                "product_id": 58,
+                "quantity": 1,
+                "unit_price": 45000,
+                "subtotal": 45000
+            }
+        ],
+        "created_at": "2026-04-20T00:00:35.437Z",
+        "created_by": 5
+    },
+    {
+        "id": 69,
+        "order_code": "ORD00069",
+        "customer_name": "Khách hàng 69",
+        "customer_phone": "0998899499",
+        "total_amount": 626000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 64,
+                "quantity": 2,
+                "unit_price": 52000,
+                "subtotal": 104000
+            },
+            {
+                "product_id": 48,
+                "quantity": 9,
+                "unit_price": 58000,
+                "subtotal": 522000
+            }
+        ],
+        "created_at": "2026-04-30T23:32:36.291Z",
+        "created_by": 2
+    },
+    {
+        "id": 70,
+        "order_code": "ORD00070",
+        "customer_name": "Khách hàng 70",
+        "customer_phone": "0926687221",
+        "total_amount": 355000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 94,
+                "quantity": 8,
+                "unit_price": 29000,
+                "subtotal": 232000
+            },
+            {
+                "product_id": 82,
+                "quantity": 3,
+                "unit_price": 41000,
+                "subtotal": 123000
+            }
+        ],
+        "created_at": "2026-07-24T01:46:35.130Z",
+        "created_by": 2
+    },
+    {
+        "id": 71,
+        "order_code": "ORD00071",
+        "customer_name": "Khách hàng 71",
+        "customer_phone": "0955873291",
+        "total_amount": 720000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 46,
+                "quantity": 9,
+                "unit_price": 54000,
+                "subtotal": 486000
+            },
+            {
+                "product_id": 148,
+                "quantity": 10,
+                "unit_price": 19000,
+                "subtotal": 190000
+            },
+            {
+                "product_id": 57,
+                "quantity": 1,
+                "unit_price": 44000,
+                "subtotal": 44000
+            }
+        ],
+        "created_at": "2026-06-10T01:10:54.100Z",
+        "created_by": 5
+    },
+    {
+        "id": 72,
+        "order_code": "ORD00072",
+        "customer_name": "Khách hàng 72",
+        "customer_phone": "0925001505",
+        "total_amount": 184000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 100,
+                "quantity": 2,
+                "unit_price": 23000,
+                "subtotal": 46000
+            },
+            {
+                "product_id": 105,
+                "quantity": 3,
+                "unit_price": 46000,
+                "subtotal": 138000
+            }
+        ],
+        "created_at": "2026-06-29T14:31:47.544Z",
+        "created_by": 2
+    },
+    {
+        "id": 73,
+        "order_code": "ORD00073",
+        "customer_name": "Khách hàng 73",
+        "customer_phone": "0975179790",
+        "total_amount": 513000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 111,
+                "quantity": 5,
+                "unit_price": 37000,
+                "subtotal": 185000
+            },
+            {
+                "product_id": 55,
+                "quantity": 2,
+                "unit_price": 43000,
+                "subtotal": 86000
+            },
+            {
+                "product_id": 148,
+                "quantity": 1,
+                "unit_price": 58000,
+                "subtotal": 58000
+            },
+            {
+                "product_id": 57,
+                "quantity": 7,
+                "unit_price": 22000,
+                "subtotal": 154000
+            },
+            {
+                "product_id": 40,
+                "quantity": 1,
+                "unit_price": 30000,
+                "subtotal": 30000
+            }
+        ],
+        "created_at": "2026-06-21T08:21:31.280Z",
+        "created_by": 4
+    },
+    {
+        "id": 74,
+        "order_code": "ORD00074",
+        "customer_name": "Khách hàng 74",
+        "customer_phone": "0906872858",
+        "total_amount": 186000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 39,
+                "quantity": 2,
+                "unit_price": 49000,
+                "subtotal": 98000
+            },
+            {
+                "product_id": 33,
+                "quantity": 8,
+                "unit_price": 11000,
+                "subtotal": 88000
+            }
+        ],
+        "created_at": "2026-05-31T17:11:42.952Z",
+        "created_by": 5
+    },
+    {
+        "id": 75,
+        "order_code": "ORD00075",
+        "customer_name": "Khách hàng 75",
+        "customer_phone": "0961794230",
+        "total_amount": 240000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 39,
+                "quantity": 8,
+                "unit_price": 30000,
+                "subtotal": 240000
+            }
+        ],
+        "created_at": "2026-06-26T15:20:47.862Z",
+        "created_by": 3
+    },
+    {
+        "id": 76,
+        "order_code": "ORD00076",
+        "customer_name": "Khách hàng 76",
+        "customer_phone": "0948312876",
+        "total_amount": 944000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 14,
+                "quantity": 10,
+                "unit_price": 58000,
+                "subtotal": 580000
+            },
+            {
+                "product_id": 129,
+                "quantity": 6,
+                "unit_price": 34000,
+                "subtotal": 204000
+            },
+            {
+                "product_id": 85,
+                "quantity": 10,
+                "unit_price": 16000,
+                "subtotal": 160000
+            }
+        ],
+        "created_at": "2026-07-15T23:07:58.761Z",
+        "created_by": 4
+    },
+    {
+        "id": 77,
+        "order_code": "ORD00077",
+        "customer_name": "Khách hàng 77",
+        "customer_phone": "0906955775",
+        "total_amount": 986000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 52,
+                "quantity": 8,
+                "unit_price": 25000,
+                "subtotal": 200000
+            },
+            {
+                "product_id": 91,
+                "quantity": 8,
+                "unit_price": 27000,
+                "subtotal": 216000
+            },
+            {
+                "product_id": 24,
+                "quantity": 10,
+                "unit_price": 57000,
+                "subtotal": 570000
+            }
+        ],
+        "created_at": "2026-07-17T21:16:39.130Z",
+        "created_by": 3
+    },
+    {
+        "id": 78,
+        "order_code": "ORD00078",
+        "customer_name": "Khách hàng 78",
+        "customer_phone": "0959476724",
+        "total_amount": 721000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 102,
+                "quantity": 7,
+                "unit_price": 30000,
+                "subtotal": 210000
+            },
+            {
+                "product_id": 104,
+                "quantity": 6,
+                "unit_price": 17000,
+                "subtotal": 102000
+            },
+            {
+                "product_id": 147,
+                "quantity": 1,
+                "unit_price": 13000,
+                "subtotal": 13000
+            },
+            {
+                "product_id": 51,
+                "quantity": 6,
+                "unit_price": 17000,
+                "subtotal": 102000
+            },
+            {
+                "product_id": 19,
+                "quantity": 6,
+                "unit_price": 49000,
+                "subtotal": 294000
+            }
+        ],
+        "created_at": "2026-05-22T17:05:51.215Z",
+        "created_by": 3
+    },
+    {
+        "id": 79,
+        "order_code": "ORD00079",
+        "customer_name": "Khách hàng 79",
+        "customer_phone": "0928998426",
+        "total_amount": 871000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 46,
+                "quantity": 10,
+                "unit_price": 52000,
+                "subtotal": 520000
+            },
+            {
+                "product_id": 86,
+                "quantity": 7,
+                "unit_price": 21000,
+                "subtotal": 147000
+            },
+            {
+                "product_id": 65,
+                "quantity": 2,
+                "unit_price": 51000,
+                "subtotal": 102000
+            },
+            {
+                "product_id": 124,
+                "quantity": 2,
+                "unit_price": 51000,
+                "subtotal": 102000
+            }
+        ],
+        "created_at": "2026-05-08T21:23:51.038Z",
+        "created_by": 4
+    },
+    {
+        "id": 80,
+        "order_code": "ORD00080",
+        "customer_name": "Khách hàng 80",
+        "customer_phone": "0918342164",
+        "total_amount": 30000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 9,
+                "quantity": 1,
+                "unit_price": 30000,
+                "subtotal": 30000
+            }
+        ],
+        "created_at": "2026-07-15T07:45:52.857Z",
+        "created_by": 4
+    },
+    {
+        "id": 81,
+        "order_code": "ORD00081",
+        "customer_name": "Khách hàng 81",
+        "customer_phone": "0918659421",
+        "total_amount": 236000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 13,
+                "quantity": 8,
+                "unit_price": 11000,
+                "subtotal": 88000
+            },
+            {
+                "product_id": 9,
+                "quantity": 9,
+                "unit_price": 15000,
+                "subtotal": 135000
+            },
+            {
+                "product_id": 81,
+                "quantity": 1,
+                "unit_price": 13000,
+                "subtotal": 13000
+            }
+        ],
+        "created_at": "2026-05-06T19:43:48.598Z",
+        "created_by": 4
+    },
+    {
+        "id": 82,
+        "order_code": "ORD00082",
+        "customer_name": "Khách hàng 82",
+        "customer_phone": "0974346176",
+        "total_amount": 424000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 32,
+                "quantity": 1,
+                "unit_price": 35000,
+                "subtotal": 35000
+            },
+            {
+                "product_id": 90,
+                "quantity": 9,
+                "unit_price": 21000,
+                "subtotal": 189000
+            },
+            {
+                "product_id": 37,
+                "quantity": 4,
+                "unit_price": 50000,
+                "subtotal": 200000
+            }
+        ],
+        "created_at": "2026-06-21T08:39:05.772Z",
+        "created_by": 4
+    },
+    {
+        "id": 83,
+        "order_code": "ORD00083",
+        "customer_name": "Khách hàng 83",
+        "customer_phone": "0991226955",
+        "total_amount": 592000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 52,
+                "quantity": 7,
+                "unit_price": 12000,
+                "subtotal": 84000
+            },
+            {
+                "product_id": 102,
+                "quantity": 6,
+                "unit_price": 45000,
+                "subtotal": 270000
+            },
+            {
+                "product_id": 34,
+                "quantity": 7,
+                "unit_price": 34000,
+                "subtotal": 238000
+            }
+        ],
+        "created_at": "2026-08-09T08:22:58.965Z",
+        "created_by": 3
+    },
+    {
+        "id": 84,
+        "order_code": "ORD00084",
+        "customer_name": "Khách hàng 84",
+        "customer_phone": "0982444085",
+        "total_amount": 1144000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 85,
+                "quantity": 3,
+                "unit_price": 28000,
+                "subtotal": 84000
+            },
+            {
+                "product_id": 88,
+                "quantity": 8,
+                "unit_price": 49000,
+                "subtotal": 392000
+            },
+            {
+                "product_id": 53,
+                "quantity": 5,
+                "unit_price": 22000,
+                "subtotal": 110000
+            },
+            {
+                "product_id": 114,
+                "quantity": 6,
+                "unit_price": 18000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 72,
+                "quantity": 10,
+                "unit_price": 45000,
+                "subtotal": 450000
+            }
+        ],
+        "created_at": "2026-05-21T03:40:27.393Z",
+        "created_by": 4
+    },
+    {
+        "id": 85,
+        "order_code": "ORD00085",
+        "customer_name": "Khách hàng 85",
+        "customer_phone": "0971786071",
+        "total_amount": 286000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 11,
+                "quantity": 4,
+                "unit_price": 24000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 16,
+                "quantity": 5,
+                "unit_price": 38000,
+                "subtotal": 190000
+            }
+        ],
+        "created_at": "2026-06-21T12:11:13.179Z",
+        "created_by": 4
+    },
+    {
+        "id": 86,
+        "order_code": "ORD00086",
+        "customer_name": "Khách hàng 86",
+        "customer_phone": "0990921181",
+        "total_amount": 331000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 5,
+                "quantity": 4,
+                "unit_price": 27000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 94,
+                "quantity": 4,
+                "unit_price": 17000,
+                "subtotal": 68000
+            },
+            {
+                "product_id": 1,
+                "quantity": 3,
+                "unit_price": 29000,
+                "subtotal": 87000
+            },
+            {
+                "product_id": 18,
+                "quantity": 2,
+                "unit_price": 34000,
+                "subtotal": 68000
+            }
+        ],
+        "created_at": "2026-05-21T17:55:26.384Z",
+        "created_by": 3
+    },
+    {
+        "id": 87,
+        "order_code": "ORD00087",
+        "customer_name": "Khách hàng 87",
+        "customer_phone": "0905121865",
+        "total_amount": 672000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 137,
+                "quantity": 3,
+                "unit_price": 42000,
+                "subtotal": 126000
+            },
+            {
+                "product_id": 60,
+                "quantity": 8,
+                "unit_price": 50000,
+                "subtotal": 400000
+            },
+            {
+                "product_id": 104,
+                "quantity": 1,
+                "unit_price": 14000,
+                "subtotal": 14000
+            },
+            {
+                "product_id": 86,
+                "quantity": 3,
+                "unit_price": 44000,
+                "subtotal": 132000
+            }
+        ],
+        "created_at": "2026-06-01T16:05:55.820Z",
+        "created_by": 3
+    },
+    {
+        "id": 88,
+        "order_code": "ORD00088",
+        "customer_name": "Khách hàng 88",
+        "customer_phone": "0980300420",
+        "total_amount": 339000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 60,
+                "quantity": 7,
+                "unit_price": 15000,
+                "subtotal": 105000
+            },
+            {
+                "product_id": 134,
+                "quantity": 9,
+                "unit_price": 26000,
+                "subtotal": 234000
+            }
+        ],
+        "created_at": "2026-05-26T03:28:16.239Z",
+        "created_by": 1
+    },
+    {
+        "id": 89,
+        "order_code": "ORD00089",
+        "customer_name": "Khách hàng 89",
+        "customer_phone": "0981325099",
+        "total_amount": 583000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 60,
+                "quantity": 8,
+                "unit_price": 21000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 50,
+                "quantity": 5,
+                "unit_price": 33000,
+                "subtotal": 165000
+            },
+            {
+                "product_id": 127,
+                "quantity": 5,
+                "unit_price": 50000,
+                "subtotal": 250000
+            }
+        ],
+        "created_at": "2026-07-18T21:21:50.582Z",
+        "created_by": 3
+    },
+    {
+        "id": 90,
+        "order_code": "ORD00090",
+        "customer_name": "Khách hàng 90",
+        "customer_phone": "0952715832",
+        "total_amount": 286000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 136,
+                "quantity": 5,
+                "unit_price": 51000,
+                "subtotal": 255000
+            },
+            {
+                "product_id": 75,
+                "quantity": 1,
+                "unit_price": 31000,
+                "subtotal": 31000
+            }
+        ],
+        "created_at": "2026-07-29T04:55:00.529Z",
+        "created_by": 1
+    },
+    {
+        "id": 91,
+        "order_code": "ORD00091",
+        "customer_name": "Khách hàng 91",
+        "customer_phone": "0919585829",
+        "total_amount": 1064000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 19,
+                "quantity": 7,
+                "unit_price": 14000,
+                "subtotal": 98000
+            },
+            {
+                "product_id": 64,
+                "quantity": 10,
+                "unit_price": 37000,
+                "subtotal": 370000
+            },
+            {
+                "product_id": 95,
+                "quantity": 2,
+                "unit_price": 43000,
+                "subtotal": 86000
+            },
+            {
+                "product_id": 87,
+                "quantity": 10,
+                "unit_price": 51000,
+                "subtotal": 510000
+            }
+        ],
+        "created_at": "2026-05-08T09:40:35.388Z",
+        "created_by": 3
+    },
+    {
+        "id": 92,
+        "order_code": "ORD00092",
+        "customer_name": "Khách hàng 92",
+        "customer_phone": "0904004991",
+        "total_amount": 206000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 47,
+                "quantity": 8,
+                "unit_price": 21000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 82,
+                "quantity": 1,
+                "unit_price": 38000,
+                "subtotal": 38000
+            }
+        ],
+        "created_at": "2026-05-28T22:29:34.279Z",
+        "created_by": 4
+    },
+    {
+        "id": 93,
+        "order_code": "ORD00093",
+        "customer_name": "Khách hàng 93",
+        "customer_phone": "0930085000",
+        "total_amount": 578000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 111,
+                "quantity": 10,
+                "unit_price": 36000,
+                "subtotal": 360000
+            },
+            {
+                "product_id": 32,
+                "quantity": 2,
+                "unit_price": 59000,
+                "subtotal": 118000
+            },
+            {
+                "product_id": 56,
+                "quantity": 2,
+                "unit_price": 50000,
+                "subtotal": 100000
+            }
+        ],
+        "created_at": "2026-05-17T18:11:37.907Z",
+        "created_by": 3
+    },
+    {
+        "id": 94,
+        "order_code": "ORD00094",
+        "customer_name": "Khách hàng 94",
+        "customer_phone": "0962197194",
+        "total_amount": 1522000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 9,
+                "quantity": 10,
+                "unit_price": 34000,
+                "subtotal": 340000
+            },
+            {
+                "product_id": 98,
+                "quantity": 7,
+                "unit_price": 42000,
+                "subtotal": 294000
+            },
+            {
+                "product_id": 23,
+                "quantity": 9,
+                "unit_price": 14000,
+                "subtotal": 126000
+            },
+            {
+                "product_id": 20,
+                "quantity": 6,
+                "unit_price": 46000,
+                "subtotal": 276000
+            },
+            {
+                "product_id": 100,
+                "quantity": 9,
+                "unit_price": 54000,
+                "subtotal": 486000
+            }
+        ],
+        "created_at": "2026-04-19T15:29:17.589Z",
+        "created_by": 3
+    },
+    {
+        "id": 95,
+        "order_code": "ORD00095",
+        "customer_name": "Khách hàng 95",
+        "customer_phone": "0917215546",
+        "total_amount": 564000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 150,
+                "quantity": 9,
+                "unit_price": 17000,
+                "subtotal": 153000
+            },
+            {
+                "product_id": 27,
+                "quantity": 3,
+                "unit_price": 39000,
+                "subtotal": 117000
+            },
+            {
+                "product_id": 32,
+                "quantity": 7,
+                "unit_price": 42000,
+                "subtotal": 294000
+            }
+        ],
+        "created_at": "2026-05-06T02:22:37.226Z",
+        "created_by": 3
+    },
+    {
+        "id": 96,
+        "order_code": "ORD00096",
+        "customer_name": "Khách hàng 96",
+        "customer_phone": "0957566352",
+        "total_amount": 1422000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 83,
+                "quantity": 5,
+                "unit_price": 45000,
+                "subtotal": 225000
+            },
+            {
+                "product_id": 139,
+                "quantity": 3,
+                "unit_price": 58000,
+                "subtotal": 174000
+            },
+            {
+                "product_id": 124,
+                "quantity": 9,
+                "unit_price": 14000,
+                "subtotal": 126000
+            },
+            {
+                "product_id": 128,
+                "quantity": 10,
+                "unit_price": 42000,
+                "subtotal": 420000
+            },
+            {
+                "product_id": 138,
+                "quantity": 9,
+                "unit_price": 53000,
+                "subtotal": 477000
+            }
+        ],
+        "created_at": "2026-07-18T13:11:44.567Z",
+        "created_by": 2
+    },
+    {
+        "id": 97,
+        "order_code": "ORD00097",
+        "customer_name": "Khách hàng 97",
+        "customer_phone": "0959985625",
+        "total_amount": 950000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 51,
+                "quantity": 6,
+                "unit_price": 53000,
+                "subtotal": 318000
+            },
+            {
+                "product_id": 2,
+                "quantity": 10,
+                "unit_price": 32000,
+                "subtotal": 320000
+            },
+            {
+                "product_id": 83,
+                "quantity": 6,
+                "unit_price": 22000,
+                "subtotal": 132000
+            },
+            {
+                "product_id": 9,
+                "quantity": 6,
+                "unit_price": 30000,
+                "subtotal": 180000
+            }
+        ],
+        "created_at": "2026-07-03T01:05:20.010Z",
+        "created_by": 1
+    },
+    {
+        "id": 98,
+        "order_code": "ORD00098",
+        "customer_name": "Khách hàng 98",
+        "customer_phone": "0963651543",
+        "total_amount": 238000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 98,
+                "quantity": 7,
+                "unit_price": 34000,
+                "subtotal": 238000
+            }
+        ],
+        "created_at": "2026-05-18T02:11:48.686Z",
+        "created_by": 2
+    },
+    {
+        "id": 99,
+        "order_code": "ORD00099",
+        "customer_name": "Khách hàng 99",
+        "customer_phone": "0937757028",
+        "total_amount": 486000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 59,
+                "quantity": 1,
+                "unit_price": 30000,
+                "subtotal": 30000
+            },
+            {
+                "product_id": 89,
+                "quantity": 2,
+                "unit_price": 33000,
+                "subtotal": 66000
+            },
+            {
+                "product_id": 48,
+                "quantity": 6,
+                "unit_price": 56000,
+                "subtotal": 336000
+            },
+            {
+                "product_id": 51,
+                "quantity": 3,
+                "unit_price": 18000,
+                "subtotal": 54000
+            }
+        ],
+        "created_at": "2026-07-07T00:38:34.468Z",
+        "created_by": 5
+    },
+    {
+        "id": 100,
+        "order_code": "ORD00100",
+        "customer_name": "Khách hàng 100",
+        "customer_phone": "0922473551",
+        "total_amount": 434000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 36,
+                "quantity": 7,
+                "unit_price": 24000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 12,
+                "quantity": 5,
+                "unit_price": 43000,
+                "subtotal": 215000
+            },
+            {
+                "product_id": 32,
+                "quantity": 3,
+                "unit_price": 17000,
+                "subtotal": 51000
+            }
+        ],
+        "created_at": "2026-07-07T06:37:53.494Z",
+        "created_by": 1
+    },
+    {
+        "id": 101,
+        "order_code": "ORD00101",
+        "customer_name": "Khách hàng 101",
+        "customer_phone": "0954442178",
+        "total_amount": 276000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 134,
+                "quantity": 1,
+                "unit_price": 50000,
+                "subtotal": 50000
+            },
+            {
+                "product_id": 140,
+                "quantity": 1,
+                "unit_price": 58000,
+                "subtotal": 58000
+            },
+            {
+                "product_id": 32,
+                "quantity": 7,
+                "unit_price": 24000,
+                "subtotal": 168000
+            }
+        ],
+        "created_at": "2026-07-06T03:16:13.222Z",
+        "created_by": 3
+    },
+    {
+        "id": 102,
+        "order_code": "ORD00102",
+        "customer_name": "Khách hàng 102",
+        "customer_phone": "0971102150",
+        "total_amount": 883000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 120,
+                "quantity": 4,
+                "unit_price": 32000,
+                "subtotal": 128000
+            },
+            {
+                "product_id": 141,
+                "quantity": 2,
+                "unit_price": 57000,
+                "subtotal": 114000
+            },
+            {
+                "product_id": 125,
+                "quantity": 4,
+                "unit_price": 23000,
+                "subtotal": 92000
+            },
+            {
+                "product_id": 26,
+                "quantity": 9,
+                "unit_price": 53000,
+                "subtotal": 477000
+            },
+            {
+                "product_id": 42,
+                "quantity": 3,
+                "unit_price": 24000,
+                "subtotal": 72000
+            }
+        ],
+        "created_at": "2026-08-02T10:40:25.632Z",
+        "created_by": 3
+    },
+    {
+        "id": 103,
+        "order_code": "ORD00103",
+        "customer_name": "Khách hàng 103",
+        "customer_phone": "0971289771",
+        "total_amount": 676000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 93,
+                "quantity": 6,
+                "unit_price": 42000,
+                "subtotal": 252000
+            },
+            {
+                "product_id": 141,
+                "quantity": 4,
+                "unit_price": 43000,
+                "subtotal": 172000
+            },
+            {
+                "product_id": 92,
+                "quantity": 9,
+                "unit_price": 28000,
+                "subtotal": 252000
+            }
+        ],
+        "created_at": "2026-05-11T18:02:19.368Z",
+        "created_by": 1
+    },
+    {
+        "id": 104,
+        "order_code": "ORD00104",
+        "customer_name": "Khách hàng 104",
+        "customer_phone": "0968851739",
+        "total_amount": 709000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 70,
+                "quantity": 9,
+                "unit_price": 21000,
+                "subtotal": 189000
+            },
+            {
+                "product_id": 135,
+                "quantity": 10,
+                "unit_price": 52000,
+                "subtotal": 520000
+            }
+        ],
+        "created_at": "2026-06-04T15:16:17.845Z",
+        "created_by": 1
+    },
+    {
+        "id": 105,
+        "order_code": "ORD00105",
+        "customer_name": "Khách hàng 105",
+        "customer_phone": "0914820698",
+        "total_amount": 604000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 64,
+                "quantity": 10,
+                "unit_price": 21000,
+                "subtotal": 210000
+            },
+            {
+                "product_id": 102,
+                "quantity": 6,
+                "unit_price": 29000,
+                "subtotal": 174000
+            },
+            {
+                "product_id": 84,
+                "quantity": 4,
+                "unit_price": 55000,
+                "subtotal": 220000
+            }
+        ],
+        "created_at": "2026-05-15T22:07:28.093Z",
+        "created_by": 5
+    },
+    {
+        "id": 106,
+        "order_code": "ORD00106",
+        "customer_name": "Khách hàng 106",
+        "customer_phone": "0921230717",
+        "total_amount": 84000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 83,
+                "quantity": 7,
+                "unit_price": 12000,
+                "subtotal": 84000
+            }
+        ],
+        "created_at": "2026-06-13T17:28:08.859Z",
+        "created_by": 2
+    },
+    {
+        "id": 107,
+        "order_code": "ORD00107",
+        "customer_name": "Khách hàng 107",
+        "customer_phone": "0936186261",
+        "total_amount": 478000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 76,
+                "quantity": 3,
+                "unit_price": 16000,
+                "subtotal": 48000
+            },
+            {
+                "product_id": 77,
+                "quantity": 6,
+                "unit_price": 45000,
+                "subtotal": 270000
+            },
+            {
+                "product_id": 62,
+                "quantity": 4,
+                "unit_price": 40000,
+                "subtotal": 160000
+            }
+        ],
+        "created_at": "2026-05-28T16:50:52.717Z",
+        "created_by": 5
+    },
+    {
+        "id": 108,
+        "order_code": "ORD00108",
+        "customer_name": "Khách hàng 108",
+        "customer_phone": "0923739971",
+        "total_amount": 1302000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 10,
+                "quantity": 9,
+                "unit_price": 57000,
+                "subtotal": 513000
+            },
+            {
+                "product_id": 74,
+                "quantity": 10,
+                "unit_price": 56000,
+                "subtotal": 560000
+            },
+            {
+                "product_id": 146,
+                "quantity": 7,
+                "unit_price": 28000,
+                "subtotal": 196000
+            },
+            {
+                "product_id": 63,
+                "quantity": 1,
+                "unit_price": 33000,
+                "subtotal": 33000
+            }
+        ],
+        "created_at": "2026-06-24T14:35:36.129Z",
+        "created_by": 5
+    },
+    {
+        "id": 109,
+        "order_code": "ORD00109",
+        "customer_name": "Khách hàng 109",
+        "customer_phone": "0945650608",
+        "total_amount": 268000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 41,
+                "quantity": 1,
+                "unit_price": 12000,
+                "subtotal": 12000
+            },
+            {
+                "product_id": 5,
+                "quantity": 9,
+                "unit_price": 11000,
+                "subtotal": 99000
+            },
+            {
+                "product_id": 147,
+                "quantity": 5,
+                "unit_price": 21000,
+                "subtotal": 105000
+            },
+            {
+                "product_id": 111,
+                "quantity": 2,
+                "unit_price": 26000,
+                "subtotal": 52000
+            }
+        ],
+        "created_at": "2026-04-27T06:37:23.877Z",
+        "created_by": 4
+    },
+    {
+        "id": 110,
+        "order_code": "ORD00110",
+        "customer_name": "Khách hàng 110",
+        "customer_phone": "0911123529",
+        "total_amount": 303000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 128,
+                "quantity": 1,
+                "unit_price": 33000,
+                "subtotal": 33000
+            },
+            {
+                "product_id": 102,
+                "quantity": 5,
+                "unit_price": 22000,
+                "subtotal": 110000
+            },
+            {
+                "product_id": 58,
+                "quantity": 8,
+                "unit_price": 20000,
+                "subtotal": 160000
+            }
+        ],
+        "created_at": "2026-06-18T12:39:25.202Z",
+        "created_by": 1
+    },
+    {
+        "id": 111,
+        "order_code": "ORD00111",
+        "customer_name": "Khách hàng 111",
+        "customer_phone": "0974492716",
+        "total_amount": 435000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 27,
+                "quantity": 9,
+                "unit_price": 18000,
+                "subtotal": 162000
+            },
+            {
+                "product_id": 23,
+                "quantity": 7,
+                "unit_price": 39000,
+                "subtotal": 273000
+            }
+        ],
+        "created_at": "2026-07-11T13:13:35.220Z",
+        "created_by": 2
+    },
+    {
+        "id": 112,
+        "order_code": "ORD00112",
+        "customer_name": "Khách hàng 112",
+        "customer_phone": "0973447199",
+        "total_amount": 377000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 29,
+                "quantity": 3,
+                "unit_price": 30000,
+                "subtotal": 90000
+            },
+            {
+                "product_id": 111,
+                "quantity": 7,
+                "unit_price": 41000,
+                "subtotal": 287000
+            }
+        ],
+        "created_at": "2026-07-30T08:24:16.614Z",
+        "created_by": 3
+    },
+    {
+        "id": 113,
+        "order_code": "ORD00113",
+        "customer_name": "Khách hàng 113",
+        "customer_phone": "0936304195",
+        "total_amount": 148000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 45,
+                "quantity": 4,
+                "unit_price": 37000,
+                "subtotal": 148000
+            }
+        ],
+        "created_at": "2026-05-26T08:39:48.336Z",
+        "created_by": 1
+    },
+    {
+        "id": 114,
+        "order_code": "ORD00114",
+        "customer_name": "Khách hàng 114",
+        "customer_phone": "0900761430",
+        "total_amount": 1023000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 136,
+                "quantity": 7,
+                "unit_price": 51000,
+                "subtotal": 357000
+            },
+            {
+                "product_id": 136,
+                "quantity": 9,
+                "unit_price": 44000,
+                "subtotal": 396000
+            },
+            {
+                "product_id": 16,
+                "quantity": 4,
+                "unit_price": 13000,
+                "subtotal": 52000
+            },
+            {
+                "product_id": 16,
+                "quantity": 5,
+                "unit_price": 13000,
+                "subtotal": 65000
+            },
+            {
+                "product_id": 113,
+                "quantity": 3,
+                "unit_price": 51000,
+                "subtotal": 153000
+            }
+        ],
+        "created_at": "2026-06-26T15:00:26.634Z",
+        "created_by": 4
+    },
+    {
+        "id": 115,
+        "order_code": "ORD00115",
+        "customer_name": "Khách hàng 115",
+        "customer_phone": "0993944357",
+        "total_amount": 323000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 27,
+                "quantity": 5,
+                "unit_price": 34000,
+                "subtotal": 170000
+            },
+            {
+                "product_id": 36,
+                "quantity": 9,
+                "unit_price": 17000,
+                "subtotal": 153000
+            }
+        ],
+        "created_at": "2026-07-28T18:15:49.124Z",
+        "created_by": 2
+    },
+    {
+        "id": 116,
+        "order_code": "ORD00116",
+        "customer_name": "Khách hàng 116",
+        "customer_phone": "0934487780",
+        "total_amount": 100000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 121,
+                "quantity": 5,
+                "unit_price": 20000,
+                "subtotal": 100000
+            }
+        ],
+        "created_at": "2026-05-30T23:24:56.889Z",
+        "created_by": 2
+    },
+    {
+        "id": 117,
+        "order_code": "ORD00117",
+        "customer_name": "Khách hàng 117",
+        "customer_phone": "0954950932",
+        "total_amount": 360000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 45,
+                "quantity": 9,
+                "unit_price": 40000,
+                "subtotal": 360000
+            }
+        ],
+        "created_at": "2026-05-12T10:13:28.528Z",
+        "created_by": 1
+    },
+    {
+        "id": 118,
+        "order_code": "ORD00118",
+        "customer_name": "Khách hàng 118",
+        "customer_phone": "0905328424",
+        "total_amount": 92000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 132,
+                "quantity": 4,
+                "unit_price": 23000,
+                "subtotal": 92000
+            }
+        ],
+        "created_at": "2026-04-26T11:37:08.796Z",
+        "created_by": 2
+    },
+    {
+        "id": 119,
+        "order_code": "ORD00119",
+        "customer_name": "Khách hàng 119",
+        "customer_phone": "0900548381",
+        "total_amount": 402000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 136,
+                "quantity": 9,
+                "unit_price": 30000,
+                "subtotal": 270000
+            },
+            {
+                "product_id": 20,
+                "quantity": 3,
+                "unit_price": 44000,
+                "subtotal": 132000
+            }
+        ],
+        "created_at": "2026-07-24T19:27:01.236Z",
+        "created_by": 3
+    },
+    {
+        "id": 120,
+        "order_code": "ORD00120",
+        "customer_name": "Khách hàng 120",
+        "customer_phone": "0906109251",
+        "total_amount": 656000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 74,
+                "quantity": 2,
+                "unit_price": 34000,
+                "subtotal": 68000
+            },
+            {
+                "product_id": 2,
+                "quantity": 6,
+                "unit_price": 28000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 58,
+                "quantity": 3,
+                "unit_price": 32000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 116,
+                "quantity": 6,
+                "unit_price": 54000,
+                "subtotal": 324000
+            }
+        ],
+        "created_at": "2026-07-29T16:04:08.400Z",
+        "created_by": 5
+    },
+    {
+        "id": 121,
+        "order_code": "ORD00121",
+        "customer_name": "Khách hàng 121",
+        "customer_phone": "0935378001",
+        "total_amount": 288000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 143,
+                "quantity": 9,
+                "unit_price": 32000,
+                "subtotal": 288000
+            }
+        ],
+        "created_at": "2026-07-15T04:47:26.979Z",
+        "created_by": 1
+    },
+    {
+        "id": 122,
+        "order_code": "ORD00122",
+        "customer_name": "Khách hàng 122",
+        "customer_phone": "0936843032",
+        "total_amount": 707000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 86,
+                "quantity": 8,
+                "unit_price": 33000,
+                "subtotal": 264000
+            },
+            {
+                "product_id": 49,
+                "quantity": 3,
+                "unit_price": 56000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 96,
+                "quantity": 1,
+                "unit_price": 16000,
+                "subtotal": 16000
+            },
+            {
+                "product_id": 11,
+                "quantity": 1,
+                "unit_price": 59000,
+                "subtotal": 59000
+            },
+            {
+                "product_id": 133,
+                "quantity": 10,
+                "unit_price": 20000,
+                "subtotal": 200000
+            }
+        ],
+        "created_at": "2026-04-24T12:20:26.912Z",
+        "created_by": 1
+    },
+    {
+        "id": 123,
+        "order_code": "ORD00123",
+        "customer_name": "Khách hàng 123",
+        "customer_phone": "0906101822",
+        "total_amount": 120000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 141,
+                "quantity": 10,
+                "unit_price": 12000,
+                "subtotal": 120000
+            }
+        ],
+        "created_at": "2026-06-11T09:18:08.924Z",
+        "created_by": 2
+    },
+    {
+        "id": 124,
+        "order_code": "ORD00124",
+        "customer_name": "Khách hàng 124",
+        "customer_phone": "0968636856",
+        "total_amount": 387000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 82,
+                "quantity": 3,
+                "unit_price": 38000,
+                "subtotal": 114000
+            },
+            {
+                "product_id": 137,
+                "quantity": 7,
+                "unit_price": 39000,
+                "subtotal": 273000
+            }
+        ],
+        "created_at": "2026-08-05T11:52:29.572Z",
+        "created_by": 4
+    },
+    {
+        "id": 125,
+        "order_code": "ORD00125",
+        "customer_name": "Khách hàng 125",
+        "customer_phone": "0920082539",
+        "total_amount": 526000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 100,
+                "quantity": 1,
+                "unit_price": 55000,
+                "subtotal": 55000
+            },
+            {
+                "product_id": 25,
+                "quantity": 2,
+                "unit_price": 23000,
+                "subtotal": 46000
+            },
+            {
+                "product_id": 109,
+                "quantity": 8,
+                "unit_price": 10000,
+                "subtotal": 80000
+            },
+            {
+                "product_id": 103,
+                "quantity": 5,
+                "unit_price": 13000,
+                "subtotal": 65000
+            },
+            {
+                "product_id": 37,
+                "quantity": 8,
+                "unit_price": 35000,
+                "subtotal": 280000
+            }
+        ],
+        "created_at": "2026-08-01T20:14:27.660Z",
+        "created_by": 3
+    },
+    {
+        "id": 126,
+        "order_code": "ORD00126",
+        "customer_name": "Khách hàng 126",
+        "customer_phone": "0979765246",
+        "total_amount": 448000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 129,
+                "quantity": 4,
+                "unit_price": 29000,
+                "subtotal": 116000
+            },
+            {
+                "product_id": 88,
+                "quantity": 1,
+                "unit_price": 51000,
+                "subtotal": 51000
+            },
+            {
+                "product_id": 147,
+                "quantity": 9,
+                "unit_price": 24000,
+                "subtotal": 216000
+            },
+            {
+                "product_id": 16,
+                "quantity": 5,
+                "unit_price": 13000,
+                "subtotal": 65000
+            }
+        ],
+        "created_at": "2026-05-29T08:17:49.780Z",
+        "created_by": 1
+    },
+    {
+        "id": 127,
+        "order_code": "ORD00127",
+        "customer_name": "Khách hàng 127",
+        "customer_phone": "0960998151",
+        "total_amount": 849000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 60,
+                "quantity": 9,
+                "unit_price": 27000,
+                "subtotal": 243000
+            },
+            {
+                "product_id": 100,
+                "quantity": 6,
+                "unit_price": 56000,
+                "subtotal": 336000
+            },
+            {
+                "product_id": 70,
+                "quantity": 9,
+                "unit_price": 30000,
+                "subtotal": 270000
+            }
+        ],
+        "created_at": "2026-04-24T11:21:40.373Z",
+        "created_by": 3
+    },
+    {
+        "id": 128,
+        "order_code": "ORD00128",
+        "customer_name": "Khách hàng 128",
+        "customer_phone": "0960750947",
+        "total_amount": 441000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 16,
+                "quantity": 7,
+                "unit_price": 15000,
+                "subtotal": 105000
+            },
+            {
+                "product_id": 111,
+                "quantity": 6,
+                "unit_price": 56000,
+                "subtotal": 336000
+            }
+        ],
+        "created_at": "2026-06-21T10:43:34.354Z",
+        "created_by": 4
+    },
+    {
+        "id": 129,
+        "order_code": "ORD00129",
+        "customer_name": "Khách hàng 129",
+        "customer_phone": "0924817196",
+        "total_amount": 132000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 50,
+                "quantity": 6,
+                "unit_price": 22000,
+                "subtotal": 132000
+            }
+        ],
+        "created_at": "2026-08-01T09:14:18.547Z",
+        "created_by": 2
+    },
+    {
+        "id": 130,
+        "order_code": "ORD00130",
+        "customer_name": "Khách hàng 130",
+        "customer_phone": "0963437866",
+        "total_amount": 778000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 26,
+                "quantity": 9,
+                "unit_price": 46000,
+                "subtotal": 414000
+            },
+            {
+                "product_id": 122,
+                "quantity": 7,
+                "unit_price": 15000,
+                "subtotal": 105000
+            },
+            {
+                "product_id": 122,
+                "quantity": 7,
+                "unit_price": 37000,
+                "subtotal": 259000
+            }
+        ],
+        "created_at": "2026-08-03T06:11:28.945Z",
+        "created_by": 3
+    },
+    {
+        "id": 131,
+        "order_code": "ORD00131",
+        "customer_name": "Khách hàng 131",
+        "customer_phone": "0962120775",
+        "total_amount": 266000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 49,
+                "quantity": 10,
+                "unit_price": 11000,
+                "subtotal": 110000
+            },
+            {
+                "product_id": 4,
+                "quantity": 3,
+                "unit_price": 52000,
+                "subtotal": 156000
+            }
+        ],
+        "created_at": "2026-07-10T19:23:01.702Z",
+        "created_by": 3
+    },
+    {
+        "id": 132,
+        "order_code": "ORD00132",
+        "customer_name": "Khách hàng 132",
+        "customer_phone": "0920157830",
+        "total_amount": 422000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 115,
+                "quantity": 3,
+                "unit_price": 53000,
+                "subtotal": 159000
+            },
+            {
+                "product_id": 43,
+                "quantity": 9,
+                "unit_price": 23000,
+                "subtotal": 207000
+            },
+            {
+                "product_id": 75,
+                "quantity": 4,
+                "unit_price": 14000,
+                "subtotal": 56000
+            }
+        ],
+        "created_at": "2026-07-07T01:06:50.572Z",
+        "created_by": 1
+    },
+    {
+        "id": 133,
+        "order_code": "ORD00133",
+        "customer_name": "Khách hàng 133",
+        "customer_phone": "0952397018",
+        "total_amount": 791000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 149,
+                "quantity": 8,
+                "unit_price": 40000,
+                "subtotal": 320000
+            },
+            {
+                "product_id": 68,
+                "quantity": 4,
+                "unit_price": 39000,
+                "subtotal": 156000
+            },
+            {
+                "product_id": 133,
+                "quantity": 4,
+                "unit_price": 20000,
+                "subtotal": 80000
+            },
+            {
+                "product_id": 84,
+                "quantity": 1,
+                "unit_price": 35000,
+                "subtotal": 35000
+            },
+            {
+                "product_id": 24,
+                "quantity": 4,
+                "unit_price": 50000,
+                "subtotal": 200000
+            }
+        ],
+        "created_at": "2026-07-14T20:38:37.142Z",
+        "created_by": 4
+    },
+    {
+        "id": 134,
+        "order_code": "ORD00134",
+        "customer_name": "Khách hàng 134",
+        "customer_phone": "0988602466",
+        "total_amount": 310000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 70,
+                "quantity": 3,
+                "unit_price": 35000,
+                "subtotal": 105000
+            },
+            {
+                "product_id": 133,
+                "quantity": 5,
+                "unit_price": 41000,
+                "subtotal": 205000
+            }
+        ],
+        "created_at": "2026-06-05T00:24:28.506Z",
+        "created_by": 3
+    },
+    {
+        "id": 135,
+        "order_code": "ORD00135",
+        "customer_name": "Khách hàng 135",
+        "customer_phone": "0961434790",
+        "total_amount": 475000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 76,
+                "quantity": 6,
+                "unit_price": 16000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 12,
+                "quantity": 1,
+                "unit_price": 43000,
+                "subtotal": 43000
+            },
+            {
+                "product_id": 64,
+                "quantity": 4,
+                "unit_price": 42000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 61,
+                "quantity": 7,
+                "unit_price": 24000,
+                "subtotal": 168000
+            }
+        ],
+        "created_at": "2026-08-07T08:00:19.765Z",
+        "created_by": 2
+    },
+    {
+        "id": 136,
+        "order_code": "ORD00136",
+        "customer_name": "Khách hàng 136",
+        "customer_phone": "0969219965",
+        "total_amount": 652000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 26,
+                "quantity": 5,
+                "unit_price": 18000,
+                "subtotal": 90000
+            },
+            {
+                "product_id": 68,
+                "quantity": 8,
+                "unit_price": 56000,
+                "subtotal": 448000
+            },
+            {
+                "product_id": 107,
+                "quantity": 3,
+                "unit_price": 12000,
+                "subtotal": 36000
+            },
+            {
+                "product_id": 64,
+                "quantity": 3,
+                "unit_price": 26000,
+                "subtotal": 78000
+            }
+        ],
+        "created_at": "2026-06-17T07:30:58.141Z",
+        "created_by": 1
+    },
+    {
+        "id": 137,
+        "order_code": "ORD00137",
+        "customer_name": "Khách hàng 137",
+        "customer_phone": "0912152662",
+        "total_amount": 1266000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 99,
+                "quantity": 7,
+                "unit_price": 42000,
+                "subtotal": 294000
+            },
+            {
+                "product_id": 73,
+                "quantity": 10,
+                "unit_price": 51000,
+                "subtotal": 510000
+            },
+            {
+                "product_id": 50,
+                "quantity": 3,
+                "unit_price": 32000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 48,
+                "quantity": 2,
+                "unit_price": 12000,
+                "subtotal": 24000
+            },
+            {
+                "product_id": 112,
+                "quantity": 9,
+                "unit_price": 38000,
+                "subtotal": 342000
+            }
+        ],
+        "created_at": "2026-06-19T23:54:47.300Z",
+        "created_by": 4
+    },
+    {
+        "id": 138,
+        "order_code": "ORD00138",
+        "customer_name": "Khách hàng 138",
+        "customer_phone": "0999007695",
+        "total_amount": 114000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 101,
+                "quantity": 2,
+                "unit_price": 15000,
+                "subtotal": 30000
+            },
+            {
+                "product_id": 79,
+                "quantity": 6,
+                "unit_price": 14000,
+                "subtotal": 84000
+            }
+        ],
+        "created_at": "2026-05-05T17:51:09.411Z",
+        "created_by": 5
+    },
+    {
+        "id": 139,
+        "order_code": "ORD00139",
+        "customer_name": "Khách hàng 139",
+        "customer_phone": "0907986926",
+        "total_amount": 832000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 126,
+                "quantity": 6,
+                "unit_price": 57000,
+                "subtotal": 342000
+            },
+            {
+                "product_id": 23,
+                "quantity": 6,
+                "unit_price": 25000,
+                "subtotal": 150000
+            },
+            {
+                "product_id": 91,
+                "quantity": 10,
+                "unit_price": 34000,
+                "subtotal": 340000
+            }
+        ],
+        "created_at": "2026-06-06T04:10:50.665Z",
+        "created_by": 1
+    },
+    {
+        "id": 140,
+        "order_code": "ORD00140",
+        "customer_name": "Khách hàng 140",
+        "customer_phone": "0947587156",
+        "total_amount": 547000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 104,
+                "quantity": 6,
+                "unit_price": 57000,
+                "subtotal": 342000
+            },
+            {
+                "product_id": 142,
+                "quantity": 3,
+                "unit_price": 39000,
+                "subtotal": 117000
+            },
+            {
+                "product_id": 74,
+                "quantity": 1,
+                "unit_price": 22000,
+                "subtotal": 22000
+            },
+            {
+                "product_id": 114,
+                "quantity": 3,
+                "unit_price": 22000,
+                "subtotal": 66000
+            }
+        ],
+        "created_at": "2026-07-13T13:17:49.688Z",
+        "created_by": 2
+    },
+    {
+        "id": 141,
+        "order_code": "ORD00141",
+        "customer_name": "Khách hàng 141",
+        "customer_phone": "0916804792",
+        "total_amount": 436000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 109,
+                "quantity": 1,
+                "unit_price": 56000,
+                "subtotal": 56000
+            },
+            {
+                "product_id": 89,
+                "quantity": 10,
+                "unit_price": 38000,
+                "subtotal": 380000
+            }
+        ],
+        "created_at": "2026-06-16T03:06:43.098Z",
+        "created_by": 3
+    },
+    {
+        "id": 142,
+        "order_code": "ORD00142",
+        "customer_name": "Khách hàng 142",
+        "customer_phone": "0942400370",
+        "total_amount": 658000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 49,
+                "quantity": 9,
+                "unit_price": 36000,
+                "subtotal": 324000
+            },
+            {
+                "product_id": 81,
+                "quantity": 8,
+                "unit_price": 23000,
+                "subtotal": 184000
+            },
+            {
+                "product_id": 113,
+                "quantity": 6,
+                "unit_price": 25000,
+                "subtotal": 150000
+            }
+        ],
+        "created_at": "2026-05-28T04:00:45.157Z",
+        "created_by": 4
+    },
+    {
+        "id": 143,
+        "order_code": "ORD00143",
+        "customer_name": "Khách hàng 143",
+        "customer_phone": "0953765060",
+        "total_amount": 384000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 93,
+                "quantity": 3,
+                "unit_price": 55000,
+                "subtotal": 165000
+            },
+            {
+                "product_id": 116,
+                "quantity": 8,
+                "unit_price": 18000,
+                "subtotal": 144000
+            },
+            {
+                "product_id": 97,
+                "quantity": 5,
+                "unit_price": 15000,
+                "subtotal": 75000
+            }
+        ],
+        "created_at": "2026-05-30T03:20:43.842Z",
+        "created_by": 3
+    },
+    {
+        "id": 144,
+        "order_code": "ORD00144",
+        "customer_name": "Khách hàng 144",
+        "customer_phone": "0913241673",
+        "total_amount": 528000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 121,
+                "quantity": 4,
+                "unit_price": 57000,
+                "subtotal": 228000
+            },
+            {
+                "product_id": 48,
+                "quantity": 10,
+                "unit_price": 30000,
+                "subtotal": 300000
+            }
+        ],
+        "created_at": "2026-08-05T16:04:03.959Z",
+        "created_by": 3
+    },
+    {
+        "id": 145,
+        "order_code": "ORD00145",
+        "customer_name": "Khách hàng 145",
+        "customer_phone": "0996881135",
+        "total_amount": 1170000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 5,
+                "quantity": 7,
+                "unit_price": 40000,
+                "subtotal": 280000
+            },
+            {
+                "product_id": 108,
+                "quantity": 10,
+                "unit_price": 45000,
+                "subtotal": 450000
+            },
+            {
+                "product_id": 81,
+                "quantity": 4,
+                "unit_price": 59000,
+                "subtotal": 236000
+            },
+            {
+                "product_id": 26,
+                "quantity": 6,
+                "unit_price": 34000,
+                "subtotal": 204000
+            }
+        ],
+        "created_at": "2026-05-29T09:50:43.037Z",
+        "created_by": 5
+    },
+    {
+        "id": 146,
+        "order_code": "ORD00146",
+        "customer_name": "Khách hàng 146",
+        "customer_phone": "0918145769",
+        "total_amount": 324000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 124,
+                "quantity": 9,
+                "unit_price": 36000,
+                "subtotal": 324000
+            }
+        ],
+        "created_at": "2026-07-14T21:02:30.767Z",
+        "created_by": 5
+    },
+    {
+        "id": 147,
+        "order_code": "ORD00147",
+        "customer_name": "Khách hàng 147",
+        "customer_phone": "0946214164",
+        "total_amount": 1043000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 69,
+                "quantity": 8,
+                "unit_price": 14000,
+                "subtotal": 112000
+            },
+            {
+                "product_id": 12,
+                "quantity": 4,
+                "unit_price": 27000,
+                "subtotal": 108000
+            },
+            {
+                "product_id": 57,
+                "quantity": 5,
+                "unit_price": 42000,
+                "subtotal": 210000
+            },
+            {
+                "product_id": 10,
+                "quantity": 3,
+                "unit_price": 41000,
+                "subtotal": 123000
+            },
+            {
+                "product_id": 100,
+                "quantity": 10,
+                "unit_price": 49000,
+                "subtotal": 490000
+            }
+        ],
+        "created_at": "2026-07-23T06:07:37.400Z",
+        "created_by": 5
+    },
+    {
+        "id": 148,
+        "order_code": "ORD00148",
+        "customer_name": "Khách hàng 148",
+        "customer_phone": "0905590302",
+        "total_amount": 132000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 28,
+                "quantity": 3,
+                "unit_price": 44000,
+                "subtotal": 132000
+            }
+        ],
+        "created_at": "2026-07-12T03:35:01.866Z",
+        "created_by": 3
+    },
+    {
+        "id": 149,
+        "order_code": "ORD00149",
+        "customer_name": "Khách hàng 149",
+        "customer_phone": "0998311648",
+        "total_amount": 112000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 47,
+                "quantity": 3,
+                "unit_price": 14000,
+                "subtotal": 42000
+            },
+            {
+                "product_id": 81,
+                "quantity": 7,
+                "unit_price": 10000,
+                "subtotal": 70000
+            }
+        ],
+        "created_at": "2026-06-18T20:44:44.688Z",
+        "created_by": 5
+    },
+    {
+        "id": 150,
+        "order_code": "ORD00150",
+        "customer_name": "Khách hàng 150",
+        "customer_phone": "0934041040",
+        "total_amount": 96000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 68,
+                "quantity": 4,
+                "unit_price": 24000,
+                "subtotal": 96000
+            }
+        ],
+        "created_at": "2026-04-29T21:52:55.700Z",
+        "created_by": 3
+    },
+    {
+        "id": 151,
+        "order_code": "ORD00151",
+        "customer_name": "Khách hàng 151",
+        "customer_phone": "0929344959",
+        "total_amount": 863000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 122,
+                "quantity": 2,
+                "unit_price": 21000,
+                "subtotal": 42000
+            },
+            {
+                "product_id": 97,
+                "quantity": 5,
+                "unit_price": 59000,
+                "subtotal": 295000
+            },
+            {
+                "product_id": 117,
+                "quantity": 7,
+                "unit_price": 46000,
+                "subtotal": 322000
+            },
+            {
+                "product_id": 87,
+                "quantity": 6,
+                "unit_price": 34000,
+                "subtotal": 204000
+            }
+        ],
+        "created_at": "2026-07-20T13:16:10.271Z",
+        "created_by": 1
+    },
+    {
+        "id": 152,
+        "order_code": "ORD00152",
+        "customer_name": "Khách hàng 152",
+        "customer_phone": "0979577041",
+        "total_amount": 451000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 40,
+                "quantity": 8,
+                "unit_price": 24000,
+                "subtotal": 192000
+            },
+            {
+                "product_id": 44,
+                "quantity": 7,
+                "unit_price": 37000,
+                "subtotal": 259000
+            }
+        ],
+        "created_at": "2026-05-17T11:06:38.048Z",
+        "created_by": 4
+    },
+    {
+        "id": 153,
+        "order_code": "ORD00153",
+        "customer_name": "Khách hàng 153",
+        "customer_phone": "0956456656",
+        "total_amount": 482000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 150,
+                "quantity": 7,
+                "unit_price": 54000,
+                "subtotal": 378000
+            },
+            {
+                "product_id": 57,
+                "quantity": 4,
+                "unit_price": 26000,
+                "subtotal": 104000
+            }
+        ],
+        "created_at": "2026-05-03T17:33:22.141Z",
+        "created_by": 3
+    },
+    {
+        "id": 154,
+        "order_code": "ORD00154",
+        "customer_name": "Khách hàng 154",
+        "customer_phone": "0961500820",
+        "total_amount": 129000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 97,
+                "quantity": 3,
+                "unit_price": 20000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 62,
+                "quantity": 3,
+                "unit_price": 23000,
+                "subtotal": 69000
+            }
+        ],
+        "created_at": "2026-06-22T14:33:53.766Z",
+        "created_by": 1
+    },
+    {
+        "id": 155,
+        "order_code": "ORD00155",
+        "customer_name": "Khách hàng 155",
+        "customer_phone": "0939076664",
+        "total_amount": 1400000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 53,
+                "quantity": 10,
+                "unit_price": 59000,
+                "subtotal": 590000
+            },
+            {
+                "product_id": 79,
+                "quantity": 7,
+                "unit_price": 39000,
+                "subtotal": 273000
+            },
+            {
+                "product_id": 94,
+                "quantity": 9,
+                "unit_price": 48000,
+                "subtotal": 432000
+            },
+            {
+                "product_id": 123,
+                "quantity": 3,
+                "unit_price": 35000,
+                "subtotal": 105000
+            }
+        ],
+        "created_at": "2026-06-18T23:20:03.455Z",
+        "created_by": 5
+    },
+    {
+        "id": 156,
+        "order_code": "ORD00156",
+        "customer_name": "Khách hàng 156",
+        "customer_phone": "0901397774",
+        "total_amount": 696000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 84,
+                "quantity": 1,
+                "unit_price": 10000,
+                "subtotal": 10000
+            },
+            {
+                "product_id": 38,
+                "quantity": 8,
+                "unit_price": 52000,
+                "subtotal": 416000
+            },
+            {
+                "product_id": 100,
+                "quantity": 9,
+                "unit_price": 30000,
+                "subtotal": 270000
+            }
+        ],
+        "created_at": "2026-04-28T02:12:10.964Z",
+        "created_by": 3
+    },
+    {
+        "id": 157,
+        "order_code": "ORD00157",
+        "customer_name": "Khách hàng 157",
+        "customer_phone": "0969754197",
+        "total_amount": 112000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 116,
+                "quantity": 4,
+                "unit_price": 28000,
+                "subtotal": 112000
+            }
+        ],
+        "created_at": "2026-05-29T09:47:24.847Z",
+        "created_by": 4
+    },
+    {
+        "id": 158,
+        "order_code": "ORD00158",
+        "customer_name": "Khách hàng 158",
+        "customer_phone": "0972840461",
+        "total_amount": 441000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 3,
+                "quantity": 10,
+                "unit_price": 17000,
+                "subtotal": 170000
+            },
+            {
+                "product_id": 1,
+                "quantity": 3,
+                "unit_price": 25000,
+                "subtotal": 75000
+            },
+            {
+                "product_id": 98,
+                "quantity": 3,
+                "unit_price": 18000,
+                "subtotal": 54000
+            },
+            {
+                "product_id": 29,
+                "quantity": 4,
+                "unit_price": 26000,
+                "subtotal": 104000
+            },
+            {
+                "product_id": 39,
+                "quantity": 2,
+                "unit_price": 19000,
+                "subtotal": 38000
+            }
+        ],
+        "created_at": "2026-07-26T19:54:44.331Z",
+        "created_by": 4
+    },
+    {
+        "id": 159,
+        "order_code": "ORD00159",
+        "customer_name": "Khách hàng 159",
+        "customer_phone": "0944987308",
+        "total_amount": 581000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 142,
+                "quantity": 3,
+                "unit_price": 10000,
+                "subtotal": 30000
+            },
+            {
+                "product_id": 15,
+                "quantity": 9,
+                "unit_price": 10000,
+                "subtotal": 90000
+            },
+            {
+                "product_id": 120,
+                "quantity": 4,
+                "unit_price": 57000,
+                "subtotal": 228000
+            },
+            {
+                "product_id": 1,
+                "quantity": 7,
+                "unit_price": 14000,
+                "subtotal": 98000
+            },
+            {
+                "product_id": 91,
+                "quantity": 9,
+                "unit_price": 15000,
+                "subtotal": 135000
+            }
+        ],
+        "created_at": "2026-06-02T19:10:20.533Z",
+        "created_by": 3
+    },
+    {
+        "id": 160,
+        "order_code": "ORD00160",
+        "customer_name": "Khách hàng 160",
+        "customer_phone": "0991302356",
+        "total_amount": 38000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 72,
+                "quantity": 2,
+                "unit_price": 19000,
+                "subtotal": 38000
+            }
+        ],
+        "created_at": "2026-04-22T02:36:13.261Z",
+        "created_by": 4
+    },
+    {
+        "id": 161,
+        "order_code": "ORD00161",
+        "customer_name": "Khách hàng 161",
+        "customer_phone": "0939635651",
+        "total_amount": 890000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 78,
+                "quantity": 10,
+                "unit_price": 17000,
+                "subtotal": 170000
+            },
+            {
+                "product_id": 134,
+                "quantity": 8,
+                "unit_price": 18000,
+                "subtotal": 144000
+            },
+            {
+                "product_id": 90,
+                "quantity": 6,
+                "unit_price": 51000,
+                "subtotal": 306000
+            },
+            {
+                "product_id": 48,
+                "quantity": 10,
+                "unit_price": 27000,
+                "subtotal": 270000
+            }
+        ],
+        "created_at": "2026-06-15T21:23:39.578Z",
+        "created_by": 4
+    },
+    {
+        "id": 162,
+        "order_code": "ORD00162",
+        "customer_name": "Khách hàng 162",
+        "customer_phone": "0976062349",
+        "total_amount": 1003000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 51,
+                "quantity": 8,
+                "unit_price": 22000,
+                "subtotal": 176000
+            },
+            {
+                "product_id": 60,
+                "quantity": 5,
+                "unit_price": 48000,
+                "subtotal": 240000
+            },
+            {
+                "product_id": 23,
+                "quantity": 5,
+                "unit_price": 41000,
+                "subtotal": 205000
+            },
+            {
+                "product_id": 28,
+                "quantity": 2,
+                "unit_price": 32000,
+                "subtotal": 64000
+            },
+            {
+                "product_id": 43,
+                "quantity": 6,
+                "unit_price": 53000,
+                "subtotal": 318000
+            }
+        ],
+        "created_at": "2026-07-07T05:45:02.305Z",
+        "created_by": 2
+    },
+    {
+        "id": 163,
+        "order_code": "ORD00163",
+        "customer_name": "Khách hàng 163",
+        "customer_phone": "0947945744",
+        "total_amount": 843000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 42,
+                "quantity": 10,
+                "unit_price": 12000,
+                "subtotal": 120000
+            },
+            {
+                "product_id": 121,
+                "quantity": 9,
+                "unit_price": 43000,
+                "subtotal": 387000
+            },
+            {
+                "product_id": 33,
+                "quantity": 7,
+                "unit_price": 48000,
+                "subtotal": 336000
+            }
+        ],
+        "created_at": "2026-07-30T13:52:38.602Z",
+        "created_by": 4
+    },
+    {
+        "id": 164,
+        "order_code": "ORD00164",
+        "customer_name": "Khách hàng 164",
+        "customer_phone": "0906542642",
+        "total_amount": 507000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 130,
+                "quantity": 6,
+                "unit_price": 32000,
+                "subtotal": 192000
+            },
+            {
+                "product_id": 51,
+                "quantity": 2,
+                "unit_price": 36000,
+                "subtotal": 72000
+            },
+            {
+                "product_id": 125,
+                "quantity": 9,
+                "unit_price": 27000,
+                "subtotal": 243000
+            }
+        ],
+        "created_at": "2026-05-19T19:22:17.498Z",
+        "created_by": 2
+    },
+    {
+        "id": 165,
+        "order_code": "ORD00165",
+        "customer_name": "Khách hàng 165",
+        "customer_phone": "0949263086",
+        "total_amount": 600000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 32,
+                "quantity": 7,
+                "unit_price": 10000,
+                "subtotal": 70000
+            },
+            {
+                "product_id": 133,
+                "quantity": 10,
+                "unit_price": 53000,
+                "subtotal": 530000
+            }
+        ],
+        "created_at": "2026-05-19T23:28:15.078Z",
+        "created_by": 1
+    },
+    {
+        "id": 166,
+        "order_code": "ORD00166",
+        "customer_name": "Khách hàng 166",
+        "customer_phone": "0937699773",
+        "total_amount": 48000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 17,
+                "quantity": 2,
+                "unit_price": 24000,
+                "subtotal": 48000
+            }
+        ],
+        "created_at": "2026-05-24T15:35:32.473Z",
+        "created_by": 5
+    },
+    {
+        "id": 167,
+        "order_code": "ORD00167",
+        "customer_name": "Khách hàng 167",
+        "customer_phone": "0947428290",
+        "total_amount": 661000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 92,
+                "quantity": 1,
+                "unit_price": 11000,
+                "subtotal": 11000
+            },
+            {
+                "product_id": 38,
+                "quantity": 8,
+                "unit_price": 25000,
+                "subtotal": 200000
+            },
+            {
+                "product_id": 115,
+                "quantity": 5,
+                "unit_price": 10000,
+                "subtotal": 50000
+            },
+            {
+                "product_id": 131,
+                "quantity": 6,
+                "unit_price": 48000,
+                "subtotal": 288000
+            },
+            {
+                "product_id": 3,
+                "quantity": 8,
+                "unit_price": 14000,
+                "subtotal": 112000
+            }
+        ],
+        "created_at": "2026-07-23T04:53:12.157Z",
+        "created_by": 3
+    },
+    {
+        "id": 168,
+        "order_code": "ORD00168",
+        "customer_name": "Khách hàng 168",
+        "customer_phone": "0907474035",
+        "total_amount": 1005000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 107,
+                "quantity": 9,
+                "unit_price": 55000,
+                "subtotal": 495000
+            },
+            {
+                "product_id": 69,
+                "quantity": 8,
+                "unit_price": 57000,
+                "subtotal": 456000
+            },
+            {
+                "product_id": 116,
+                "quantity": 2,
+                "unit_price": 27000,
+                "subtotal": 54000
+            }
+        ],
+        "created_at": "2026-07-14T14:17:47.676Z",
+        "created_by": 5
+    },
+    {
+        "id": 169,
+        "order_code": "ORD00169",
+        "customer_name": "Khách hàng 169",
+        "customer_phone": "0935998509",
+        "total_amount": 836000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 9,
+                "quantity": 7,
+                "unit_price": 42000,
+                "subtotal": 294000
+            },
+            {
+                "product_id": 85,
+                "quantity": 1,
+                "unit_price": 22000,
+                "subtotal": 22000
+            },
+            {
+                "product_id": 40,
+                "quantity": 8,
+                "unit_price": 27000,
+                "subtotal": 216000
+            },
+            {
+                "product_id": 26,
+                "quantity": 8,
+                "unit_price": 38000,
+                "subtotal": 304000
+            }
+        ],
+        "created_at": "2026-04-22T07:43:08.443Z",
+        "created_by": 2
+    },
+    {
+        "id": 170,
+        "order_code": "ORD00170",
+        "customer_name": "Khách hàng 170",
+        "customer_phone": "0930602857",
+        "total_amount": 739000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 130,
+                "quantity": 3,
+                "unit_price": 53000,
+                "subtotal": 159000
+            },
+            {
+                "product_id": 86,
+                "quantity": 6,
+                "unit_price": 37000,
+                "subtotal": 222000
+            },
+            {
+                "product_id": 92,
+                "quantity": 6,
+                "unit_price": 10000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 5,
+                "quantity": 8,
+                "unit_price": 32000,
+                "subtotal": 256000
+            },
+            {
+                "product_id": 91,
+                "quantity": 3,
+                "unit_price": 14000,
+                "subtotal": 42000
+            }
+        ],
+        "created_at": "2026-05-23T10:58:41.897Z",
+        "created_by": 2
+    },
+    {
+        "id": 171,
+        "order_code": "ORD00171",
+        "customer_name": "Khách hàng 171",
+        "customer_phone": "0979150990",
+        "total_amount": 521000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 11,
+                "quantity": 1,
+                "unit_price": 44000,
+                "subtotal": 44000
+            },
+            {
+                "product_id": 59,
+                "quantity": 9,
+                "unit_price": 53000,
+                "subtotal": 477000
+            }
+        ],
+        "created_at": "2026-06-05T12:07:56.593Z",
+        "created_by": 3
+    },
+    {
+        "id": 172,
+        "order_code": "ORD00172",
+        "customer_name": "Khách hàng 172",
+        "customer_phone": "0926671378",
+        "total_amount": 441000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 117,
+                "quantity": 6,
+                "unit_price": 44000,
+                "subtotal": 264000
+            },
+            {
+                "product_id": 120,
+                "quantity": 1,
+                "unit_price": 51000,
+                "subtotal": 51000
+            },
+            {
+                "product_id": 29,
+                "quantity": 7,
+                "unit_price": 18000,
+                "subtotal": 126000
+            }
+        ],
+        "created_at": "2026-05-16T19:46:58.313Z",
+        "created_by": 2
+    },
+    {
+        "id": 173,
+        "order_code": "ORD00173",
+        "customer_name": "Khách hàng 173",
+        "customer_phone": "0999239819",
+        "total_amount": 218000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 139,
+                "quantity": 2,
+                "unit_price": 13000,
+                "subtotal": 26000
+            },
+            {
+                "product_id": 134,
+                "quantity": 6,
+                "unit_price": 32000,
+                "subtotal": 192000
+            }
+        ],
+        "created_at": "2026-06-24T20:02:04.097Z",
+        "created_by": 5
+    },
+    {
+        "id": 174,
+        "order_code": "ORD00174",
+        "customer_name": "Khách hàng 174",
+        "customer_phone": "0993633630",
+        "total_amount": 575000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 54,
+                "quantity": 5,
+                "unit_price": 15000,
+                "subtotal": 75000
+            },
+            {
+                "product_id": 35,
+                "quantity": 8,
+                "unit_price": 35000,
+                "subtotal": 280000
+            },
+            {
+                "product_id": 67,
+                "quantity": 5,
+                "unit_price": 44000,
+                "subtotal": 220000
+            }
+        ],
+        "created_at": "2026-07-22T06:01:14.201Z",
+        "created_by": 4
+    },
+    {
+        "id": 175,
+        "order_code": "ORD00175",
+        "customer_name": "Khách hàng 175",
+        "customer_phone": "0973603227",
+        "total_amount": 469000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 139,
+                "quantity": 3,
+                "unit_price": 33000,
+                "subtotal": 99000
+            },
+            {
+                "product_id": 6,
+                "quantity": 2,
+                "unit_price": 38000,
+                "subtotal": 76000
+            },
+            {
+                "product_id": 40,
+                "quantity": 6,
+                "unit_price": 49000,
+                "subtotal": 294000
+            }
+        ],
+        "created_at": "2026-04-28T01:43:49.429Z",
+        "created_by": 2
+    },
+    {
+        "id": 176,
+        "order_code": "ORD00176",
+        "customer_name": "Khách hàng 176",
+        "customer_phone": "0966275874",
+        "total_amount": 908000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 77,
+                "quantity": 6,
+                "unit_price": 39000,
+                "subtotal": 234000
+            },
+            {
+                "product_id": 110,
+                "quantity": 4,
+                "unit_price": 25000,
+                "subtotal": 100000
+            },
+            {
+                "product_id": 89,
+                "quantity": 2,
+                "unit_price": 48000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 31,
+                "quantity": 8,
+                "unit_price": 36000,
+                "subtotal": 288000
+            },
+            {
+                "product_id": 124,
+                "quantity": 10,
+                "unit_price": 19000,
+                "subtotal": 190000
+            }
+        ],
+        "created_at": "2026-06-21T18:08:36.939Z",
+        "created_by": 5
+    },
+    {
+        "id": 177,
+        "order_code": "ORD00177",
+        "customer_name": "Khách hàng 177",
+        "customer_phone": "0974284335",
+        "total_amount": 723000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 105,
+                "quantity": 4,
+                "unit_price": 22000,
+                "subtotal": 88000
+            },
+            {
+                "product_id": 89,
+                "quantity": 1,
+                "unit_price": 41000,
+                "subtotal": 41000
+            },
+            {
+                "product_id": 94,
+                "quantity": 9,
+                "unit_price": 26000,
+                "subtotal": 234000
+            },
+            {
+                "product_id": 95,
+                "quantity": 8,
+                "unit_price": 45000,
+                "subtotal": 360000
+            }
+        ],
+        "created_at": "2026-06-27T18:47:30.185Z",
+        "created_by": 5
+    },
+    {
+        "id": 178,
+        "order_code": "ORD00178",
+        "customer_name": "Khách hàng 178",
+        "customer_phone": "0950435886",
+        "total_amount": 701000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 20,
+                "quantity": 9,
+                "unit_price": 21000,
+                "subtotal": 189000
+            },
+            {
+                "product_id": 138,
+                "quantity": 3,
+                "unit_price": 50000,
+                "subtotal": 150000
+            },
+            {
+                "product_id": 99,
+                "quantity": 2,
+                "unit_price": 33000,
+                "subtotal": 66000
+            },
+            {
+                "product_id": 83,
+                "quantity": 5,
+                "unit_price": 28000,
+                "subtotal": 140000
+            },
+            {
+                "product_id": 114,
+                "quantity": 4,
+                "unit_price": 39000,
+                "subtotal": 156000
+            }
+        ],
+        "created_at": "2026-05-08T06:11:32.825Z",
+        "created_by": 1
+    },
+    {
+        "id": 179,
+        "order_code": "ORD00179",
+        "customer_name": "Khách hàng 179",
+        "customer_phone": "0927808199",
+        "total_amount": 265000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 88,
+                "quantity": 2,
+                "unit_price": 11000,
+                "subtotal": 22000
+            },
+            {
+                "product_id": 116,
+                "quantity": 9,
+                "unit_price": 27000,
+                "subtotal": 243000
+            }
+        ],
+        "created_at": "2026-06-16T13:46:06.554Z",
+        "created_by": 2
+    },
+    {
+        "id": 180,
+        "order_code": "ORD00180",
+        "customer_name": "Khách hàng 180",
+        "customer_phone": "0974606981",
+        "total_amount": 141000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 36,
+                "quantity": 3,
+                "unit_price": 47000,
+                "subtotal": 141000
+            }
+        ],
+        "created_at": "2026-07-30T10:46:20.559Z",
+        "created_by": 2
+    },
+    {
+        "id": 181,
+        "order_code": "ORD00181",
+        "customer_name": "Khách hàng 181",
+        "customer_phone": "0986650148",
+        "total_amount": 412000,
+        "status": "PENDING",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 56,
+                "quantity": 7,
+                "unit_price": 48000,
+                "subtotal": 336000
+            },
+            {
+                "product_id": 7,
+                "quantity": 2,
+                "unit_price": 38000,
+                "subtotal": 76000
+            }
+        ],
+        "created_at": "2026-05-31T16:11:31.049Z",
+        "created_by": 4
+    },
+    {
+        "id": 182,
+        "order_code": "ORD00182",
+        "customer_name": "Khách hàng 182",
+        "customer_phone": "0914365444",
+        "total_amount": 641000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 80,
+                "quantity": 3,
+                "unit_price": 13000,
+                "subtotal": 39000
+            },
+            {
+                "product_id": 38,
+                "quantity": 8,
+                "unit_price": 12000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 129,
+                "quantity": 10,
+                "unit_price": 20000,
+                "subtotal": 200000
+            },
+            {
+                "product_id": 94,
+                "quantity": 9,
+                "unit_price": 16000,
+                "subtotal": 144000
+            },
+            {
+                "product_id": 106,
+                "quantity": 6,
+                "unit_price": 27000,
+                "subtotal": 162000
+            }
+        ],
+        "created_at": "2026-05-24T22:23:41.658Z",
+        "created_by": 5
+    },
+    {
+        "id": 183,
+        "order_code": "ORD00183",
+        "customer_name": "Khách hàng 183",
+        "customer_phone": "0906054295",
+        "total_amount": 162000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 144,
+                "quantity": 3,
+                "unit_price": 54000,
+                "subtotal": 162000
+            }
+        ],
+        "created_at": "2026-07-25T13:55:41.017Z",
+        "created_by": 5
+    },
+    {
+        "id": 184,
+        "order_code": "ORD00184",
+        "customer_name": "Khách hàng 184",
+        "customer_phone": "0952182416",
+        "total_amount": 407000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 82,
+                "quantity": 5,
+                "unit_price": 13000,
+                "subtotal": 65000
+            },
+            {
+                "product_id": 138,
+                "quantity": 4,
+                "unit_price": 21000,
+                "subtotal": 84000
+            },
+            {
+                "product_id": 107,
+                "quantity": 1,
+                "unit_price": 58000,
+                "subtotal": 58000
+            },
+            {
+                "product_id": 86,
+                "quantity": 8,
+                "unit_price": 25000,
+                "subtotal": 200000
+            }
+        ],
+        "created_at": "2026-06-27T19:03:38.236Z",
+        "created_by": 4
+    },
+    {
+        "id": 185,
+        "order_code": "ORD00185",
+        "customer_name": "Khách hàng 185",
+        "customer_phone": "0903929712",
+        "total_amount": 635000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 114,
+                "quantity": 4,
+                "unit_price": 33000,
+                "subtotal": 132000
+            },
+            {
+                "product_id": 56,
+                "quantity": 7,
+                "unit_price": 53000,
+                "subtotal": 371000
+            },
+            {
+                "product_id": 53,
+                "quantity": 4,
+                "unit_price": 33000,
+                "subtotal": 132000
+            }
+        ],
+        "created_at": "2026-05-04T03:34:51.858Z",
+        "created_by": 1
+    },
+    {
+        "id": 186,
+        "order_code": "ORD00186",
+        "customer_name": "Khách hàng 186",
+        "customer_phone": "0968143381",
+        "total_amount": 239000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 103,
+                "quantity": 3,
+                "unit_price": 20000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 134,
+                "quantity": 3,
+                "unit_price": 22000,
+                "subtotal": 66000
+            },
+            {
+                "product_id": 55,
+                "quantity": 7,
+                "unit_price": 11000,
+                "subtotal": 77000
+            },
+            {
+                "product_id": 7,
+                "quantity": 1,
+                "unit_price": 36000,
+                "subtotal": 36000
+            }
+        ],
+        "created_at": "2026-07-07T20:41:57.361Z",
+        "created_by": 5
+    },
+    {
+        "id": 187,
+        "order_code": "ORD00187",
+        "customer_name": "Khách hàng 187",
+        "customer_phone": "0932500633",
+        "total_amount": 320000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 94,
+                "quantity": 10,
+                "unit_price": 32000,
+                "subtotal": 320000
+            }
+        ],
+        "created_at": "2026-06-02T02:09:40.671Z",
+        "created_by": 1
+    },
+    {
+        "id": 188,
+        "order_code": "ORD00188",
+        "customer_name": "Khách hàng 188",
+        "customer_phone": "0924646451",
+        "total_amount": 312000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 92,
+                "quantity": 3,
+                "unit_price": 20000,
+                "subtotal": 60000
+            },
+            {
+                "product_id": 64,
+                "quantity": 9,
+                "unit_price": 28000,
+                "subtotal": 252000
+            }
+        ],
+        "created_at": "2026-05-22T02:30:30.367Z",
+        "created_by": 4
+    },
+    {
+        "id": 189,
+        "order_code": "ORD00189",
+        "customer_name": "Khách hàng 189",
+        "customer_phone": "0913132924",
+        "total_amount": 738000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 105,
+                "quantity": 4,
+                "unit_price": 14000,
+                "subtotal": 56000
+            },
+            {
+                "product_id": 91,
+                "quantity": 8,
+                "unit_price": 27000,
+                "subtotal": 216000
+            },
+            {
+                "product_id": 138,
+                "quantity": 7,
+                "unit_price": 22000,
+                "subtotal": 154000
+            },
+            {
+                "product_id": 64,
+                "quantity": 6,
+                "unit_price": 52000,
+                "subtotal": 312000
+            }
+        ],
+        "created_at": "2026-06-28T10:38:00.913Z",
+        "created_by": 3
+    },
+    {
+        "id": 190,
+        "order_code": "ORD00190",
+        "customer_name": "Khách hàng 190",
+        "customer_phone": "0918563256",
+        "total_amount": 467000,
+        "status": "CANCELLED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 83,
+                "quantity": 9,
+                "unit_price": 20000,
+                "subtotal": 180000
+            },
+            {
+                "product_id": 137,
+                "quantity": 1,
+                "unit_price": 29000,
+                "subtotal": 29000
+            },
+            {
+                "product_id": 43,
+                "quantity": 6,
+                "unit_price": 43000,
+                "subtotal": 258000
+            }
+        ],
+        "created_at": "2026-07-02T10:21:02.556Z",
+        "created_by": 5
+    },
+    {
+        "id": 191,
+        "order_code": "ORD00191",
+        "customer_name": "Khách hàng 191",
+        "customer_phone": "0940376747",
+        "total_amount": 1047000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 121,
+                "quantity": 4,
+                "unit_price": 24000,
+                "subtotal": 96000
+            },
+            {
+                "product_id": 142,
+                "quantity": 3,
+                "unit_price": 56000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 13,
+                "quantity": 9,
+                "unit_price": 51000,
+                "subtotal": 459000
+            },
+            {
+                "product_id": 59,
+                "quantity": 2,
+                "unit_price": 22000,
+                "subtotal": 44000
+            },
+            {
+                "product_id": 63,
+                "quantity": 7,
+                "unit_price": 40000,
+                "subtotal": 280000
+            }
+        ],
+        "created_at": "2026-06-19T11:41:35.704Z",
+        "created_by": 2
+    },
+    {
+        "id": 192,
+        "order_code": "ORD00192",
+        "customer_name": "Khách hàng 192",
+        "customer_phone": "0965935787",
+        "total_amount": 726000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 99,
+                "quantity": 6,
+                "unit_price": 36000,
+                "subtotal": 216000
+            },
+            {
+                "product_id": 40,
+                "quantity": 5,
+                "unit_price": 32000,
+                "subtotal": 160000
+            },
+            {
+                "product_id": 49,
+                "quantity": 5,
+                "unit_price": 52000,
+                "subtotal": 260000
+            },
+            {
+                "product_id": 7,
+                "quantity": 6,
+                "unit_price": 15000,
+                "subtotal": 90000
+            }
+        ],
+        "created_at": "2026-05-14T18:08:40.565Z",
+        "created_by": 4
+    },
+    {
+        "id": 193,
+        "order_code": "ORD00193",
+        "customer_name": "Khách hàng 193",
+        "customer_phone": "0966983417",
+        "total_amount": 283000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 25,
+                "quantity": 7,
+                "unit_price": 23000,
+                "subtotal": 161000
+            },
+            {
+                "product_id": 72,
+                "quantity": 4,
+                "unit_price": 10000,
+                "subtotal": 40000
+            },
+            {
+                "product_id": 59,
+                "quantity": 2,
+                "unit_price": 41000,
+                "subtotal": 82000
+            }
+        ],
+        "created_at": "2026-06-13T06:46:13.375Z",
+        "created_by": 3
+    },
+    {
+        "id": 194,
+        "order_code": "ORD00194",
+        "customer_name": "Khách hàng 194",
+        "customer_phone": "0963148380",
+        "total_amount": 702000,
+        "status": "COMPLETED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 150,
+                "quantity": 5,
+                "unit_price": 27000,
+                "subtotal": 135000
+            },
+            {
+                "product_id": 64,
+                "quantity": 8,
+                "unit_price": 21000,
+                "subtotal": 168000
+            },
+            {
+                "product_id": 114,
+                "quantity": 7,
+                "unit_price": 30000,
+                "subtotal": 210000
+            },
+            {
+                "product_id": 113,
+                "quantity": 9,
+                "unit_price": 21000,
+                "subtotal": 189000
+            }
+        ],
+        "created_at": "2026-05-02T18:52:32.847Z",
+        "created_by": 5
+    },
+    {
+        "id": 195,
+        "order_code": "ORD00195",
+        "customer_name": "Khách hàng 195",
+        "customer_phone": "0962669882",
+        "total_amount": 98000,
+        "status": "COMPLETED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 70,
+                "quantity": 7,
+                "unit_price": 14000,
+                "subtotal": 98000
+            }
+        ],
+        "created_at": "2026-07-06T10:31:49.673Z",
+        "created_by": 3
+    },
+    {
+        "id": 196,
+        "order_code": "ORD00196",
+        "customer_name": "Khách hàng 196",
+        "customer_phone": "0913296275",
+        "total_amount": 396000,
+        "status": "COMPLETED",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 23,
+                "quantity": 1,
+                "unit_price": 25000,
+                "subtotal": 25000
+            },
+            {
+                "product_id": 75,
+                "quantity": 6,
+                "unit_price": 26000,
+                "subtotal": 156000
+            },
+            {
+                "product_id": 111,
+                "quantity": 2,
+                "unit_price": 44000,
+                "subtotal": 88000
+            },
+            {
+                "product_id": 109,
+                "quantity": 1,
+                "unit_price": 39000,
+                "subtotal": 39000
+            },
+            {
+                "product_id": 14,
+                "quantity": 4,
+                "unit_price": 22000,
+                "subtotal": 88000
+            }
+        ],
+        "created_at": "2026-06-25T22:53:53.923Z",
+        "created_by": 1
+    },
+    {
+        "id": 197,
+        "order_code": "ORD00197",
+        "customer_name": "Khách hàng 197",
+        "customer_phone": "0914221398",
+        "total_amount": 672000,
+        "status": "PENDING",
+        "payment_method": "CASH",
+        "items": [
+            {
+                "product_id": 27,
+                "quantity": 6,
+                "unit_price": 26000,
+                "subtotal": 156000
+            },
+            {
+                "product_id": 48,
+                "quantity": 4,
+                "unit_price": 59000,
+                "subtotal": 236000
+            },
+            {
+                "product_id": 136,
+                "quantity": 7,
+                "unit_price": 40000,
+                "subtotal": 280000
+            }
+        ],
+        "created_at": "2026-05-10T09:46:53.443Z",
+        "created_by": 3
+    },
+    {
+        "id": 198,
+        "order_code": "ORD00198",
+        "customer_name": "Khách hàng 198",
+        "customer_phone": "0960138657",
+        "total_amount": 777000,
+        "status": "PENDING",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 30,
+                "quantity": 5,
+                "unit_price": 17000,
+                "subtotal": 85000
+            },
+            {
+                "product_id": 51,
+                "quantity": 8,
+                "unit_price": 11000,
+                "subtotal": 88000
+            },
+            {
+                "product_id": 98,
+                "quantity": 1,
+                "unit_price": 52000,
+                "subtotal": 52000
+            },
+            {
+                "product_id": 64,
+                "quantity": 9,
+                "unit_price": 16000,
+                "subtotal": 144000
+            },
+            {
+                "product_id": 67,
+                "quantity": 8,
+                "unit_price": 51000,
+                "subtotal": 408000
+            }
+        ],
+        "created_at": "2026-06-30T14:55:35.238Z",
+        "created_by": 2
+    },
+    {
+        "id": 199,
+        "order_code": "ORD00199",
+        "customer_name": "Khách hàng 199",
+        "customer_phone": "0908479632",
+        "total_amount": 1149000,
+        "status": "CANCELLED",
+        "payment_method": "QR_PAYOS",
+        "items": [
+            {
+                "product_id": 72,
+                "quantity": 9,
+                "unit_price": 20000,
+                "subtotal": 180000
+            },
+            {
+                "product_id": 47,
+                "quantity": 9,
+                "unit_price": 43000,
+                "subtotal": 387000
+            },
+            {
+                "product_id": 2,
+                "quantity": 4,
+                "unit_price": 13000,
+                "subtotal": 52000
+            },
+            {
+                "product_id": 95,
+                "quantity": 10,
+                "unit_price": 33000,
+                "subtotal": 330000
+            },
+            {
+                "product_id": 128,
+                "quantity": 4,
+                "unit_price": 50000,
+                "subtotal": 200000
+            }
+        ],
+        "created_at": "2026-06-17T15:34:53.890Z",
+        "created_by": 1
+    },
+    {
+        "id": 200,
+        "order_code": "ORD00200",
+        "customer_name": "Khách hàng 200",
+        "customer_phone": "0922014885",
+        "total_amount": 876000,
+        "status": "CANCELLED",
+        "payment_method": "TRANSFER",
+        "items": [
+            {
+                "product_id": 9,
+                "quantity": 10,
+                "unit_price": 33000,
+                "subtotal": 330000
+            },
+            {
+                "product_id": 17,
+                "quantity": 8,
+                "unit_price": 15000,
+                "subtotal": 120000
+            },
+            {
+                "product_id": 111,
+                "quantity": 8,
+                "unit_price": 23000,
+                "subtotal": 184000
+            },
+            {
+                "product_id": 56,
+                "quantity": 6,
+                "unit_price": 34000,
+                "subtotal": 204000
+            },
+            {
+                "product_id": 61,
+                "quantity": 2,
+                "unit_price": 19000,
+                "subtotal": 38000
+            }
+        ],
+        "created_at": "2026-08-08T13:10:08.379Z",
+        "created_by": 5
+    }
+]
