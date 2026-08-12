@@ -39,6 +39,13 @@ const GlobalExceptionHandler = (err, req, res, next) => {
     });
   }
 
+  if (err.statusCode) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message
+    });
+  }
+
   return res.status(500).json({
     success: false,
     error: { code: 'INTERNAL_SERVER_ERROR', message: 'An unexpected error occurred' }

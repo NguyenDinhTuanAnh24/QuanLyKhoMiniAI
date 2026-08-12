@@ -45,17 +45,21 @@ app.use('/api/activity-logs', activityLogRoutes);
 // Error Handling Middleware
 app.use(GlobalExceptionHandler);
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`\nLỖI: Cổng ${PORT} đang được sử dụng bởi một tiến trình khác.`);
-    console.error('Vui lòng tắt tiến trình cũ hoặc khởi động lại máy.\n');
-    process.exit(1);
-  } else {
-    console.error('Lỗi khi khởi động server:', error);
-    process.exit(1);
-  }
-});
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`\nLỖI: Cổng ${PORT} đang được sử dụng bởi một tiến trình khác.`);
+      console.error('Vui lòng tắt tiến trình cũ hoặc khởi động lại máy.\n');
+      process.exit(1);
+    } else {
+      console.error('Lỗi khi khởi động server:', error);
+      process.exit(1);
+    }
+  });
+}
+
+module.exports = app;
