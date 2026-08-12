@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Package, Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
 import { useToast } from '../contexts/ToastContext';
+import ChangePasswordModal from '../components/ChangePasswordModal';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
@@ -60,6 +63,7 @@ const LoginPage = () => {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
@@ -148,33 +152,29 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900">
-                  Ghi nhớ đăng nhập
-                </label>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900">
+                    Ghi nhớ đăng nhập
+                  </label>
+                </div>
+                <div className="text-sm">
+                  <button
+                    type="button"
+                    onClick={() => setShowChangePassword(true)}
+                    className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none">
+                    Đổi mật khẩu
+                  </button>
+                </div>
               </div>
-              <div className="text-sm">
-                <a 
-                  href="#" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    showToast('Vui lòng liên hệ Quản trị viên để được cấp lại mật khẩu.', 'info');
-                  }}
-                  className="font-medium text-blue-600 hover:text-blue-500"
-                >
-                  Quên mật khẩu?
-                </a>
-              </div>
-            </div>
 
             <div>
               <button
@@ -191,6 +191,13 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
+    {showChangePassword && (
+      <ChangePasswordModal
+        email={formData.email}
+        onClose={() => setShowChangePassword(false)}
+      />
+    )}
+    </>
   );
 };
 
