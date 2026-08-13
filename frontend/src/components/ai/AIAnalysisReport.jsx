@@ -246,7 +246,7 @@ export default function AIAnalysisReport({ report }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-auto w-full min-w-0">
+    <div data-testid="ai-summary" className="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-auto w-full min-w-0 overflow-visible">
       <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl shrink-0">
         <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-blue-600" />
@@ -260,31 +260,31 @@ export default function AIAnalysisReport({ report }) {
       
       <div className="p-5 md:p-6 flex-1">
         {/* Executive Summary */}
-        <div className="mb-8 space-y-6">
+        <div className="mb-8 space-y-6 w-full min-w-0">
           {/* Overview */}
-          <div>
+          <div data-testid="ai-overview" className="w-full min-w-0">
             <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center gap-1.5">
               <Target className="w-4 h-4 text-slate-500" />
               Tổng quan
             </h4>
-            <p className="text-sm text-slate-700 leading-relaxed">
+            <p className="text-sm text-slate-700 leading-relaxed whitespace-normal break-words [overflow-wrap:anywhere] max-w-full">
               {asText(execSummary.overview, 'Hệ thống đã phân tích dữ liệu nhưng chưa tạo đoạn tổng quan chi tiết.')}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full min-w-0">
             {/* Key Findings */}
             {Array.isArray(execSummary.key_findings) && execSummary.key_findings.length > 0 && (
-              <div>
+              <div data-testid="ai-findings" className="w-full min-w-0">
                 <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-1.5">
                   <SearchCheck className="w-4 h-4 text-blue-500" />
                   Phát hiện chính
                 </h4>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2.5 w-full min-w-0">
                   {execSummary.key_findings.map((point, idx) => (
-                    <li key={idx} className="text-sm text-slate-600 flex items-start gap-2 leading-relaxed">
+                    <li key={idx} className="text-sm text-slate-600 flex min-w-0 items-start gap-2 leading-relaxed">
                       <span className="w-1 h-1 rounded-full bg-slate-400 mt-2 shrink-0"></span>
-                      <span>{asText(point)}</span>
+                      <span className="min-w-0 flex-1 whitespace-normal break-words [overflow-wrap:anywhere]">{asText(point)}</span>
                     </li>
                   ))}
                 </ul>
@@ -293,16 +293,16 @@ export default function AIAnalysisReport({ report }) {
 
             {/* Risks */}
             {Array.isArray(execSummary.risks) && execSummary.risks.length > 0 && (
-              <div>
+              <div data-testid="ai-risks" className="w-full min-w-0">
                 <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-1.5">
                   <AlertCircle className="w-4 h-4 text-red-500" />
                   Rủi ro cần lưu ý
                 </h4>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2.5 w-full min-w-0">
                   {execSummary.risks.map((point, idx) => (
-                    <li key={idx} className="text-sm text-slate-600 flex items-start gap-2 leading-relaxed">
+                    <li key={idx} className="text-sm text-slate-600 flex min-w-0 items-start gap-2 leading-relaxed">
                       <span className="w-1 h-1 rounded-full bg-red-400 mt-2 shrink-0"></span>
-                      <span>{asText(point)}</span>
+                      <span className="min-w-0 flex-1 whitespace-normal break-words [overflow-wrap:anywhere]">{asText(point)}</span>
                     </li>
                   ))}
                 </ul>
@@ -311,16 +311,16 @@ export default function AIAnalysisReport({ report }) {
 
             {/* Opportunities */}
             {Array.isArray(execSummary.opportunities) && execSummary.opportunities.length > 0 && (
-              <div className="md:col-span-2">
+              <div data-testid="ai-opportunities" className="lg:col-span-2 w-full min-w-0">
                 <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4 text-emerald-500" />
                   Cơ hội tối ưu
                 </h4>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2.5 w-full min-w-0">
                   {execSummary.opportunities.map((point, idx) => (
-                    <li key={idx} className="text-sm text-slate-600 flex items-start gap-2 leading-relaxed">
+                    <li key={idx} className="text-sm text-slate-600 flex min-w-0 items-start gap-2 leading-relaxed">
                       <span className="w-1 h-1 rounded-full bg-emerald-400 mt-2 shrink-0"></span>
-                      <span>{asText(point)}</span>
+                      <span className="min-w-0 flex-1 whitespace-normal break-words [overflow-wrap:anywhere]">{asText(point)}</span>
                     </li>
                   ))}
                 </ul>

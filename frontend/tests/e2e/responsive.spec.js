@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const VIEWPORTS = [
+  { width: 320, height: 568 }, // iPhone SE (1st gen)
   { width: 375, height: 667 }, // iPhone 6/7/8
   { width: 390, height: 844 }, // iPhone 12/13
   { width: 430, height: 932 }, // iPhone 14 Pro Max
@@ -74,6 +75,28 @@ test.describe('Responsive Verification', () => {
             const main = document.querySelector('main') || document.body;
             return main.scrollWidth > document.documentElement.clientWidth;
           });
+          
+          let aiSummaryOverflowing = false;
+          let aiOverviewOverflowing = false;
+          let aiFindingsOverflowing = false;
+          let aiRisksOverflowing = false;
+          let aiOpportunitiesOverflowing = false;
+
+          if (targetPage === '/ai-insights') {
+            const checkElOverflow = async (testid) => {
+              const el = page.getByTestId(testid);
+              if (await el.count() > 0) {
+                return await el.evaluate(e => e.scrollWidth > e.clientWidth + 1);
+              }
+              return false;
+            };
+
+            aiSummaryOverflowing = await checkElOverflow('ai-summary');
+            aiOverviewOverflowing = await checkElOverflow('ai-overview');
+            aiFindingsOverflowing = await checkElOverflow('ai-findings');
+            aiRisksOverflowing = await checkElOverflow('ai-risks');
+            aiOpportunitiesOverflowing = await checkElOverflow('ai-opportunities');
+          }
 
           // Snapshot criteria
           if (viewport.width === 430 && ['/dashboard', '/inventory-ops', '/ai-insights', '/activity-logs', '/settings'].includes(targetPage)) {
@@ -90,9 +113,19 @@ test.describe('Responsive Verification', () => {
           if (mainWidthOverflow) {
             console.error(`[FAIL] ${targetPage} at ${viewport.width}x${viewport.height}: Main content horizontal overflow detected.`);
           }
+          if (aiSummaryOverflowing || aiOverviewOverflowing || aiFindingsOverflowing || aiRisksOverflowing || aiOpportunitiesOverflowing) {
+            console.error(`[FAIL] ${targetPage} at ${viewport.width}x${viewport.height}: AI Summary element clipping detected.`);
+          }
 
           expect(isOverflowing).toBeFalsy(); // Body horizontal overflow is NOT allowed
           expect(mainWidthOverflow).toBeFalsy(); // Main content width should be <= viewport
+          if (targetPage === '/ai-insights') {
+            expect(aiSummaryOverflowing).toBeFalsy();
+            expect(aiOverviewOverflowing).toBeFalsy();
+            expect(aiFindingsOverflowing).toBeFalsy();
+            expect(aiRisksOverflowing).toBeFalsy();
+            expect(aiOpportunitiesOverflowing).toBeFalsy();
+          }
           expect(errors.filter(e => 
             !e.includes('net::ERR_') && 
             !e.includes('favicon') && 
