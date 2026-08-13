@@ -417,7 +417,7 @@ export default function InventoryOpsDashboard() {
 
   const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
 
-  if (isLoading) {
+  if (loading && products.length === 0) {
     return (
       <PageContainer>
         <InventorySkeleton />

@@ -42,10 +42,12 @@ const DashboardPage = ({ onNavigate }) => {
   useEffect(() => {
     fetchDashboardData();
 
-    // Tự động cập nhật dữ liệu mỗi 10 giây
+    // Tự động cập nhật dữ liệu mỗi 60 giây (chỉ khi tab đang hiển thị)
     const interval = setInterval(() => {
-      fetchDashboardData(true); // Truyền true để báo là cập nhật ngầm, không hiện loading
-    }, 10000);
+      if (!document.hidden) {
+        fetchDashboardData(true);
+      }
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
