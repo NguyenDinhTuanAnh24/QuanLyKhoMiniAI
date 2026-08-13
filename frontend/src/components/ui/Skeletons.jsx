@@ -1,8 +1,9 @@
-import React from 'react';
-
-export const Skeleton = ({ className = "" }) => (
-  <div className={`animate-pulse bg-slate-200/80 rounded-md ${className}`} />
-);
+/**
+ * Skeleton primitive re-exported from Skeleton.jsx (shadcn convention).
+ * Plus composite skeleton building blocks for reuse across page skeletons.
+ */
+export { Skeleton } from './Skeleton';
+import { Skeleton } from './Skeleton';
 
 export const StatCardSkeleton = () => (
   <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3 h-[120px]">
@@ -17,7 +18,7 @@ export const StatCardSkeleton = () => (
   </div>
 );
 
-export const TableSkeleton = ({ rows = 6, showHeader = true, showToolbar = true }) => (
+export const TableSkeleton = ({ rows = 6, cols = 6, showHeader = true, showToolbar = true }) => (
   <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden w-full">
     {showToolbar && (
       <div className="p-4 border-b border-slate-100 flex flex-wrap gap-4 items-center bg-slate-50">
@@ -32,7 +33,7 @@ export const TableSkeleton = ({ rows = 6, showHeader = true, showToolbar = true 
         {showHeader && (
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
-              {[...Array(6)].map((_, i) => (
+              {[...Array(cols)].map((_, i) => (
                 <th key={i} className="p-4"><Skeleton className="w-20 h-4" /></th>
               ))}
             </tr>
@@ -41,7 +42,7 @@ export const TableSkeleton = ({ rows = 6, showHeader = true, showToolbar = true 
         <tbody className="divide-y divide-slate-100">
           {[...Array(rows)].map((_, r) => (
             <tr key={r}>
-              {[...Array(6)].map((_, c) => (
+              {[...Array(cols)].map((_, c) => (
                 <td key={c} className="p-4">
                   <Skeleton className={`h-4 ${c === 0 ? 'w-8' : c === 1 ? 'w-48' : 'w-24'}`} />
                 </td>

@@ -3,7 +3,7 @@ import { StatCardSkeleton, ChartSkeleton, TableSkeleton, Skeleton, FilterBarSkel
 
 export default function ReportsSkeleton() {
   return (
-    <div data-testid="reports-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="reports-skeleton" aria-busy="true" className="space-y-6 w-full">
       {/* Tabs */}
       <div className="border-b border-slate-200">
         <div className="flex space-x-6">

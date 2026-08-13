@@ -18,7 +18,8 @@ const PAGES_TO_TEST = [
   '/ai-insights',
   '/reports',
   '/activity-logs',
-  '/settings'
+  '/settings',
+  '/alerts'
 ];
 
 test.describe('Responsive Verification', () => {

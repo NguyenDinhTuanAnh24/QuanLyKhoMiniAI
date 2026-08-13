@@ -3,7 +3,7 @@ import { Skeleton, TableSkeleton, FilterBarSkeleton, CardListSkeleton } from '..
 
 export default function ActivityLogsSkeleton() {
   return (
-    <div data-testid="activity-log-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="activity-log-skeleton" aria-busy="true" className="space-y-6 w-full">
       <FilterBarSkeleton />
 
       {/* Table Skeleton (Desktop) */}

@@ -3,7 +3,7 @@ import { Skeleton, FormFieldSkeleton } from '../ui/Skeletons';
 
 export default function SettingsSkeleton() {
   return (
-    <div data-testid="settings-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="settings-skeleton" aria-busy="true" className="space-y-6 w-full">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Tabs Sidebar */}
         <div className="w-full md:w-64 shrink-0">

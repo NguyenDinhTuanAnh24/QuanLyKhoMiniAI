@@ -10,6 +10,7 @@ import ProductFormModal from './ProductFormPage';
 import { useToast } from '../contexts/ToastContext';
 import PageContainer from './layout/PageContainer';
 import ProductSkeleton from './skeletons/ProductSkeleton';
+import { StatCardSkeleton } from './ui/Skeletons';
 
 export default function ProductDashboard({ onNavigate }) {
   const { showToast } = useToast();
@@ -462,10 +463,16 @@ export default function ProductDashboard({ onNavigate }) {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={stats.totalProducts} trend="up" trendLabel="+4 mới" />
-        <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={stats.activeProducts} trend="up" trendLabel="91%" />
-        <StatCard icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={stats.lowStockProducts} trend="down" trendLabel="9%" />
-        <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
+        {loading && products.length === 0 ? (
+          <><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></>
+        ) : (
+          <>
+            <StatCard icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={stats.totalProducts} trend="up" trendLabel="+4 mới" />
+            <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={stats.activeProducts} trend="up" trendLabel="91%" />
+            <StatCard icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={stats.lowStockProducts} trend="down" trendLabel="9%" />
+            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
+          </>
+        )}
       </div>
 
       {/* Filter Bar */}

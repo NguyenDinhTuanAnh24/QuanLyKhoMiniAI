@@ -5,6 +5,7 @@ import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
 import PageContainer from './layout/PageContainer';
 import DataFoundationSkeleton from './skeletons/DataFoundationSkeleton';
+import { StatCardSkeleton } from './ui/Skeletons';
 import { useToast } from '../contexts/ToastContext';
 
 export default function SupplierDashboard() {
@@ -181,10 +182,16 @@ export default function SupplierDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Truck} iconColorClass="bg-blue-50 text-blue-600" label="Tổng nhà cung cấp" value={totalCount} trend="up" trendLabel="+3 tháng này" trendColorClass="bg-green-50 text-green-700" />
-        <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={activeCount} trend="up" trendLabel="80%" trendColorClass="bg-green-50 text-green-700" />
-        <StatCard icon={FileText} iconColorClass="bg-slate-100 text-slate-600" label="Phiếu nhập tháng này" value={0} trend="up" trendLabel="+12%" trendColorClass="bg-green-50 text-green-700" />
-        <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị nhập" value={formatCompactCurrency(0)} trend="up" trendLabel="+8.5%" trendColorClass="bg-green-50 text-green-700" />
+        {loading && suppliers.length === 0 ? (
+          <><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></>
+        ) : (
+          <>
+            <StatCard icon={Truck} iconColorClass="bg-blue-50 text-blue-600" label="Tổng nhà cung cấp" value={totalCount} trend="up" trendLabel="+3 tháng này" trendColorClass="bg-green-50 text-green-700" />
+            <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={activeCount} trend="up" trendLabel="80%" trendColorClass="bg-green-50 text-green-700" />
+            <StatCard icon={FileText} iconColorClass="bg-slate-100 text-slate-600" label="Phiếu nhập tháng này" value={0} trend="up" trendLabel="+12%" trendColorClass="bg-green-50 text-green-700" />
+            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị nhập" value={formatCompactCurrency(0)} trend="up" trendLabel="+8.5%" trendColorClass="bg-green-50 text-green-700" />
+          </>
+        )}
       </div>
 
       {/* Filter Bar */}

@@ -1,9 +1,17 @@
 import React from 'react';
-import { Skeleton, TableSkeleton, FilterBarSkeleton, CardListSkeleton } from '../ui/Skeletons';
+import { StatCardSkeleton, TableSkeleton, FilterBarSkeleton, CardListSkeleton } from '../ui/Skeletons';
 
 export default function UsersSkeleton() {
   return (
-    <div data-testid="users-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="users-skeleton" aria-busy="true" aria-label="Đang tải dữ liệu" className="space-y-6 w-full">
+      {/* 4 Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCardSkeleton />
+        <StatCardSkeleton />
+        <StatCardSkeleton />
+        <StatCardSkeleton />
+      </div>
+
       <FilterBarSkeleton />
 
       {/* Table Skeleton (Desktop) */}

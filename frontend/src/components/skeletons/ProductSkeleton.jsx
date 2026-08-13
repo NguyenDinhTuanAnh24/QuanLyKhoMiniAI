@@ -3,7 +3,7 @@ import { StatCardSkeleton, TableSkeleton, FilterBarSkeleton } from '../ui/Skelet
 
 export default function ProductSkeleton() {
   return (
-    <div data-testid="product-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="product-skeleton" aria-busy="true" className="space-y-6 w-full">
       {/* 4 Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCardSkeleton />

@@ -3,7 +3,7 @@ import { Skeleton, TableSkeleton } from '../ui/Skeletons';
 
 export default function AIInsightsSkeleton() {
   return (
-    <div data-testid="ai-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="ai-skeleton" aria-busy="true" className="space-y-6 w-full">
       {/* AI Overview Panel */}
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100/50 relative overflow-hidden">
         <Skeleton className="w-32 h-6 mb-4" />

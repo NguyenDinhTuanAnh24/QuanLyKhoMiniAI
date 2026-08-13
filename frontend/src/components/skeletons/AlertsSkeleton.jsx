@@ -1,9 +1,18 @@
 import React from 'react';
 import { StatCardSkeleton, TableSkeleton, FilterBarSkeleton, Skeleton } from '../ui/Skeletons';
+import PageContainer from '../layout/PageContainer';
 
 export default function AlertsSkeleton() {
   return (
-    <div data-testid="alerts-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <PageContainer data-testid="alerts-skeleton" aria-busy="true">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Cảnh báo tồn kho</h1>
+          <p className="text-slate-500 text-sm mt-1">Quản lý các mặt hàng sắp hết hoặc cần nhập gấp</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCardSkeleton />
         <StatCardSkeleton />
@@ -44,6 +53,6 @@ export default function AlertsSkeleton() {
           </div>
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
 }

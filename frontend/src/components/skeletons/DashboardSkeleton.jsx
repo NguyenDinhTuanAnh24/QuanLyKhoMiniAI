@@ -1,9 +1,10 @@
 import React from 'react';
+import { Skeleton } from '../ui/Skeleton';
 import { StatCardSkeleton, ChartSkeleton } from '../ui/Skeletons';
 
 export default function DashboardSkeleton() {
   return (
-    <div data-testid="dashboard-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="dashboard-skeleton" aria-busy="true" aria-label="Đang tải dữ liệu" className="space-y-6 w-full">
       {/* 4 Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCardSkeleton />
@@ -20,11 +21,11 @@ export default function DashboardSkeleton() {
         </div>
         {/* AI Panel */}
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 h-[400px] flex flex-col">
-          <div className="w-48 h-6 bg-slate-200 rounded animate-pulse mb-6" />
+          <Skeleton className="w-48 h-6 mb-6" />
           <div className="space-y-4">
-            <div className="w-full h-16 bg-slate-100 rounded animate-pulse" />
-            <div className="w-full h-16 bg-slate-100 rounded animate-pulse" />
-            <div className="w-full h-16 bg-slate-100 rounded animate-pulse" />
+            <Skeleton className="w-full h-16 rounded" />
+            <Skeleton className="w-full h-16 rounded" />
+            <Skeleton className="w-full h-16 rounded" />
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import PageContainer from '../components/layout/PageContainer';
 import UsersSkeleton from '../components/skeletons/UsersSkeleton';
+import { StatCardSkeleton } from '../components/ui/Skeletons';
 
 export default function UserDashboard() {
   const { showToast } = useToast();
@@ -198,10 +199,16 @@ export default function UserDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Users} iconColorClass="bg-blue-50 text-blue-600" label="Tổng người dùng" value={stats.total} />
-        <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={stats.active} />
-        <StatCard icon={ShieldAlert} iconColorClass="bg-red-50 text-red-600" label="Tạm khóa" value={stats.locked} />
-        <StatCard icon={Shield} iconColorClass="bg-blue-50 text-blue-600" label="Quản trị viên" value={stats.admins} />
+        {loading && users.length === 0 ? (
+          <><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></>
+        ) : (
+          <>
+            <StatCard icon={Users} iconColorClass="bg-blue-50 text-blue-600" label="Tổng người dùng" value={stats.total} />
+            <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={stats.active} />
+            <StatCard icon={ShieldAlert} iconColorClass="bg-red-50 text-red-600" label="Tạm khóa" value={stats.locked} />
+            <StatCard icon={Shield} iconColorClass="bg-blue-50 text-blue-600" label="Quản trị viên" value={stats.admins} />
+          </>
+        )}
       </div>
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 mb-6">

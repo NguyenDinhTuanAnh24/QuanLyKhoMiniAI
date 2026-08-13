@@ -3,7 +3,7 @@ import { StatCardSkeleton, Skeleton, TableSkeleton } from '../ui/Skeletons';
 
 export default function InventorySkeleton() {
   return (
-    <div data-testid="inventory-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="inventory-skeleton" aria-busy="true" className="space-y-6 w-full">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCardSkeleton />
         <StatCardSkeleton />

@@ -3,7 +3,7 @@ import { Skeleton, TableSkeleton } from '../ui/Skeletons';
 
 export default function SalesSkeleton() {
   return (
-    <div data-testid="sales-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
+    <div data-testid="sales-skeleton" aria-busy="true" className="space-y-6 w-full">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 space-y-6">
           <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">

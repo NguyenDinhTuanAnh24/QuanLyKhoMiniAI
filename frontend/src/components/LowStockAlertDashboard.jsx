@@ -5,6 +5,8 @@ import StatCard from './StatCard';
 import { useToast } from '../contexts/ToastContext';
 import { getCategories } from '../services/categoryService';
 import api from '../services/api';
+import PageContainer from './layout/PageContainer';
+import AlertsSkeleton from './skeletons/AlertsSkeleton';
 
 
 export default function LowStockAlertDashboard({ onNavigate }) {
@@ -197,8 +199,12 @@ export default function LowStockAlertDashboard({ onNavigate }) {
 
   const { currentPage, totalPages, totalItems } = data.pagination;
 
+  if (loading && data.alerts.length === 0 && data.summary.total_products === 0) {
+    return <AlertsSkeleton />;
+  }
+
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
         <div>
@@ -311,8 +317,10 @@ export default function LowStockAlertDashboard({ onNavigate }) {
           )}
         </div>
 
-        {loading ? (
-          <div className="p-12 text-center text-slate-500">Đang tải dữ liệu...</div>
+        {loading && data.alerts.length === 0 ? (
+          <div className="p-12 flex justify-center items-center text-slate-500">
+            <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
+          </div>
         ) : data.alerts.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
@@ -322,8 +330,13 @@ export default function LowStockAlertDashboard({ onNavigate }) {
             <p className="text-slate-500 text-sm">Không có sản phẩm nào phù hợp với điều kiện tìm kiếm.</p>
           </div>
         ) : (
-          <>
-            <div className="hidden md:block overflow-x-auto flex-1">
+          <div className={`relative flex flex-col flex-1 ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
+            {loading && (
+              <div className="absolute inset-0 z-10 flex justify-center items-center">
+                <RefreshCw className="w-8 h-8 animate-spin text-blue-500" />
+              </div>
+            )}
+            <div className="hidden md:block overflow-x-auto w-full min-w-0 max-w-full">
               <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
@@ -419,7 +432,7 @@ export default function LowStockAlertDashboard({ onNavigate }) {
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
 
         {/* Pagination Footer */}
@@ -452,6 +465,6 @@ export default function LowStockAlertDashboard({ onNavigate }) {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

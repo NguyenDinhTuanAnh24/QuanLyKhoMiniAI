@@ -4,7 +4,7 @@ import PageContainer from '../layout/PageContainer';
 
 export default function DataFoundationSkeleton({ title = "Đang tải...", subtitle = "Vui lòng đợi trong giây lát" }) {
   return (
-    <PageContainer className="animate-in fade-in duration-300" data-testid="data-foundation-skeleton">
+    <PageContainer aria-busy="true" aria-label="Đang tải dữ liệu" data-testid="data-foundation-skeleton">
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
