@@ -9,6 +9,8 @@ import { testAIConnection } from '../services/aiService';
 import { useToast } from '../contexts/ToastContext';
 import { useBranding } from '../contexts/BrandingContext';
 import { processBrandLogo } from '../utils/processBrandLogo';
+import PageContainer from '../components/layout/PageContainer';
+import { PageSkeleton } from '../components/ui/Skeletons';
 
 export default function SettingsPage() {
   const { showToast } = useToast();
@@ -332,14 +334,16 @@ export default function SettingsPage() {
   
   const tabs = allTabs.filter(t => isStaff ? !t.adminOnly : true);
 
-  if (loading) return (
-    <div className="max-w-[1600px] mx-auto p-12 flex justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-    </div>
-  );
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageSkeleton />
+      </PageContainer>
+    );
+  }
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Cài đặt</h1>
@@ -800,6 +804,6 @@ export default function SettingsPage() {
         onConfirm={confirmSave}
         onCancel={() => setIsConfirmOpen(false)}
       />
-    </div>
+    </PageContainer>
   );
 }

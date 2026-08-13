@@ -3,6 +3,8 @@ import { Search, Plus, Filter, LayoutGrid, CheckCircle2, AlertCircle, List, Eye,
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService';
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
+import PageContainer from './layout/PageContainer';
+import { TableSkeleton } from './ui/Skeletons';
 import { useToast } from '../contexts/ToastContext';
 
 export default function CategoryDashboard() {
@@ -120,7 +122,7 @@ export default function CategoryDashboard() {
   const emptyCount = categories.filter(c => (c.products?.[0]?.count || 0) === 0).length;
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
         <div>
@@ -161,109 +163,105 @@ export default function CategoryDashboard() {
 
       {/* Table & Mobile List */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-xs tracking-wider text-slate-500 font-medium">
-                <th className="p-4">Tên danh mục</th>
-                <th className="p-4">Mô tả</th>
-                <th className="p-4 text-center">Số SP</th>
-                <th className="p-4 text-center">Ngày tạo</th>
-                <th className="p-4 text-center">Trạng thái</th>
-                <th className="p-4 text-center">Hành động</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm divide-y divide-slate-100">
-              {loading ? (
-                <tr><td colSpan="6" className="text-center p-8 text-slate-500">Đang tải dữ liệu...</td></tr>
-              ) : categories.length === 0 ? (
-                <tr><td colSpan="6" className="text-center p-8 text-slate-500">Không tìm thấy danh mục nào</td></tr>
-              ) : (
-                categories.map(category => {
-                  const isActive = !category.deleted_at;
-                  return (
-                    <tr key={category.category_id} className="hover:bg-slate-50 transition-colors group">
-                      <td className="p-4 font-medium text-slate-900">{category.category_name}</td>
-                      <td className="p-4 text-slate-500 max-w-xs truncate" title={category.description}>{category.description || '-'}</td>
-                      <td className="p-4 text-center font-medium text-slate-700">
-                        {category.products?.[0]?.count || 0}
-                      </td>
-                      <td className="p-4 text-center text-slate-500">
-                        {category.created_at ? new Date(category.created_at).toLocaleDateString('vi-VN') : '-'}
-                      </td>
-                      <td className="p-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
-                          isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-600 border-slate-200'
-                        }`}>
-                          {isActive ? 'Đang dùng' : 'Đã xóa'}
-                        </span>
-                      </td>
-                      <td className="p-4 text-center">
-                        <div className="flex items-center justify-center gap-3 text-sm">
-                          <button className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors font-medium">
-                            <Eye className="w-4 h-4" /> Xem SP
-                          </button>
-                          <button onClick={() => openEditModal(category)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
-                            <Pencil className="w-4 h-4" /> Sửa
-                          </button>
-                          <button onClick={() => handleDeleteClick(category.category_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
-                            <Trash2 className="w-4 h-4" /> Xoá
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Mobile List */}
-        <div className="md:hidden flex flex-col divide-y divide-slate-100">
-          {loading ? (
-            <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
-          ) : categories.length === 0 ? (
-            <div className="p-8 text-center text-slate-500">Không tìm thấy danh mục nào</div>
-          ) : (
-            categories.map(category => {
-              const isActive = !category.deleted_at;
-              return (
-                <div key={category.category_id} className="p-4 flex flex-col gap-3">
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-slate-900 truncate">{category.category_name}</h4>
-                      {category.description && (
-                        <p className="text-sm text-slate-500 line-clamp-2 mt-1">{category.description}</p>
-                      )}
+        {loading ? (
+          <TableSkeleton rows={5} />
+        ) : categories.length === 0 ? (
+          <div className="p-8 text-center text-slate-500">Không tìm thấy danh mục nào</div>
+        ) : (
+          <>
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-xs tracking-wider text-slate-500 font-medium">
+                    <th className="p-4">Tên danh mục</th>
+                    <th className="p-4">Mô tả</th>
+                    <th className="p-4 text-center">Số SP</th>
+                    <th className="p-4 text-center">Ngày tạo</th>
+                    <th className="p-4 text-center">Trạng thái</th>
+                    <th className="p-4 text-center">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm divide-y divide-slate-100">
+                  {categories.map(category => {
+                    const isActive = !category.deleted_at;
+                    return (
+                      <tr key={category.category_id} className="hover:bg-slate-50 transition-colors group">
+                        <td className="p-4 font-medium text-slate-900">{category.category_name}</td>
+                        <td className="p-4 text-slate-500 max-w-xs truncate" title={category.description}>{category.description || '-'}</td>
+                        <td className="p-4 text-center font-medium text-slate-700">
+                          {category.products?.[0]?.count || 0}
+                        </td>
+                        <td className="p-4 text-center text-slate-500">
+                          {category.created_at ? new Date(category.created_at).toLocaleDateString('vi-VN') : '-'}
+                        </td>
+                        <td className="p-4 text-center">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
+                            isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-600 border-slate-200'
+                          }`}>
+                            {isActive ? 'Đang dùng' : 'Đã xóa'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-center">
+                          <div className="flex items-center justify-center gap-3 text-sm">
+                            <button className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                              <Eye className="w-4 h-4" /> Xem SP
+                            </button>
+                            <button onClick={() => openEditModal(category)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
+                              <Pencil className="w-4 h-4" /> Sửa
+                            </button>
+                            <button onClick={() => handleDeleteClick(category.category_id)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
+                              <Trash2 className="w-4 h-4" /> Xoá
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Mobile List */}
+            <div className="md:hidden flex flex-col divide-y divide-slate-100">
+              {categories.map(category => {
+                const isActive = !category.deleted_at;
+                return (
+                  <div key={category.category_id} className="p-4 flex flex-col gap-3">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-slate-900 truncate">{category.category_name}</h4>
+                        {category.description && (
+                          <p className="text-sm text-slate-500 line-clamp-2 mt-1">{category.description}</p>
+                        )}
+                      </div>
+                      <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
+                        isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-600 border-slate-200'
+                      }`}>
+                        {isActive ? 'Đang dùng' : 'Đã xóa'}
+                      </span>
                     </div>
-                    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
-                      isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-600 border-slate-200'
-                    }`}>
-                      {isActive ? 'Đang dùng' : 'Đã xóa'}
-                    </span>
+                    <div className="flex items-center justify-between text-sm text-slate-500">
+                      <div>Số SP: <span className="font-medium text-slate-900">{category.products?.[0]?.count || 0}</span></div>
+                      <div>{category.created_at ? new Date(category.created_at).toLocaleDateString('vi-VN') : '-'}</div>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2 border-t border-slate-50 mt-1">
+                      <button className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium text-sm">
+                        <Eye className="w-4 h-4" /> Xem SP
+                      </button>
+                      <button onClick={() => openEditModal(category)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium text-sm">
+                        <Pencil className="w-4 h-4" /> Sửa
+                      </button>
+                      <button onClick={() => handleDeleteClick(category.category_id)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium text-sm">
+                        <Trash2 className="w-4 h-4" /> Xóa
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-slate-500">
-                    <div>Số SP: <span className="font-medium text-slate-900">{category.products?.[0]?.count || 0}</span></div>
-                    <div>{category.created_at ? new Date(category.created_at).toLocaleDateString('vi-VN') : '-'}</div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-2 border-t border-slate-50 mt-1">
-                    <button className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium text-sm">
-                      <Eye className="w-4 h-4" /> Xem SP
-                    </button>
-                    <button onClick={() => openEditModal(category)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium text-sm">
-                      <Pencil className="w-4 h-4" /> Sửa
-                    </button>
-                    <button onClick={() => handleDeleteClick(category.category_id)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium text-sm">
-                      <Trash2 className="w-4 h-4" /> Xóa
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
+                );
+              })}
+            </div>
+          </>
+        )}
         
         {/* Pagination */}
         {meta?.pagination && (
@@ -356,6 +354,6 @@ export default function CategoryDashboard() {
         cancelText="Hủy"
         isDanger={true}
       />
-    </div>
+    </PageContainer>
   );
 }

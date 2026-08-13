@@ -3,6 +3,7 @@ import { useToast } from '../contexts/ToastContext';
 import { activityLogService } from '../services/activityLogService';
 import { History, Search, Filter, Loader2 } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import PageContainer from '../components/layout/PageContainer';
 
 const ACTION_LABELS = {
   'LOGIN': 'Đăng nhập',
@@ -217,7 +218,7 @@ const ActivityLogsPage = () => {
   };
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-4 md:space-y-6 w-full min-w-0 px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+    <PageContainer>
       <PageHeader 
         title="Nhật ký hoạt động" 
         subtitle="Theo dõi các thay đổi và thao tác trong hệ thống"
@@ -435,7 +436,7 @@ const ActivityLogsPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

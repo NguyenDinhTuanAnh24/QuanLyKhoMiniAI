@@ -4,6 +4,8 @@ import { getUsers, deleteUser, createUser, updateUser, updateUserStatus } from '
 import StatCard from '../components/StatCard';
 import ConfirmModal from '../components/ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
+import PageContainer from '../components/layout/PageContainer';
+import { TableSkeleton } from '../components/ui/Skeletons';
 
 export default function UserDashboard() {
   const { showToast } = useToast();
@@ -170,8 +172,8 @@ export default function UserDashboard() {
   const statuses = ['Đang hoạt động', 'Tạm khóa'];
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+    <PageContainer>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Người dùng</h1>
           <p className="text-slate-500 text-sm mt-1">Quản lý tài khoản và phân quyền hệ thống</p>
@@ -181,14 +183,14 @@ export default function UserDashboard() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={Users} iconColorClass="bg-blue-50 text-blue-600" label="Tổng người dùng" value={stats.total} />
         <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={stats.active} />
         <StatCard icon={ShieldAlert} iconColorClass="bg-red-50 text-red-600" label="Tạm khóa" value={stats.locked} />
         <StatCard icon={Shield} iconColorClass="bg-blue-50 text-blue-600" label="Quản trị viên" value={stats.admins} />
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
           <input
@@ -217,9 +219,9 @@ export default function UserDashboard() {
         </select>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
         {loading ? (
-          <div className="p-12 text-center text-slate-500">Đang tải dữ liệu...</div>
+          <TableSkeleton rows={5} />
         ) : filteredUsers.length === 0 ? (
           <div className="p-12 text-center text-slate-500">Không tìm thấy người dùng phù hợp</div>
         ) : (
@@ -431,6 +433,6 @@ export default function UserDashboard() {
         onCancel={() => setConfirmConfig({ isOpen: false, user: null, action: '' })}
         isDanger={confirmConfig.action === 'delete' || confirmConfig.action === 'lock'}
       />
-    </div>
+    </PageContainer>
   );
 }

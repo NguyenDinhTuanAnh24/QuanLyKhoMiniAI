@@ -8,6 +8,8 @@ import { exportProductsToExcel, parseExcelFile, downloadTemplate } from '../util
 import StatCard from './StatCard';
 import ProductFormModal from './ProductFormPage';
 import { useToast } from '../contexts/ToastContext';
+import PageContainer from './layout/PageContainer';
+import { TableSkeleton } from './ui/Skeletons';
 
 export default function ProductDashboard({ onNavigate }) {
   const { showToast } = useToast();
@@ -413,7 +415,7 @@ export default function ProductDashboard({ onNavigate }) {
   };
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
@@ -528,7 +530,7 @@ export default function ProductDashboard({ onNavigate }) {
       {/* Content Area */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-slate-500">Đang tải dữ liệu...</div>
+          <TableSkeleton rows={10} />
         ) : products.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
@@ -1066,6 +1068,6 @@ export default function ProductDashboard({ onNavigate }) {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

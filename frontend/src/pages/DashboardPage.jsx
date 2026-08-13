@@ -24,6 +24,8 @@ import dashboardService from '../services/dashboardService';
 import { useToast } from '../contexts/ToastContext';
 import { getUser } from '../services/authService';
 import LazyRevealSection from '../components/common/LazyRevealSection';
+import PageContainer from '../components/layout/PageContainer';
+import { DashboardSkeleton } from '../components/ui/Skeletons';
 
 const DashboardPage = ({ onNavigate }) => {
   const navigate = useNavigate();
@@ -80,9 +82,9 @@ const DashboardPage = ({ onNavigate }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
+      <PageContainer>
+        <DashboardSkeleton />
+      </PageContainer>
     );
   }
 
@@ -111,7 +113,7 @@ const DashboardPage = ({ onNavigate }) => {
 
   // Render
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Header (Figma style) */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
@@ -501,7 +503,7 @@ const DashboardPage = ({ onNavigate }) => {
         </LazyRevealSection>
         
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

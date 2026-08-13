@@ -7,6 +7,9 @@ import { createMovement, getMovements, getImportPlan } from '../services/invento
 import ConfirmModal from './ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import StatCard from './StatCard';
+import PageContainer from './layout/PageContainer';
+import { PageSkeleton } from './ui/Skeletons';
+import api from '../services/api';
 
 export default function InventoryOpsDashboard() {
   const ITEMS_PER_PAGE = 10;
@@ -414,8 +417,16 @@ export default function InventoryOpsDashboard() {
 
   const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
 
+  if (isLoading) {
+    return (
+      <PageContainer>
+        <PageSkeleton />
+      </PageContainer>
+    );
+  }
+
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
         <div>
@@ -1145,6 +1156,6 @@ export default function InventoryOpsDashboard() {
         cancelText="Hủy"
         isDanger={true}
       />
-    </div>
+    </PageContainer>
   );
 }

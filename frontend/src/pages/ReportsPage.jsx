@@ -10,6 +10,7 @@ import InventoryTab from '../components/reports/tabs/InventoryTab';
 import TopSellingTab from '../components/reports/tabs/TopSellingTab';
 import ImportsTab from '../components/reports/tabs/ImportsTab';
 import LazyRevealSection from '../components/common/LazyRevealSection';
+import PageContainer from '../components/layout/PageContainer';
 
 export default function ReportsPage() {
   const { showToast } = useToast();
@@ -379,7 +380,7 @@ export default function ReportsPage() {
   });
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Báo cáo</h1>
@@ -442,6 +443,6 @@ export default function ReportsPage() {
           </LazyRevealSection>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

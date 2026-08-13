@@ -98,6 +98,34 @@ test.describe('Responsive Verification', () => {
             aiOpportunitiesOverflowing = await checkElOverflow('ai-opportunities');
           }
 
+          // Mobile Centering / Offset assertion
+          const viewportWidth = viewport.width;
+          let offsetErrors = [];
+
+          if (targetPage === '/ai-insights') {
+            const sections = [
+              'ai-page',
+              'ai-summary',
+              'ai-forecast-chart',
+              'ai-actions'
+            ];
+
+            for (const testId of sections) {
+              const el = page.getByTestId(testId);
+              if (await el.count() > 0) {
+                const box = await el.boundingBox();
+                if (box) {
+                  if (box.x < 0) {
+                    offsetErrors.push(`${testId} has negative x: ${box.x}`);
+                  }
+                  if (box.x + box.width > viewportWidth + 1) {
+                    offsetErrors.push(`${testId} overflows viewport width: x=${box.x}, w=${box.width}, v=${viewportWidth}`);
+                  }
+                }
+              }
+            }
+          }
+
           // Snapshot criteria
           if (viewport.width === 430 && ['/dashboard', '/inventory-ops', '/ai-insights', '/activity-logs', '/settings'].includes(targetPage)) {
             await page.screenshot({ path: `tests/e2e/screenshots/430-${targetPage.replace('/', '')}.png`, fullPage: true });
@@ -116,9 +144,13 @@ test.describe('Responsive Verification', () => {
           if (aiSummaryOverflowing || aiOverviewOverflowing || aiFindingsOverflowing || aiRisksOverflowing || aiOpportunitiesOverflowing) {
             console.error(`[FAIL] ${targetPage} at ${viewport.width}x${viewport.height}: AI Summary element clipping detected.`);
           }
+          if (offsetErrors.length > 0) {
+            console.error(`[FAIL] ${targetPage} at ${viewport.width}x${viewport.height}: AI Page offset error:`, offsetErrors.join(', '));
+          }
 
           expect(isOverflowing).toBeFalsy(); // Body horizontal overflow is NOT allowed
           expect(mainWidthOverflow).toBeFalsy(); // Main content width should be <= viewport
+          expect(offsetErrors.length).toBe(0); // Elements should fit in bounding box without right shift
           if (targetPage === '/ai-insights') {
             expect(aiSummaryOverflowing).toBeFalsy();
             expect(aiOverviewOverflowing).toBeFalsy();

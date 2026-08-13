@@ -27,6 +27,9 @@ import ConfirmModal from '../components/ConfirmModal';
 import LoadingState from '../components/shared/LoadingState';
 import EmptyState from '../components/shared/EmptyState';
 import LazyRevealSection from '../components/common/LazyRevealSection';
+import PageContainer from '../components/layout/PageContainer';
+import { PageSkeleton } from '../components/ui/Skeletons';
+import api from '../services/api';
 
 function parseReport(reportString) {
   if (!reportString) return null;
@@ -416,7 +419,13 @@ export default function AIInsightsPage() {
     setModalState({ isOpen: false, type: null, product: null });
   };
 
-  if (loading) return <LoadingState message="Đang tải dữ liệu kho & bán hàng..." />;
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageSkeleton />
+      </PageContainer>
+    );
+  }
 
   const isEmpty = !rawData.items || rawData.items.length === 0;
 
@@ -442,7 +451,7 @@ export default function AIInsightsPage() {
   }
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Header with Actions */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -581,6 +590,6 @@ export default function AIInsightsPage() {
           'Tạo phiếu nhập'
         }
       />
-    </div>
+    </PageContainer>
   );
 }

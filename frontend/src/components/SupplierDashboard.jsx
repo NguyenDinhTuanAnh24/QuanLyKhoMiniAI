@@ -3,6 +3,8 @@ import { Search, Plus, Truck, CheckCircle2, FileText, DollarSign, Eye, Pencil, T
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '../services/supplierService';
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
+import PageContainer from './layout/PageContainer';
+import { TableSkeleton } from './ui/Skeletons';
 import { useToast } from '../contexts/ToastContext';
 
 export default function SupplierDashboard() {
@@ -158,7 +160,7 @@ export default function SupplierDashboard() {
   };
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-6">
+    <PageContainer>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
         <div>
@@ -207,9 +209,15 @@ export default function SupplierDashboard() {
 
       {/* Table & Mobile List */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[1000px]">
+        {loading ? (
+          <TableSkeleton rows={5} />
+        ) : suppliers.length === 0 ? (
+          <div className="p-8 text-center text-slate-500">Không tìm thấy nhà cung cấp nào</div>
+        ) : (
+          <>
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-xs tracking-wider text-slate-500 font-medium">
                 <th className="p-4">Nhà cung cấp</th>
@@ -223,12 +231,7 @@ export default function SupplierDashboard() {
               </tr>
             </thead>
             <tbody className="text-sm divide-y divide-slate-100">
-              {loading ? (
-                <tr><td colSpan="8" className="text-center p-8 text-slate-500">Đang tải dữ liệu...</td></tr>
-              ) : suppliers.length === 0 ? (
-                <tr><td colSpan="8" className="text-center p-8 text-slate-500">Không tìm thấy nhà cung cấp nào</td></tr>
-              ) : (
-                suppliers.map(supplier => {
+                {suppliers.map(supplier => {
                   const isDeleted = !!supplier.deleted_at;
                   const isInactive = supplier.status === 'Ngừng hợp tác';
                   const displayStatus = isDeleted ? 'Đã xóa' : (supplier.status || 'Hoạt động');
@@ -269,21 +272,15 @@ export default function SupplierDashboard() {
                       </td>
                     </tr>
                   );
-                })
-              )}
+                })}
             </tbody>
-          </table>
-        </div>
-        
-        {/* Mobile List */}
-        <div className="md:hidden flex flex-col divide-y divide-slate-100">
-          {loading ? (
-            <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
-          ) : suppliers.length === 0 ? (
-            <div className="p-8 text-center text-slate-500">Không tìm thấy nhà cung cấp nào</div>
-          ) : (
-            suppliers.map(supplier => {
-              const isDeleted = !!supplier.deleted_at;
+              </table>
+            </div>
+            
+            {/* Mobile List */}
+            <div className="md:hidden flex flex-col divide-y divide-slate-100">
+              {suppliers.map(supplier => {
+                const isDeleted = !!supplier.deleted_at;
               const isInactive = supplier.status === 'Ngừng hợp tác';
               const displayStatus = isDeleted ? 'Đã xóa' : (supplier.status || 'Hoạt động');
               
@@ -327,9 +324,10 @@ export default function SupplierDashboard() {
                   </div>
                 </div>
               );
-            })
-          )}
-        </div>
+            })}
+          </div>
+        </>
+        )}
         
         {/* Pagination */}
         {meta?.pagination && (
@@ -472,6 +470,6 @@ export default function SupplierDashboard() {
         cancelText="Hủy"
         isDanger={true}
       />
-    </div>
+    </PageContainer>
   );
 }
