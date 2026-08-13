@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Trash2, RefreshCcw, CheckCircle2, ShoppingCart, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, AlertTriangle, X, Lightbulb, Minus } from 'lucide-react';
 import { getProducts } from '../services/productService';
 import ConfirmModal from '../components/ConfirmModal';
-import OrderSuccessModal from '../components/OrderSuccessModal';
 import PageContainer from '../components/layout/PageContainer';
 import { getCategories } from '../services/categoryService';
 import { createOrder, getRecentOrders, createPayosPayment, getOrderPaymentStatus } from '../services/orderService';
@@ -689,11 +688,45 @@ export default function SalesPage({ onNavigate }) {
         )}
       </div>
 
-      <OrderSuccessModal
-        isOpen={showSuccessModal}
-        onClose={resetAfterSuccess}
-        orderData={successOrderData}
-      />
+      {showSuccessModal && successOrderData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle2 className="w-8 h-8 text-green-600" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-800">Thanh toán thành công!</h2>
+              <p className="text-slate-500 text-sm mt-1">Mã hóa đơn: {successOrderData.order_code}</p>
+
+              <div className="w-full bg-slate-50 rounded-xl p-4 mt-6 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-600">Tổng thanh toán:</span>
+                  <span className="font-semibold text-slate-800">{formatCurrency(successOrderData.total_amount)}</span>
+                </div>
+                {isCash && (
+                  <>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">Khách đưa:</span>
+                      <span className="font-medium text-slate-800">{formatCurrency(successOrderData.given_amount)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm pt-3 border-t border-slate-200">
+                      <span className="font-medium text-slate-800">Tiền thừa trả khách:</span>
+                      <span className="font-bold text-green-600">{formatCurrency(successOrderData.change)}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <button
+                onClick={resetAfterSuccess}
+                className="w-full mt-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              >
+                Hoàn tất
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Payment Confirm Modal */}
       {showConfirmModal && (
