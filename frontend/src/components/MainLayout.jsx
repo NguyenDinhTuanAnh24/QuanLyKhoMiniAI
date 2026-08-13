@@ -36,7 +36,7 @@ export default function MainLayout({ children, activePage, activePayload, onNavi
         }`}
       >
         <Topbar activePage={activePage} activePayload={activePayload} onNavigate={onNavigate} toggleSidebar={toggleSidebar} />
-        <main className="flex-1 p-4 sm:p-6 overflow-x-hidden overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 overflow-x-hidden overflow-y-auto w-full min-w-0 flex flex-col">
           {children}
         </main>
       </div>

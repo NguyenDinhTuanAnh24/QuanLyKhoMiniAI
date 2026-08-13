@@ -223,8 +223,9 @@ export default function UserDashboard() {
         ) : filteredUsers.length === 0 ? (
           <div className="p-12 text-center text-slate-500">Không tìm thấy người dùng phù hợp</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
                   <th className="p-4">Người dùng</th>
@@ -277,8 +278,63 @@ export default function UserDashboard() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+              </table>
+            </div>
+
+            {/* Mobile List */}
+            <div className="md:hidden flex flex-col divide-y divide-slate-100">
+              {paginatedUsers.map(user => (
+                <div key={user.user_id} className="p-4 flex flex-col gap-3">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">
+                        {user.full_name?.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-slate-900 truncate">{user.full_name}</h4>
+                        <p className="text-sm text-slate-500 truncate">{user.role}</p>
+                      </div>
+                    </div>
+                    <span className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium border ${user.status === 'Đang hoạt động' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                      {user.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-sm bg-slate-50 p-2 rounded-lg">
+                    <div className="truncate">
+                      <span className="text-slate-500 text-xs block mb-0.5">Email</span>
+                      <p className="text-slate-900 truncate" title={user.email}>{user.email}</p>
+                    </div>
+                    <div className="truncate text-right">
+                      <span className="text-slate-500 text-xs block mb-0.5">SĐT</span>
+                      <p className="text-slate-900">{user.phone || 'N/A'}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 mt-1">
+                    <button onClick={() => setViewingUser(user)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium text-sm px-1">
+                      <Eye className="w-4 h-4 shrink-0" /> <span className="truncate">Chi tiết</span>
+                    </button>
+                    <button onClick={() => handleEdit(user)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium text-sm px-1">
+                      <Pencil className="w-4 h-4 shrink-0" /> <span className="truncate">Sửa</span>
+                    </button>
+                    {user.status === 'Đang hoạt động' ? (
+                      <button onClick={() => setConfirmConfig({ isOpen: true, user, action: 'lock' })} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-lg transition-colors font-medium text-sm px-1">
+                        <Lock className="w-4 h-4 shrink-0" /> <span className="truncate">Khóa</span>
+                      </button>
+                    ) : (
+                      <button onClick={() => setConfirmConfig({ isOpen: true, user, action: 'unlock' })} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-green-50 text-green-600 hover:bg-green-100 rounded-lg transition-colors font-medium text-sm px-1">
+                        <Unlock className="w-4 h-4 shrink-0" /> <span className="truncate">Mở</span>
+                      </button>
+                    )}
+                    <button onClick={() => setConfirmConfig({ isOpen: true, user, action: 'delete' })} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium text-sm px-1">
+                      <Trash2 className="w-4 h-4 shrink-0" /> <span className="truncate">Xóa</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
         {filteredUsers.length > 0 && (
           <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50">

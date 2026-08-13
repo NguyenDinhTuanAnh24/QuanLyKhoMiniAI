@@ -358,6 +358,60 @@ export default function ProductDashboard({ onNavigate }) {
     return { text: 'Đang bán', class: 'bg-green-50 text-green-700 border-green-200' };
   };
 
+  const renderProductCard = (product) => {
+    const badge = getProductBadge(product);
+    const isLowStock = product.stock_quantity <= (product.reorder_level || 0);
+    
+    return (
+      <div key={product.product_id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+        <div className="h-32 bg-slate-100 flex items-center justify-center shrink-0 relative overflow-hidden">
+          {product.image_url ? (
+            <img src={product.image_url} alt={product.product_name} className="w-full h-full object-cover" />
+          ) : (
+            <Package className="w-10 h-10 text-slate-300" />
+          )}
+          <div className="absolute top-2 right-2">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border shadow-sm bg-white/90 backdrop-blur-sm ${badge.class.replace('bg-', 'text-').replace('text-', 'text-')}`}>
+              {badge.text}
+            </span>
+          </div>
+        </div>
+        <div className="p-4 flex flex-col flex-1">
+          <div className="text-xs font-medium text-slate-500 mb-1">{product.category_name || product.category?.category_name || 'N/A'}</div>
+          <div className="font-bold text-slate-900 text-sm line-clamp-2 leading-tight mb-2 flex-1" title={product.product_name}>
+            {product.product_name}
+          </div>
+          <div className="flex items-end justify-between mt-auto pt-2 border-t border-slate-100">
+            <div>
+              <div className="text-xs text-slate-500 mb-0.5">Giá bán</div>
+              <div className="font-bold text-slate-900">{formatCurrency(product.selling_price)}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-slate-500 mb-0.5">Tồn kho</div>
+              <div className={`font-bold ${isLowStock ? 'text-red-600' : 'text-slate-700'}`}>
+                {product.stock_quantity || 0}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-slate-50 px-3 py-2 border-t border-slate-100 flex items-center justify-between">
+          <span className="text-xs text-slate-500 font-mono">{product.sku}</span>
+          <div className="flex items-center gap-2">
+            <button onClick={() => handleViewClick(product)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Xem">
+              <Eye className="w-4 h-4" />
+            </button>
+            <button onClick={() => handleEditClick(product)} className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors" title="Sửa">
+              <Pencil className="w-4 h-4" />
+            </button>
+            <button onClick={() => handleDeleteClick(product)} className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="Xóa">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="max-w-[1600px] mx-auto space-y-6">
       
@@ -487,149 +541,104 @@ export default function ProductDashboard({ onNavigate }) {
             </button>
           </div>
         ) : viewMode === 'list' ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[900px]">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
-                  <th className="p-4 w-12 text-center">
-                    <input 
-                      type="checkbox" 
-                      ref={selectAllRef}
-                      checked={isAllVisibleSelected}
-                      onChange={handleToggleSelectAllVisible}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
-                    />
-                  </th>
-                  <th className="p-4">Sản phẩm</th>
-                  <th className="p-4">SKU</th>
-                  <th className="p-4">Danh mục</th>
-                  <th className="p-4 text-right">Giá nhập</th>
-                  <th className="p-4 text-right">Giá bán</th>
-                  <th className="p-4 text-center">Tồn kho</th>
-                  <th className="p-4 text-center">Trạng thái</th>
-                  <th className="p-4 text-center">Hành động</th>
-                </tr>
-              </thead>
-              <tbody className="text-sm divide-y divide-slate-100">
-                {products.map(product => {
-                  const badge = getProductBadge(product);
-                  const isLowStock = product.stock_quantity <= (product.reorder_level || 0);
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[900px]">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                    <th className="p-4 w-12 text-center">
+                      <input 
+                        type="checkbox" 
+                        ref={selectAllRef}
+                        checked={isAllVisibleSelected}
+                        onChange={handleToggleSelectAllVisible}
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                      />
+                    </th>
+                    <th className="p-4">Sản phẩm</th>
+                    <th className="p-4">SKU</th>
+                    <th className="p-4">Danh mục</th>
+                    <th className="p-4 text-right">Giá nhập</th>
+                    <th className="p-4 text-right">Giá bán</th>
+                    <th className="p-4 text-center">Tồn kho</th>
+                    <th className="p-4 text-center">Trạng thái</th>
+                    <th className="p-4 text-center">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm divide-y divide-slate-100">
+                  {products.map(product => {
+                    const badge = getProductBadge(product);
+                    const isLowStock = product.stock_quantity <= (product.reorder_level || 0);
 
-                  return (
-                    <tr key={product.product_id} className="hover:bg-slate-50 transition-colors group">
-                      <td className="p-4 text-center">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedProductIds.includes(product.product_id)}
-                          onChange={() => handleToggleSelectProduct(product.product_id)}
-                          className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
-                        />
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 overflow-hidden">
-                            {product.image_url ? (
-                              <img src={product.image_url} alt={product.product_name} className="w-full h-full object-cover" />
-                            ) : (
-                              <List className="w-5 h-5" />
-                            )}
-                          </div>
-                          <div>
-                            <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
-                              {product.product_name}
+                    return (
+                      <tr key={product.product_id} className="hover:bg-slate-50 transition-colors group">
+                        <td className="p-4 text-center">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedProductIds.includes(product.product_id)}
+                            onChange={() => handleToggleSelectProduct(product.product_id)}
+                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                          />
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 overflow-hidden">
+                              {product.image_url ? (
+                                <img src={product.image_url} alt={product.product_name} className="w-full h-full object-cover" />
+                              ) : (
+                                <List className="w-5 h-5" />
+                              )}
                             </div>
-                            <div className="text-xs text-slate-500">{product.category_name || product.category?.category_name || 'N/A'}</div>
+                            <div>
+                              <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
+                                {product.product_name}
+                              </div>
+                              <div className="text-xs text-slate-500">{product.category_name || product.category?.category_name || 'N/A'}</div>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-4 text-slate-600">{product.sku}</td>
-                      <td className="p-4 text-slate-600">{product.category_name || product.category?.category_name || 'N/A'}</td>
-                      <td className="p-4 text-right text-slate-600 font-medium">{formatCurrency(product.import_price)}</td>
-                      <td className="p-4 text-right text-slate-900 font-medium">{formatCurrency(product.selling_price)}</td>
-                      <td className="p-4 text-center">
-                        <span className={`font-semibold ${isLowStock ? 'text-red-600' : 'text-slate-700'}`}>
-                          {product.stock_quantity || 0}
-                        </span>
-                      </td>
-                      <td className="p-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${badge.class}`}>
-                          {badge.text}
-                        </span>
-                      </td>
-                      <td className="p-4 text-center">
-                        <div className="flex items-center justify-center gap-3 text-sm">
-                          <button onClick={() => handleViewClick(product)} className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors font-medium">
-                            <Eye className="w-4 h-4" /> Xem
-                          </button>
-                          <button onClick={() => handleEditClick(product)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
-                            <Pencil className="w-4 h-4" /> Sửa
-                          </button>
-                          <button onClick={() => handleDeleteClick(product)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
-                            <Trash2 className="w-4 h-4" /> Xoá
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                        <td className="p-4 text-slate-600">{product.sku}</td>
+                        <td className="p-4 text-slate-600">{product.category_name || product.category?.category_name || 'N/A'}</td>
+                        <td className="p-4 text-right text-slate-600 font-medium">{formatCurrency(product.import_price)}</td>
+                        <td className="p-4 text-right text-slate-900 font-medium">{formatCurrency(product.selling_price)}</td>
+                        <td className="p-4 text-center">
+                          <span className={`font-semibold ${isLowStock ? 'text-red-600' : 'text-slate-700'}`}>
+                            {product.stock_quantity || 0}
+                          </span>
+                        </td>
+                        <td className="p-4 text-center">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${badge.class}`}>
+                            {badge.text}
+                          </span>
+                        </td>
+                        <td className="p-4 text-center">
+                          <div className="flex items-center justify-center gap-3 text-sm">
+                            <button onClick={() => handleViewClick(product)} className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                              <Eye className="w-4 h-4" /> Xem
+                            </button>
+                            <button onClick={() => handleEditClick(product)} className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium">
+                              <Pencil className="w-4 h-4" /> Sửa
+                            </button>
+                            <button onClick={() => handleDeleteClick(product)} className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors font-medium">
+                              <Trash2 className="w-4 h-4" /> Xoá
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Mobile Card List */}
+            <div className="md:hidden p-4 grid grid-cols-1 gap-4 bg-slate-50">
+              {products.map(product => renderProductCard(product))}
+            </div>
+          </>
         ) : (
           <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-slate-50">
-            {products.map(product => {
-              const badge = getProductBadge(product);
-              const isLowStock = product.stock_quantity <= (product.reorder_level || 0);
-              
-              return (
-                <div key={product.product_id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                  <div className="h-32 bg-slate-100 flex items-center justify-center shrink-0 relative overflow-hidden">
-                    {product.image_url ? (
-                      <img src={product.image_url} alt={product.product_name} className="w-full h-full object-cover" />
-                    ) : (
-                      <Package className="w-10 h-10 text-slate-300" />
-                    )}
-                    <div className="absolute top-2 right-2">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border shadow-sm bg-white/90 backdrop-blur-sm ${badge.class.replace('bg-', 'text-').replace('text-', 'text-')}`}>
-                        {badge.text}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4 flex flex-col flex-1">
-                    <div className="text-xs font-medium text-slate-500 mb-1">{product.category_name || product.category?.category_name || 'N/A'}</div>
-                    <div className="font-bold text-slate-900 text-sm line-clamp-2 leading-tight mb-2 flex-1" title={product.product_name}>
-                      {product.product_name}
-                    </div>
-                    <div className="flex items-end justify-between mt-auto pt-2 border-t border-slate-100">
-                      <div>
-                        <div className="text-xs text-slate-500 mb-0.5">Giá bán</div>
-                        <div className="font-bold text-slate-900">{formatCurrency(product.selling_price)}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-slate-500 mb-0.5">Tồn kho</div>
-                        <div className={`font-bold ${isLowStock ? 'text-red-600' : 'text-slate-700'}`}>
-                          {product.stock_quantity || 0}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-slate-50 px-3 py-2 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-xs text-slate-500 font-mono">{product.sku}</span>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => handleViewClick(product)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Xem">
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleEditClick(product)} className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded transition-colors" title="Sửa">
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDeleteClick(product)} className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="Xóa">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {products.map(product => renderProductCard(product))}
           </div>
         )}
         

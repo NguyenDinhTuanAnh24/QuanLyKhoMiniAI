@@ -74,8 +74,8 @@ export default function ChangePasswordModal({ onClose, email: propEmail }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 relative">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-5 sm:p-8 relative">
         {/* Nút đóng */}
         <button
           type="button"

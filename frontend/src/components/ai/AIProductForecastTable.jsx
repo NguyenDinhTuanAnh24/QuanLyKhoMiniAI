@@ -139,7 +139,7 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500">
@@ -233,8 +233,94 @@ export default function AIProductForecastTable({ categories, data = [], onApplyS
                 </tr>
               ))
             )}
-          </tbody>
+            </tbody>
         </table>
+      </div>
+
+      {/* Mobile view */}
+      <div className="md:hidden flex flex-col divide-y divide-slate-100 bg-white">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
+        ) : items.length === 0 ? (
+          <div className="p-8 text-center text-slate-500">
+            Không tìm thấy sản phẩm phù hợp.
+          </div>
+        ) : (
+          items.map((item) => (
+            <div key={item.product_id} className="p-4 flex flex-col gap-3">
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-slate-900 truncate">{item.product_name}</div>
+                  <div className="text-xs text-slate-500 mt-1">{item.sku} • {item.category_name}</div>
+                </div>
+                <div className={`shrink-0 inline-flex items-center px-2 py-1 rounded text-[10px] font-medium border ${getPriorityBadgeClass(item.priority)}`}>
+                  {item.priority || 'LOW'}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm bg-slate-50 p-2 rounded-lg">
+                <div>
+                  <span className="text-xs text-slate-500 block">Tồn kho</span>
+                  <span className={`font-semibold ${item.stock_quantity <= item.reorder_level ? 'text-red-600' : 'text-slate-700'}`}>
+                    {item.stock_quantity ?? 0}
+                  </span>
+                  <span className="text-slate-400 text-xs ml-1">/ {item.reorder_level ?? 0}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-500 block">Dự báo (14đ)</span>
+                  <span className="font-semibold text-slate-700">{item.forecast_quantity ?? item.forecast_14d ?? 0}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-500 block">Bán TB/ngày</span>
+                  <span className="font-medium text-slate-700">{item.avg_daily_sales_90d ?? item.avg_daily_sales ?? 0}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-slate-500 block">Gợi ý</span>
+                  <span className="font-bold">
+                    {(item.suggested_import_quantity ?? 0) > 0 ? (
+                      <span className="text-red-600">Nhập {item.suggested_import_quantity}</span>
+                    ) : (item.overstock_quantity ?? 0) > 0 ? (
+                      <span className="text-slate-500">Dư {item.overstock_quantity}</span>
+                    ) : (
+                      <span className="text-emerald-600">Vừa đủ</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-end gap-2 pt-2 mt-1 border-t border-slate-50">
+                <button 
+                  className="px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-blue-100 flex items-center justify-center gap-1 text-sm font-medium w-full"
+                  onClick={() => navigate(`/products?productId=${item.product_id}`)}
+                >
+                  <Eye className="w-4 h-4" /> Chi tiết
+                </button>
+                {(!item.status || item.status === 'PENDING') && (item.suggested_import_quantity ?? 0) > 0 && (
+                  <button 
+                    className="px-3 py-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors flex items-center justify-center gap-1 text-sm font-medium w-full"
+                    onClick={() => onApplySuggestion && onApplySuggestion(item)}
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Áp dụng
+                  </button>
+                )}
+                {item.status === 'APPLIED' && (
+                  <button 
+                    onClick={() => navigate(`/inventory-ops?tab=import&planId=${item.application_id}`)}
+                    className="px-3 py-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center justify-center gap-1 text-sm font-medium w-full"
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Đã áp dụng
+                  </button>
+                )}
+                {item.status === 'COMPLETED' && (
+                  <button 
+                    onClick={() => navigate(`/inventory-ops?tab=import&planId=${item.application_id}`)}
+                    className="px-3 py-1.5 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors flex items-center justify-center gap-1 text-sm font-medium w-full"
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Đã nhập kho
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Pagination */}

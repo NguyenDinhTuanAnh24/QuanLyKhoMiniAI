@@ -62,52 +62,88 @@ export default function TopSellingTab({ data, loading }) {
         <div className="p-5 border-b border-gray-200">
           <h3 className="text-lg font-bold text-slate-800">Top 10 sản phẩm bán chạy</h3>
         </div>
-        <div className="overflow-x-auto">
-          {tableData.length > 0 ? (
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
-                <tr>
-                  <th className="px-5 py-3 text-center w-16">STT</th>
-                  <th className="px-5 py-3">Sản phẩm</th>
-                  <th className="px-5 py-3">Mã SKU</th>
-                  <th className="px-5 py-3">Danh mục</th>
-                  <th className="px-5 py-3 text-right">Số lượng bán</th>
-                  <th className="px-5 py-3 text-right">Doanh thu</th>
-                  <th className="px-5 py-3 text-right">Tỷ trọng</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {currentTableData.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-3 text-center font-bold text-slate-500">
-                      {row.rank === 1 ? <span className="text-yellow-500">1</span> :
-                       row.rank === 2 ? <span className="text-slate-400">2</span> :
-                       row.rank === 3 ? <span className="text-amber-600">3</span> : row.rank}
-                    </td>
-                    <td className="px-5 py-3 font-medium text-slate-800">{row.product_name}</td>
-                    <td className="px-5 py-3 text-slate-500">{row.sku}</td>
-                    <td className="px-5 py-3 text-slate-600">{row.category}</td>
-                    <td className="px-5 py-3 text-right font-bold text-emerald-600">{formatNumber(row.sold_quantity)}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-slate-700">{formatCurrency(row.revenue)}</td>
-                    <td className="px-5 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <span className="text-xs font-medium text-slate-500">{row.percentage.toFixed(1)}%</span>
-                        <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-blue-500 rounded-full" 
-                            style={{ width: `${row.percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                    </td>
+        {tableData.length > 0 ? (
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
+                  <tr>
+                    <th className="px-5 py-3 text-center w-16">STT</th>
+                    <th className="px-5 py-3">Sản phẩm</th>
+                    <th className="px-5 py-3">Mã SKU</th>
+                    <th className="px-5 py-3">Danh mục</th>
+                    <th className="px-5 py-3 text-right">Số lượng bán</th>
+                    <th className="px-5 py-3 text-right">Doanh thu</th>
+                    <th className="px-5 py-3 text-right">Tỷ trọng</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
-          )}
-        </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {currentTableData.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-3 text-center font-bold text-slate-500">
+                        {row.rank === 1 ? <span className="text-yellow-500">1</span> :
+                         row.rank === 2 ? <span className="text-slate-400">2</span> :
+                         row.rank === 3 ? <span className="text-amber-600">3</span> : row.rank}
+                      </td>
+                      <td className="px-5 py-3 font-medium text-slate-800">{row.product_name}</td>
+                      <td className="px-5 py-3 text-slate-500">{row.sku}</td>
+                      <td className="px-5 py-3 text-slate-600">{row.category}</td>
+                      <td className="px-5 py-3 text-right font-bold text-emerald-600">{formatNumber(row.sold_quantity)}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-slate-700">{formatCurrency(row.revenue)}</td>
+                      <td className="px-5 py-3 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="text-xs font-medium text-slate-500">{row.percentage.toFixed(1)}%</span>
+                          <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-blue-500 rounded-full" 
+                              style={{ width: `${row.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden flex flex-col divide-y divide-gray-100">
+              {currentTableData.map((row, idx) => (
+                <div key={idx} className="p-4 flex flex-col gap-2 hover:bg-slate-50">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 flex items-center justify-center shrink-0 rounded bg-slate-100 font-bold text-slate-500 text-xs">
+                        {row.rank === 1 ? <span className="text-yellow-500">1</span> :
+                         row.rank === 2 ? <span className="text-slate-400">2</span> :
+                         row.rank === 3 ? <span className="text-amber-600">3</span> : row.rank}
+                      </div>
+                      <div>
+                        <div className="font-medium text-slate-800">{row.product_name}</div>
+                        <div className="text-xs text-slate-500 mt-1">{row.category} • {row.sku}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm bg-slate-50 p-2 rounded mt-2">
+                    <div>
+                      <span className="text-xs text-slate-500 block">Số lượng bán</span>
+                      <span className="font-bold text-emerald-600">{formatNumber(row.sold_quantity)}</span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-500 block">Doanh thu / Tỷ trọng</span>
+                      <div className="font-semibold text-slate-700 flex items-center gap-1">
+                        {formatCurrency(row.revenue)}
+                        <span className="text-xs font-medium text-slate-500 ml-1">({row.percentage.toFixed(1)}%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
+        )}
         
         {tableData.length > 0 && totalPages > 1 && (
           <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-between bg-slate-50 rounded-b-xl">

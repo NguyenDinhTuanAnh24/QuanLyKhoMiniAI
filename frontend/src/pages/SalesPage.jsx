@@ -591,7 +591,7 @@ export default function SalesPage({ onNavigate }) {
 
       <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mt-6">
         <h2 className="font-bold text-slate-800 mb-4">Lịch sử hóa đơn gần đây</h2>
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-slate-200 text-xs text-slate-500 font-semibold bg-slate-50">
@@ -628,6 +628,34 @@ export default function SalesPage({ onNavigate }) {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View */}
+        <div className="md:hidden flex flex-col divide-y divide-slate-100">
+          {paginatedOrders.length === 0 ? (
+            <div className="p-6 text-center text-slate-500">Chưa có hóa đơn nào</div>
+          ) : (
+            paginatedOrders.map(order => (
+              <div key={order.order_id} className="py-4 flex flex-col gap-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="font-medium text-slate-800">{order.order_code}</div>
+                    <div className="text-sm text-slate-600">{order.customer_name}</div>
+                  </div>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border bg-green-50 text-green-700 border-green-200">
+                    Thành công
+                  </span>
+                </div>
+                <div className="flex justify-between items-end mt-1 text-sm">
+                  <div className="text-slate-500 flex flex-col">
+                    <span>{new Date(order.created_at).toLocaleString('vi-VN')}</span>
+                    <span>{order.payment_method}</span>
+                  </div>
+                  <div className="font-bold text-slate-900">{formatCurrency(order.total_amount)}</div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
         
         {/* Pagination Controls */}

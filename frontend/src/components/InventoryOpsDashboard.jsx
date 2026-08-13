@@ -615,7 +615,7 @@ export default function InventoryOpsDashboard() {
                   </div>
                 )}
                 <div className="border border-slate-200 rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto">
+                  <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[680px]">
                       <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-medium">
                         <tr>
@@ -676,6 +676,65 @@ export default function InventoryOpsDashboard() {
                         )}
                       </tbody>
                     </table>
+                  </div>
+
+
+                  {/* Mobile Card view */}
+                  <div className="md:hidden flex flex-col divide-y divide-slate-100 bg-white">
+                    {visibleImportItems.length === 0 ? (
+                      <div className="p-6 text-center text-slate-400">
+                        {normalizedImportPlanSearch ? 'Không tìm thấy sản phẩm phù hợp' : 'Chưa có sản phẩm nào trong phiếu'}
+                      </div>
+                    ) : (
+                      visibleImportItems.map(item => (
+                        <div key={item.product_id} className="p-4 flex flex-col gap-3">
+                          <div className="flex justify-between items-start gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-slate-900 truncate">{item.product_name}</h4>
+                              <div className="text-xs text-slate-500 mt-1">{item.sku}</div>
+                            </div>
+                            {(!importForm.plan_id || importForm.plan_status === 'DRAFT') && (
+                              <button onClick={() => removeItem(item.product_id)} className="shrink-0 p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors" aria-label={`Xóa ${item.product_name}`}>
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-2 gap-3 mt-1">
+                            <div>
+                              <label className="block text-xs text-slate-500 mb-1">Số lượng</label>
+                              <div className="flex flex-col gap-1">
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={item.quantity}
+                                  disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
+                                  onChange={event => updateImportItem(item.product_id, 'quantity', event.target.value)}
+                                  className="w-full rounded-md border border-slate-200 px-2 py-1.5 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:bg-slate-50"
+                                />
+                                {isImportPlan && item.suggested_quantity != null && (
+                                  <span className="text-[11px] text-slate-400">AI: {item.suggested_quantity}</span>
+                                )}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-xs text-slate-500 mb-1">Đơn giá</label>
+                              <input
+                                type="number"
+                                min="0"
+                                value={item.unit_price}
+                                disabled={importForm.plan_id && importForm.plan_status !== 'DRAFT'}
+                                onChange={event => updateImportItem(item.product_id, 'unit_price', event.target.value)}
+                                className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:bg-slate-50"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center pt-2 border-t border-slate-50">
+                            <span className="text-sm font-medium text-slate-700">Thành tiền:</span>
+                            <span className="font-bold text-blue-600">{formatCurrency((Number(item.quantity) || 0) * (Number(item.unit_price) || 0))}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                   {isImportPlan && (
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-200 bg-white px-3 py-3 text-xs text-slate-500">
@@ -840,7 +899,8 @@ export default function InventoryOpsDashboard() {
 
                 {/* List Items */}
                 <div className="border border-slate-200 rounded-lg overflow-hidden">
-                  <table className="w-full text-left border-collapse min-w-full">
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-full">
                     <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-medium">
                       <tr>
                         <th className="p-3">Sản phẩm</th>
@@ -871,6 +931,32 @@ export default function InventoryOpsDashboard() {
                       )}
                     </tbody>
                   </table>
+                  </div>
+
+                  {/* Mobile List View */}
+                  <div className="md:hidden flex flex-col divide-y divide-slate-100 bg-white">
+                    {exportForm.items.length === 0 ? (
+                      <div className="p-6 text-center text-slate-400">Chưa có sản phẩm nào trong phiếu</div>
+                    ) : (
+                      exportForm.items.map(item => (
+                        <div key={item.product_id} className="p-4 flex flex-col gap-2">
+                          <div className="flex justify-between items-start gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-slate-900 truncate">{item.product_name}</h4>
+                              <div className="text-xs text-slate-500 mt-1">{item.sku}</div>
+                            </div>
+                            <button onClick={() => removeItem(item.product_id)} className="shrink-0 p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-50 text-sm">
+                            <span className="text-slate-600">Tồn hiện tại: <span className="font-medium">{item.stock_quantity}</span></span>
+                            <span className="text-slate-600">SL Xuất: <span className="font-bold text-blue-600">{item.quantity}</span></span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
 
                 {/* Summary */}

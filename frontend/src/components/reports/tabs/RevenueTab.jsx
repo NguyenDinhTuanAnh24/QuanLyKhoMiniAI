@@ -155,36 +155,62 @@ export default function RevenueTab({ data, loading }) {
         <div className="p-5 border-b border-gray-200">
           <h3 className="text-lg font-bold text-slate-800">Chi tiết doanh thu</h3>
         </div>
-        <div className="overflow-x-auto">
-          {tableData.length > 0 ? (
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
-                <tr>
-                  <th className="px-5 py-3">Ngày</th>
-                  <th className="px-5 py-3 text-right">Số đơn</th>
-                  <th className="px-5 py-3 text-right">Doanh thu</th>
-                  <th className="px-5 py-3 text-right">Giảm giá</th>
-                  <th className="px-5 py-3 text-right">Doanh thu thuần</th>
-                  <th className="px-5 py-3 text-right">Lợi nhuận</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {currentTableData.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-3 font-medium text-slate-800">{formatDate(row.date)}</td>
-                    <td className="px-5 py-3 text-right">{formatNumber(row.orders_count)}</td>
-                    <td className="px-5 py-3 text-right font-medium text-slate-700">{formatCurrency(row.revenue)}</td>
-                    <td className="px-5 py-3 text-right text-slate-500">{formatCurrency(row.discount)}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-blue-600">{formatCurrency(row.net_revenue)}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-emerald-600">{formatCurrency(row.profit)}</td>
+        {tableData.length > 0 ? (
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
+                  <tr>
+                    <th className="px-5 py-3">Ngày</th>
+                    <th className="px-5 py-3 text-right">Số đơn</th>
+                    <th className="px-5 py-3 text-right">Doanh thu</th>
+                    <th className="px-5 py-3 text-right">Giảm giá</th>
+                    <th className="px-5 py-3 text-right">Doanh thu thuần</th>
+                    <th className="px-5 py-3 text-right">Lợi nhuận</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
-          )}
-        </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {currentTableData.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-3 font-medium text-slate-800">{formatDate(row.date)}</td>
+                      <td className="px-5 py-3 text-right">{formatNumber(row.orders_count)}</td>
+                      <td className="px-5 py-3 text-right font-medium text-slate-700">{formatCurrency(row.revenue)}</td>
+                      <td className="px-5 py-3 text-right text-slate-500">{formatCurrency(row.discount)}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-blue-600">{formatCurrency(row.net_revenue)}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-emerald-600">{formatCurrency(row.profit)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden flex flex-col divide-y divide-gray-100">
+              {currentTableData.map((row, idx) => (
+                <div key={idx} className="p-4 flex flex-col gap-2 hover:bg-slate-50">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="font-medium text-slate-800">{formatDate(row.date)}</div>
+                    <div className="text-right">
+                      <div className="font-bold text-blue-600">{formatCurrency(row.net_revenue)}</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm bg-slate-50 p-2 rounded mt-1">
+                    <div>
+                      <span className="text-xs text-slate-500 block">Số đơn / Doanh thu</span>
+                      <span className="font-semibold text-slate-800">{formatNumber(row.orders_count)} / {formatCurrency(row.revenue)}</span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-500 block">Lợi nhuận</span>
+                      <span className="font-semibold text-emerald-600">{formatCurrency(row.profit)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
+        )}
         
         {tableData.length > 0 && totalPages > 1 && (
           <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-between bg-slate-50 rounded-b-xl">

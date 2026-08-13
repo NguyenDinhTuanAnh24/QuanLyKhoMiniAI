@@ -205,9 +205,10 @@ export default function SupplierDashboard() {
         </select>
       </div>
 
-      {/* Table */}
+      {/* Table & Mobile List */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-xs tracking-wider text-slate-500 font-medium">
@@ -272,6 +273,62 @@ export default function SupplierDashboard() {
               )}
             </tbody>
           </table>
+        </div>
+        
+        {/* Mobile List */}
+        <div className="md:hidden flex flex-col divide-y divide-slate-100">
+          {loading ? (
+            <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
+          ) : suppliers.length === 0 ? (
+            <div className="p-8 text-center text-slate-500">Không tìm thấy nhà cung cấp nào</div>
+          ) : (
+            suppliers.map(supplier => {
+              const isDeleted = !!supplier.deleted_at;
+              const isInactive = supplier.status === 'Ngừng hợp tác';
+              const displayStatus = isDeleted ? 'Đã xóa' : (supplier.status || 'Hoạt động');
+              
+              let badgeClass = 'bg-green-50 text-green-700 border-green-200';
+              if (isDeleted || isInactive) badgeClass = 'bg-red-50 text-red-700 border-red-200';
+              else if (supplier.status && supplier.status !== 'Đang hợp tác') badgeClass = 'bg-slate-100 text-slate-600 border-slate-200';
+
+              return (
+                <div key={supplier.supplier_id} className="p-4 flex flex-col gap-3">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-slate-900 truncate">{supplier.supplier_name}</h4>
+                      <p className="text-sm text-slate-500 mt-1 truncate">{supplier.phone || 'Chưa có SĐT'}</p>
+                    </div>
+                    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${badgeClass}`}>
+                      {displayStatus}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p className="text-slate-500 text-xs mb-0.5">Số SP</p>
+                      <p className="font-medium text-slate-900">{supplier.products?.[0]?.count || 0}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-slate-500 text-xs mb-0.5">Tổng nhập</p>
+                      <p className="font-medium text-slate-900">đ 0</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-50 mt-1">
+                    <button onClick={() => openViewModal(supplier)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium text-sm">
+                      <Eye className="w-4 h-4" /> Chi tiết
+                    </button>
+                    <button onClick={() => openEditModal(supplier)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium text-sm">
+                      <Pencil className="w-4 h-4" /> Sửa
+                    </button>
+                    <button onClick={() => handleDeleteClick(supplier.supplier_id)} className="flex-1 flex justify-center items-center gap-1 py-1.5 bg-slate-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium text-sm">
+                      <Trash2 className="w-4 h-4" /> Xóa
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
         
         {/* Pagination */}

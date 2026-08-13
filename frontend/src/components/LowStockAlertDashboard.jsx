@@ -322,8 +322,9 @@ export default function LowStockAlertDashboard({ onNavigate }) {
             <p className="text-slate-500 text-sm">Không có sản phẩm nào phù hợp với điều kiện tìm kiếm.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left border-collapse min-w-[900px]">
+          <>
+            <div className="hidden md:block overflow-x-auto flex-1">
+              <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   <th className="p-4 pl-6">Mã SP</th>
@@ -377,9 +378,48 @@ export default function LowStockAlertDashboard({ onNavigate }) {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden flex flex-col divide-y divide-slate-100 flex-1">
+              {data.alerts.map(item => (
+                <div key={item.product_id} className="p-4 flex flex-col gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-slate-900 truncate">{item.product_name}</div>
+                      <div className="text-xs text-blue-600 mt-1 cursor-pointer hover:underline">{item.sku}</div>
+                      <div className="text-xs text-slate-500 mt-0.5">{item.category_name || 'N/A'}</div>
+                    </div>
+                    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getBadgeClass(item.status)}`}>
+                      {item.status}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm bg-slate-50 p-2 rounded-lg">
+                    <div>
+                      <span className="text-xs text-slate-500 block">Tồn kho</span>
+                      <span className={`font-bold ${item.alert_level === 'high' || item.alert_level === 'critical' ? 'text-red-600' : 'text-slate-900'}`}>
+                        {item.stock_quantity}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-500 block">Mức an toàn</span>
+                      <span className="text-slate-600">{item.reorder_level}</span>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-slate-50 flex justify-end">
+                    <button
+                      onClick={() => handleCreateImportOrder(item)}
+                      className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded font-semibold transition-colors text-xs"
+                    >
+                      Tạo đơn nhập kho
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         {/* Pagination Footer */}

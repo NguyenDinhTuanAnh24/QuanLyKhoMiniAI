@@ -109,48 +109,83 @@ export default function InventoryTab({ data, loading }) {
         <div className="p-5 border-b border-gray-200">
           <h3 className="text-lg font-bold text-slate-800">Chi tiết tồn kho</h3>
         </div>
-        <div className="overflow-x-auto">
-          {tableData.length > 0 ? (
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
-                <tr>
-                  <th className="px-5 py-3">SKU</th>
-                  <th className="px-5 py-3">Sản phẩm</th>
-                  <th className="px-5 py-3">Danh mục</th>
-                  <th className="px-5 py-3 text-right">Tồn kho</th>
-                  <th className="px-5 py-3 text-right">Mức tồn tối thiểu</th>
-                  <th className="px-5 py-3 text-right">Giá nhập</th>
-                  <th className="px-5 py-3 text-right">Giá trị tồn</th>
-                  <th className="px-5 py-3 text-center">Trạng thái</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {currentTableData.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-3 font-medium text-slate-500">{row.sku}</td>
-                    <td className="px-5 py-3 font-medium text-slate-800">{row.product_name}</td>
-                    <td className="px-5 py-3 text-slate-600">{row.category}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-slate-800">{formatNumber(row.stock_quantity)}</td>
-                    <td className="px-5 py-3 text-right text-slate-500">{formatNumber(row.reorder_level)}</td>
-                    <td className="px-5 py-3 text-right text-slate-500">{formatCurrency(row.import_price)}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-slate-700">{formatCurrency(row.inventory_value)}</td>
-                    <td className="px-5 py-3 text-center">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
-                        ${row.status === 'Hết hàng' ? 'bg-red-50 text-red-700 border-red-200' : 
-                          row.status === 'Sắp hết' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
-                          'bg-emerald-50 text-emerald-700 border-emerald-200'}`}
-                      >
-                        {row.status}
-                      </span>
-                    </td>
+        {tableData.length > 0 ? (
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
+                  <tr>
+                    <th className="px-5 py-3">SKU</th>
+                    <th className="px-5 py-3">Sản phẩm</th>
+                    <th className="px-5 py-3">Danh mục</th>
+                    <th className="px-5 py-3 text-right">Tồn kho</th>
+                    <th className="px-5 py-3 text-right">Mức tồn tối thiểu</th>
+                    <th className="px-5 py-3 text-right">Giá nhập</th>
+                    <th className="px-5 py-3 text-right">Giá trị tồn</th>
+                    <th className="px-5 py-3 text-center">Trạng thái</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
-          )}
-        </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {currentTableData.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-3 font-medium text-slate-500">{row.sku}</td>
+                      <td className="px-5 py-3 font-medium text-slate-800">{row.product_name}</td>
+                      <td className="px-5 py-3 text-slate-600">{row.category}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-slate-800">{formatNumber(row.stock_quantity)}</td>
+                      <td className="px-5 py-3 text-right text-slate-500">{formatNumber(row.reorder_level)}</td>
+                      <td className="px-5 py-3 text-right text-slate-500">{formatCurrency(row.import_price)}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-slate-700">{formatCurrency(row.inventory_value)}</td>
+                      <td className="px-5 py-3 text-center">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
+                          ${row.status === 'Hết hàng' ? 'bg-red-50 text-red-700 border-red-200' : 
+                            row.status === 'Sắp hết' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
+                            'bg-emerald-50 text-emerald-700 border-emerald-200'}`}
+                        >
+                          {row.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden flex flex-col divide-y divide-gray-100">
+              {currentTableData.map((row, idx) => (
+                <div key={idx} className="p-4 flex flex-col gap-2 hover:bg-slate-50">
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <div className="font-medium text-slate-800">{row.product_name}</div>
+                      <div className="text-xs text-blue-600 mt-1">{row.sku}</div>
+                      <div className="text-xs text-slate-500 mt-0.5">{row.category}</div>
+                    </div>
+                    <span className={`shrink-0 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
+                      ${row.status === 'Hết hàng' ? 'bg-red-50 text-red-700 border-red-200' : 
+                        row.status === 'Sắp hết' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
+                        'bg-emerald-50 text-emerald-700 border-emerald-200'}`}
+                    >
+                      {row.status}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm bg-slate-50 p-2 rounded mt-1">
+                    <div>
+                      <span className="text-xs text-slate-500 block">Tồn kho / Tối thiểu</span>
+                      <span className="font-semibold text-slate-800">{formatNumber(row.stock_quantity)}</span>
+                      <span className="text-xs text-slate-500"> / {formatNumber(row.reorder_level)}</span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-500 block">Giá trị tồn</span>
+                      <span className="font-semibold text-slate-700">{formatCurrency(row.inventory_value)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
+        )}
         
         {tableData.length > 0 && totalPages > 1 && (
           <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-between bg-slate-50 rounded-b-xl">

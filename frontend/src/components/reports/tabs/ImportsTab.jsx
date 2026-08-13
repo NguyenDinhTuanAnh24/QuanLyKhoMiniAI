@@ -136,38 +136,67 @@ export default function ImportsTab({ data, loading }) {
         <div className="p-5 border-b border-gray-200">
           <h3 className="text-lg font-bold text-slate-800">Lịch sử nhập hàng</h3>
         </div>
-        <div className="overflow-x-auto">
-          {tableData.length > 0 ? (
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
-                <tr>
-                  <th className="px-5 py-3">Thời gian</th>
-                  <th className="px-5 py-3">Sản phẩm</th>
-                  <th className="px-5 py-3">Nhà cung cấp</th>
-                  <th className="px-5 py-3 text-right">Số lượng</th>
-                  <th className="px-5 py-3 text-right">Giá nhập</th>
-                  <th className="px-5 py-3 text-right">Thành tiền</th>
-                  <th className="px-5 py-3">Ghi chú</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {currentTableData.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-3 font-medium text-slate-700 whitespace-nowrap">{formatFullDate(row.date)}</td>
-                    <td className="px-5 py-3 font-medium text-slate-800">{row.product_name}</td>
-                    <td className="px-5 py-3 text-slate-600">{row.supplier}</td>
-                    <td className="px-5 py-3 text-right font-bold text-blue-600">{formatNumber(row.quantity)}</td>
-                    <td className="px-5 py-3 text-right text-slate-500">{formatCurrency(row.unit_price)}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-slate-800">{formatCurrency(row.total)}</td>
-                    <td className="px-5 py-3 text-slate-500 max-w-[200px] truncate" title={row.note}>{row.note || '-'}</td>
+        {tableData.length > 0 ? (
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-gray-200">
+                  <tr>
+                    <th className="px-5 py-3">Thời gian</th>
+                    <th className="px-5 py-3">Sản phẩm</th>
+                    <th className="px-5 py-3">Nhà cung cấp</th>
+                    <th className="px-5 py-3 text-right">Số lượng</th>
+                    <th className="px-5 py-3 text-right">Giá nhập</th>
+                    <th className="px-5 py-3 text-right">Thành tiền</th>
+                    <th className="px-5 py-3">Ghi chú</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
-          )}
-        </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {currentTableData.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-3 font-medium text-slate-700 whitespace-nowrap">{formatFullDate(row.date)}</td>
+                      <td className="px-5 py-3 font-medium text-slate-800">{row.product_name}</td>
+                      <td className="px-5 py-3 text-slate-600">{row.supplier}</td>
+                      <td className="px-5 py-3 text-right font-bold text-blue-600">{formatNumber(row.quantity)}</td>
+                      <td className="px-5 py-3 text-right text-slate-500">{formatCurrency(row.unit_price)}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-slate-800">{formatCurrency(row.total)}</td>
+                      <td className="px-5 py-3 text-slate-500 max-w-[200px] truncate" title={row.note}>{row.note || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden flex flex-col divide-y divide-gray-100">
+              {currentTableData.map((row, idx) => (
+                <div key={idx} className="p-4 flex flex-col gap-2 hover:bg-slate-50">
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <div className="font-medium text-slate-800">{row.product_name}</div>
+                      <div className="text-xs text-slate-500">{row.supplier}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-blue-600">+{formatNumber(row.quantity)}</div>
+                      <div className="text-xs text-slate-500">{formatFullDate(row.date)}</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center text-sm bg-slate-50 p-2 rounded mt-1">
+                    <span className="text-slate-600">Đơn giá: {formatCurrency(row.unit_price)}</span>
+                    <span className="font-semibold text-slate-800">{formatCurrency(row.total)}</span>
+                  </div>
+                  {row.note && (
+                    <div className="text-xs text-slate-500 mt-1">
+                      Ghi chú: {row.note}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="p-8 text-center text-slate-400">Không có dữ liệu</div>
+        )}
         
         {tableData.length > 0 && totalPages > 1 && (
           <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-between bg-slate-50 rounded-b-xl">
