@@ -28,7 +28,7 @@ import LoadingState from '../components/shared/LoadingState';
 import EmptyState from '../components/shared/EmptyState';
 import LazyRevealSection from '../components/common/LazyRevealSection';
 import PageContainer from '../components/layout/PageContainer';
-import { PageSkeleton } from '../components/ui/Skeletons';
+import AIInsightsSkeleton from '../components/skeletons/AIInsightsSkeleton';
 import api from '../services/api';
 
 function parseReport(reportString) {
@@ -422,7 +422,7 @@ export default function AIInsightsPage() {
   if (loading) {
     return (
       <PageContainer>
-        <PageSkeleton />
+        <AIInsightsSkeleton />
       </PageContainer>
     );
   }

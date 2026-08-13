@@ -9,7 +9,7 @@ import StatCard from './StatCard';
 import ProductFormModal from './ProductFormPage';
 import { useToast } from '../contexts/ToastContext';
 import PageContainer from './layout/PageContainer';
-import { TableSkeleton } from './ui/Skeletons';
+import ProductSkeleton from './skeletons/ProductSkeleton';
 
 export default function ProductDashboard({ onNavigate }) {
   const { showToast } = useToast();
@@ -414,6 +414,20 @@ export default function ProductDashboard({ onNavigate }) {
     );
   };
 
+  if (loading && products.length === 0 && !searchTerm && !selectedCategory && !selectedStatus && !selectedStockStatus) {
+    return (
+      <PageContainer>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Sản phẩm</h1>
+            <p className="text-slate-500 text-sm mt-1">Quản lý toàn bộ sản phẩm trong hệ thống</p>
+          </div>
+        </div>
+        <ProductSkeleton />
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       
@@ -528,10 +542,13 @@ export default function ProductDashboard({ onNavigate }) {
       </div>
 
       {/* Content Area */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
-        {loading ? (
-          <TableSkeleton rows={10} />
-        ) : products.length === 0 ? (
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+        {products.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
               <Package className="w-8 h-8 text-slate-400" />

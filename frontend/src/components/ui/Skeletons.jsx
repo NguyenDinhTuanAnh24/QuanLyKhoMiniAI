@@ -1,40 +1,50 @@
 import React from 'react';
 
+export const Skeleton = ({ className = "" }) => (
+  <div className={`animate-pulse bg-slate-200/80 rounded-md ${className}`} />
+);
+
 export const StatCardSkeleton = () => (
   <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3 h-[120px]">
     <div className="flex justify-between items-start">
-      <div className="w-10 h-10 rounded-lg bg-slate-200 animate-pulse"></div>
-      <div className="w-16 h-6 rounded-md bg-slate-200 animate-pulse"></div>
+      <Skeleton className="w-10 h-10 rounded-lg" />
+      <Skeleton className="w-16 h-6 rounded-md" />
     </div>
     <div>
-      <div className="w-24 h-8 rounded bg-slate-200 animate-pulse mb-1"></div>
-      <div className="w-32 h-4 rounded bg-slate-200 animate-pulse"></div>
+      <Skeleton className="w-24 h-8 rounded mb-1" />
+      <Skeleton className="w-32 h-4 rounded" />
     </div>
   </div>
 );
 
-export const TableSkeleton = ({ rows = 6 }) => (
+export const TableSkeleton = ({ rows = 6, showHeader = true, showToolbar = true }) => (
   <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden w-full">
-    <div className="p-4 border-b border-slate-100 flex flex-wrap gap-4 items-center bg-slate-50">
-      <div className="w-64 h-10 rounded-lg bg-slate-200 animate-pulse"></div>
-      <div className="w-32 h-10 rounded-lg bg-slate-200 animate-pulse"></div>
-      <div className="w-32 h-10 rounded-lg bg-slate-200 animate-pulse"></div>
-      <div className="w-24 h-10 rounded-lg bg-slate-200 animate-pulse hidden md:block ml-auto"></div>
-    </div>
+    {showToolbar && (
+      <div className="p-4 border-b border-slate-100 flex flex-wrap gap-4 items-center bg-slate-50">
+        <Skeleton className="w-64 h-10 rounded-lg" />
+        <Skeleton className="w-32 h-10 rounded-lg" />
+        <Skeleton className="w-32 h-10 rounded-lg" />
+        <Skeleton className="w-24 h-10 rounded-lg hidden md:block ml-auto" />
+      </div>
+    )}
     <div className="overflow-x-auto w-full">
       <table className="w-full text-left border-collapse min-w-[900px]">
-        <thead>
-          <tr className="bg-slate-50 border-b border-slate-200">
-            {[...Array(6)].map((_, i) => (
-              <th key={i} className="p-4"><div className="w-20 h-4 bg-slate-200 rounded animate-pulse"></div></th>
-            ))}
-          </tr>
-        </thead>
+        {showHeader && (
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-200">
+              {[...Array(6)].map((_, i) => (
+                <th key={i} className="p-4"><Skeleton className="w-20 h-4" /></th>
+              ))}
+            </tr>
+          </thead>
+        )}
         <tbody className="divide-y divide-slate-100">
           {[...Array(rows)].map((_, r) => (
             <tr key={r}>
               {[...Array(6)].map((_, c) => (
-                <td key={c} className="p-4"><div className={`h-4 bg-slate-200 rounded animate-pulse ${c === 0 ? 'w-8' : c === 1 ? 'w-48' : 'w-24'}`}></div></td>
+                <td key={c} className="p-4">
+                  <Skeleton className={`h-4 ${c === 0 ? 'w-8' : c === 1 ? 'w-48' : 'w-24'}`} />
+                </td>
               ))}
             </tr>
           ))}
@@ -44,40 +54,39 @@ export const TableSkeleton = ({ rows = 6 }) => (
   </div>
 );
 
-export const PageSkeleton = () => (
-  <div data-testid="page-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <StatCardSkeleton />
-      <StatCardSkeleton />
-      <StatCardSkeleton />
-      <StatCardSkeleton />
-    </div>
-    <TableSkeleton />
+export const ChartSkeleton = ({ height = "h-[350px]" }) => (
+  <div className={`bg-white rounded-xl border border-slate-100 p-6 flex flex-col ${height}`}>
+    <Skeleton className="w-48 h-6 mb-2" />
+    <Skeleton className="w-32 h-4 mb-8" />
+    <Skeleton className="flex-1 w-full rounded" />
   </div>
 );
 
-export const DashboardSkeleton = () => (
-  <div data-testid="dashboard-skeleton" className="space-y-6 w-full animate-in fade-in duration-300">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <StatCardSkeleton />
-      <StatCardSkeleton />
-      <StatCardSkeleton />
-      <StatCardSkeleton />
-    </div>
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 h-[350px] bg-white rounded-xl border border-slate-100 p-6 flex flex-col">
-         <div className="w-48 h-6 bg-slate-200 rounded animate-pulse mb-2"></div>
-         <div className="w-32 h-4 bg-slate-200 rounded animate-pulse mb-8"></div>
-         <div className="flex-1 w-full bg-slate-100 rounded animate-pulse"></div>
+export const FormFieldSkeleton = () => (
+  <div className="space-y-2">
+    <Skeleton className="w-24 h-4" />
+    <Skeleton className="w-full h-10 rounded-lg" />
+  </div>
+);
+
+export const FilterBarSkeleton = () => (
+  <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-3">
+    <Skeleton className="w-full md:w-64 h-10 rounded-lg" />
+    <Skeleton className="w-full md:w-40 h-10 rounded-lg" />
+    <Skeleton className="w-full md:w-40 h-10 rounded-lg" />
+  </div>
+);
+
+export const CardListSkeleton = ({ count = 5 }) => (
+  <div className="flex flex-col gap-4 w-full">
+    {[...Array(count)].map((_, i) => (
+      <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col sm:flex-row gap-4">
+        <div className="flex-1 space-y-2">
+          <Skeleton className="w-3/4 h-5" />
+          <Skeleton className="w-1/2 h-4" />
+        </div>
+        <Skeleton className="w-24 h-6 rounded-full shrink-0" />
       </div>
-      <div className="h-[350px] bg-white rounded-xl border border-slate-100 p-6 flex flex-col">
-         <div className="w-48 h-6 bg-slate-200 rounded animate-pulse mb-6"></div>
-         <div className="space-y-4">
-           <div className="w-full h-16 bg-slate-100 rounded animate-pulse"></div>
-           <div className="w-full h-16 bg-slate-100 rounded animate-pulse"></div>
-           <div className="w-full h-16 bg-slate-100 rounded animate-pulse"></div>
-         </div>
-      </div>
-    </div>
+    ))}
   </div>
 );

@@ -3,8 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 
 import MainLayout from './components/MainLayout';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
-import PageSkeleton from './components/shared/PageSkeleton';
-
+import RouteLoadingFallback from './components/skeletons/RouteLoadingFallback';
 import { ToastProvider } from './contexts/ToastContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { BrandingProvider } from './contexts/BrandingContext';
@@ -65,7 +64,7 @@ function App() {
             <ProtectedRoute>
               <NotificationProvider>
                 <MainLayout activePage={activePage} onNavigate={handleNavigate}>
-                  <Suspense fallback={<PageSkeleton />}>
+                  <Suspense fallback={<RouteLoadingFallback />}>
                     <Routes>
                       <Route path="/" element={<Navigate to="/dashboard" replace />} />
                       <Route path="/dashboard" element={<DashboardPage onNavigate={handleNavigate} />} />

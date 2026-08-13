@@ -10,7 +10,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useBranding } from '../contexts/BrandingContext';
 import { processBrandLogo } from '../utils/processBrandLogo';
 import PageContainer from '../components/layout/PageContainer';
-import { PageSkeleton } from '../components/ui/Skeletons';
+import SettingsSkeleton from '../components/skeletons/SettingsSkeleton';
 
 export default function SettingsPage() {
   const { showToast } = useToast();
@@ -337,7 +337,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <PageContainer>
-        <PageSkeleton />
+        <SettingsSkeleton />
       </PageContainer>
     );
   }

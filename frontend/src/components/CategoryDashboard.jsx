@@ -4,7 +4,7 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
 import PageContainer from './layout/PageContainer';
-import { TableSkeleton } from './ui/Skeletons';
+import DataFoundationSkeleton from './skeletons/DataFoundationSkeleton';
 import { useToast } from '../contexts/ToastContext';
 
 export default function CategoryDashboard() {
@@ -121,6 +121,10 @@ export default function CategoryDashboard() {
   const activeCount = categories.filter(c => (c.products?.[0]?.count || 0) > 0).length;
   const emptyCount = categories.filter(c => (c.products?.[0]?.count || 0) === 0).length;
 
+  if (loading && categories.length === 0 && !filters.search) {
+    return <DataFoundationSkeleton title="Danh mục sản phẩm" subtitle="Tổ chức sản phẩm theo từng nhóm hàng hóa" />;
+  }
+
   return (
     <PageContainer>
       {/* Header */}
@@ -162,10 +166,13 @@ export default function CategoryDashboard() {
       </div>
 
       {/* Table & Mobile List */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        {loading ? (
-          <TableSkeleton rows={5} />
-        ) : categories.length === 0 ? (
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+        {categories.length === 0 ? (
           <div className="p-8 text-center text-slate-500">Không tìm thấy danh mục nào</div>
         ) : (
           <>

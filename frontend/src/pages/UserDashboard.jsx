@@ -5,7 +5,7 @@ import StatCard from '../components/StatCard';
 import ConfirmModal from '../components/ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import PageContainer from '../components/layout/PageContainer';
-import { TableSkeleton } from '../components/ui/Skeletons';
+import UsersSkeleton from '../components/skeletons/UsersSkeleton';
 
 export default function UserDashboard() {
   const { showToast } = useToast();
@@ -171,6 +171,20 @@ export default function UserDashboard() {
   const roles = ['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho', 'Nhân viên bán hàng'];
   const statuses = ['Đang hoạt động', 'Tạm khóa'];
 
+  if (loading && users.length === 0 && !searchTerm && !selectedRole && !selectedStatus) {
+    return (
+      <PageContainer>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Người dùng</h1>
+            <p className="text-slate-500 text-sm mt-1">Quản lý tài khoản và phân quyền hệ thống</p>
+          </div>
+        </div>
+        <UsersSkeleton />
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
@@ -219,10 +233,13 @@ export default function UserDashboard() {
         </select>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        {loading ? (
-          <TableSkeleton rows={5} />
-        ) : filteredUsers.length === 0 ? (
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+        {filteredUsers.length === 0 ? (
           <div className="p-12 text-center text-slate-500">Không tìm thấy người dùng phù hợp</div>
         ) : (
           <>

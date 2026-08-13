@@ -8,7 +8,7 @@ import ConfirmModal from './ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import StatCard from './StatCard';
 import PageContainer from './layout/PageContainer';
-import { PageSkeleton } from './ui/Skeletons';
+import InventorySkeleton from './skeletons/InventorySkeleton';
 import api from '../services/api';
 
 export default function InventoryOpsDashboard() {
@@ -420,7 +420,7 @@ export default function InventoryOpsDashboard() {
   if (isLoading) {
     return (
       <PageContainer>
-        <PageSkeleton />
+        <InventorySkeleton />
       </PageContainer>
     );
   }

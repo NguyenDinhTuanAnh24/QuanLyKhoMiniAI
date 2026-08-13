@@ -25,7 +25,7 @@ import { useToast } from '../contexts/ToastContext';
 import { getUser } from '../services/authService';
 import LazyRevealSection from '../components/common/LazyRevealSection';
 import PageContainer from '../components/layout/PageContainer';
-import { DashboardSkeleton } from '../components/ui/Skeletons';
+import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
 
 const DashboardPage = ({ onNavigate }) => {
   const navigate = useNavigate();

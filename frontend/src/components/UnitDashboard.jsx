@@ -4,7 +4,7 @@ import { getUnits, createUnit, updateUnit, deleteUnit } from '../services/unitSe
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
 import PageContainer from './layout/PageContainer';
-import { TableSkeleton } from './ui/Skeletons';
+import DataFoundationSkeleton from './skeletons/DataFoundationSkeleton';
 import { useToast } from '../contexts/ToastContext';
 
 export default function UnitDashboard() {
@@ -119,6 +119,10 @@ export default function UnitDashboard() {
   const activeCount = units.filter(u => (u.products?.[0]?.count || 0) > 0).length;
   const emptyCount = units.filter(u => (u.products?.[0]?.count || 0) === 0).length;
 
+  if (loading && units.length === 0 && !filters.search) {
+    return <DataFoundationSkeleton title="Đơn vị tính" subtitle="Quản lý các đơn vị đo lường cho sản phẩm" />;
+  }
+
   return (
     <PageContainer>
       {/* Header */}
@@ -160,10 +164,13 @@ export default function UnitDashboard() {
       </div>
 
       {/* Table & Mobile List */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        {loading ? (
-          <TableSkeleton rows={5} />
-        ) : units.length === 0 ? (
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+        {units.length === 0 ? (
           <div className="p-8 text-center text-slate-500">Không tìm thấy đơn vị nào</div>
         ) : (
           <>
