@@ -3,13 +3,13 @@ const ForecastService = require('./ForecastService');
 const GeminiAIService = require('./GeminiAIService');
 const crypto = require('crypto');
 const notificationService = require('./NotificationService');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('node:crypto');
 
 const activeRuns = new Map();
 
 class AIInsightService {
   async runAnalysis(settings) {
-    const runId = uuidv4();
+    const runId = randomUUID();
     
     const initialRun = {
       run_id: runId,

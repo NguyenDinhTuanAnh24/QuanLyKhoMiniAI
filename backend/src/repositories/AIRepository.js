@@ -1,5 +1,5 @@
 const supabase = require('../config/supabase');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('node:crypto');
 
 class AIRepository {
   async getForecastBaseData() {
@@ -227,7 +227,7 @@ class AIRepository {
     }
 
     // 3. Create Import Plan
-    const planId = uuidv4();
+    const planId = randomUUID();
     const { error: planErr } = await supabase
       .from('import_plans')
       .insert({
@@ -241,7 +241,7 @@ class AIRepository {
     if (planErr) throw new Error(`Error creating import plan: ${planErr.message}`);
 
     // 4. Create Import Plan Item
-    const itemId = uuidv4();
+    const itemId = randomUUID();
     const supplierId = rec.products?.supplier_id || null;
     const { error: itemErr } = await supabase
       .from('import_plan_items')
@@ -286,14 +286,14 @@ class AIRepository {
     if (fetchErr) throw new Error(fetchErr.message);
     if (!recs || recs.length === 0) throw new Error('Không có gợi ý nào hợp lệ hoặc đã được xử lý.');
 
-    const planId = uuidv4();
+    const planId = randomUUID();
     const planItems = [];
     const recIds = [];
 
     recs.forEach(rec => {
       recIds.push(rec.recommendation_id);
       planItems.push({
-        id: uuidv4(),
+        id: randomUUID(),
         plan_id: planId,
         product_id: rec.product_id,
         supplier_id: rec.products?.supplier_id || null,

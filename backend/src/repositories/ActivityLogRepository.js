@@ -1,5 +1,5 @@
 const supabase = require('../config/supabase');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('node:crypto');
 
 class ActivityLogRepository {
   async logActivity(data) {
@@ -7,7 +7,7 @@ class ActivityLogRepository {
     const { data: result, error } = await supabase
       .from('activity_logs')
       .insert([{
-        id: uuidv4(),
+        id: randomUUID(),
         user_id,
         user_name,
         action,
