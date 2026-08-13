@@ -6,8 +6,6 @@ import { useToast } from '../contexts/ToastContext';
 import { getCategories } from '../services/categoryService';
 import api from '../services/api';
 import PageContainer from './layout/PageContainer';
-import AlertsSkeleton from './skeletons/AlertsSkeleton';
-
 
 export default function LowStockAlertDashboard({ onNavigate }) {
   const { showToast } = useToast();
@@ -198,10 +196,6 @@ export default function LowStockAlertDashboard({ onNavigate }) {
   };
 
   const { currentPage, totalPages, totalItems } = data.pagination;
-
-  if (loading && data.alerts.length === 0 && data.summary.total_products === 0) {
-    return <AlertsSkeleton />;
-  }
 
   return (
     <PageContainer>

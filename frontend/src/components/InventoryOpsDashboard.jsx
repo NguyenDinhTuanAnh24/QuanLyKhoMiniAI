@@ -8,7 +8,7 @@ import ConfirmModal from './ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import StatCard from './StatCard';
 import PageContainer from './layout/PageContainer';
-import InventorySkeleton from './skeletons/InventorySkeleton';
+import { Skeleton } from './ui/Skeleton';
 import api from '../services/api';
 
 export default function InventoryOpsDashboard() {
@@ -417,13 +417,7 @@ export default function InventoryOpsDashboard() {
 
   const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
 
-  if (loading && products.length === 0) {
-    return (
-      <PageContainer>
-        <InventorySkeleton />
-      </PageContainer>
-    );
-  }
+
 
   return (
     <PageContainer>
@@ -458,8 +452,8 @@ export default function InventoryOpsDashboard() {
         <div className="space-y-6">
           {/* Stats Import */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard icon={ArrowDownToLine} iconColorClass="bg-blue-50 text-blue-600" label="Tổng lượt nhập" value={stats.importTotal} />
-            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị nhập" value={formatCurrency(stats.importValue)} />
+            <StatCard isLoading={loading && products.length === 0} icon={ArrowDownToLine} iconColorClass="bg-blue-50 text-blue-600" label="Tổng lượt nhập" value={stats.importTotal} />
+            <StatCard isLoading={loading && products.length === 0} icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị nhập" value={formatCurrency(stats.importValue)} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -561,9 +555,11 @@ export default function InventoryOpsDashboard() {
                           const p = products.find(x => x.product_id === e.target.value);
                           if (p) setPriceInput(p.import_price || 0);
                         }}
-                        disabled={!importForm.supplier_id}
+                        disabled={loading || !importForm.supplier_id}
                       >
-                        {!importForm.supplier_id ? (
+                        {loading && products.length === 0 ? (
+                          <option value="">Đang tải...</option>
+                        ) : !importForm.supplier_id ? (
                           <option value="">Vui lòng chọn nhà cung cấp trước</option>
                         ) : (
                           <>
@@ -839,8 +835,8 @@ export default function InventoryOpsDashboard() {
         <div className="space-y-6">
           {/* Stats Export */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard icon={ArrowUpFromLine} iconColorClass="bg-blue-50 text-blue-600" label="Tổng lượt xuất" value={stats.exportTotal} />
-            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị xuất" value={formatCurrency(stats.exportValue)} />
+            <StatCard isLoading={loading && products.length === 0} icon={ArrowUpFromLine} iconColorClass="bg-blue-50 text-blue-600" label="Tổng lượt xuất" value={stats.exportTotal} />
+            <StatCard isLoading={loading && products.length === 0} icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị xuất" value={formatCurrency(stats.exportValue)} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -880,13 +876,20 @@ export default function InventoryOpsDashboard() {
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
                         value={selectedProduct}
                         onChange={(e) => setSelectedProduct(e.target.value)}
+                        disabled={loading}
                       >
-                        <option value="">-- Chọn sản phẩm --</option>
-                        {products.filter(p => p.stock_quantity > 0).map(p => (
-                          <option key={p.product_id} value={p.product_id}>
-                            {p.sku} - {p.product_name} (Tồn: {p.stock_quantity})
-                          </option>
-                        ))}
+                        {loading && products.length === 0 ? (
+                          <option value="">Đang tải...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Chọn sản phẩm --</option>
+                            {products.filter(p => p.stock_quantity > 0).map(p => (
+                              <option key={p.product_id} value={p.product_id}>
+                                {p.sku} - {p.product_name} (Tồn: {p.stock_quantity})
+                              </option>
+                            ))}
+                          </>
+                        )}
                       </select>
                     </div>
                     <div className="w-full md:w-32">

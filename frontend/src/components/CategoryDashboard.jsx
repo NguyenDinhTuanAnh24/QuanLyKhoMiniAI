@@ -4,7 +4,6 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
 import PageContainer from './layout/PageContainer';
-import DataFoundationSkeleton from './skeletons/DataFoundationSkeleton';
 import { useToast } from '../contexts/ToastContext';
 
 export default function CategoryDashboard() {
@@ -121,9 +120,7 @@ export default function CategoryDashboard() {
   const activeCount = categories.filter(c => (c.products?.[0]?.count || 0) > 0).length;
   const emptyCount = categories.filter(c => (c.products?.[0]?.count || 0) === 0).length;
 
-  if (loading && categories.length === 0 && !filters.search) {
-    return <DataFoundationSkeleton title="Danh mục sản phẩm" subtitle="Tổ chức sản phẩm theo từng nhóm hàng hóa" />;
-  }
+
 
   return (
     <PageContainer>

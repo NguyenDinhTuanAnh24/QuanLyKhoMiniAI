@@ -5,8 +5,7 @@ import StatCard from '../components/StatCard';
 import ConfirmModal from '../components/ConfirmModal';
 import { useToast } from '../contexts/ToastContext';
 import PageContainer from '../components/layout/PageContainer';
-import UsersSkeleton from '../components/skeletons/UsersSkeleton';
-import { StatCardSkeleton } from '../components/ui/Skeletons';
+import { Skeleton } from '../components/ui/Skeleton';
 
 export default function UserDashboard() {
   const { showToast } = useToast();
@@ -172,19 +171,7 @@ export default function UserDashboard() {
   const roles = ['Quản trị viên', 'Chủ cửa hàng', 'Nhân viên kho', 'Nhân viên bán hàng'];
   const statuses = ['Đang hoạt động', 'Tạm khóa'];
 
-  if (loading && users.length === 0 && !searchTerm && !selectedRole && !selectedStatus) {
-    return (
-      <PageContainer>
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Người dùng</h1>
-            <p className="text-slate-500 text-sm mt-1">Quản lý tài khoản và phân quyền hệ thống</p>
-          </div>
-        </div>
-        <UsersSkeleton />
-      </PageContainer>
-    );
-  }
+
 
   return (
     <PageContainer>
@@ -199,16 +186,10 @@ export default function UserDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {loading && users.length === 0 ? (
-          <><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></>
-        ) : (
-          <>
-            <StatCard icon={Users} iconColorClass="bg-blue-50 text-blue-600" label="Tổng người dùng" value={stats.total} />
-            <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={stats.active} />
-            <StatCard icon={ShieldAlert} iconColorClass="bg-red-50 text-red-600" label="Tạm khóa" value={stats.locked} />
-            <StatCard icon={Shield} iconColorClass="bg-blue-50 text-blue-600" label="Quản trị viên" value={stats.admins} />
-          </>
-        )}
+        <StatCard isLoading={loading && users.length === 0} icon={Users} iconColorClass="bg-blue-50 text-blue-600" label="Tổng người dùng" value={stats.total} />
+        <StatCard isLoading={loading && users.length === 0} icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang hoạt động" value={stats.active} />
+        <StatCard isLoading={loading && users.length === 0} icon={ShieldAlert} iconColorClass="bg-red-50 text-red-600" label="Tạm khóa" value={stats.locked} />
+        <StatCard isLoading={loading && users.length === 0} icon={Shield} iconColorClass="bg-blue-50 text-blue-600" label="Quản trị viên" value={stats.admins} />
       </div>
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 mb-6">
@@ -246,7 +227,48 @@ export default function UserDashboard() {
             <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}
-        {filteredUsers.length === 0 ? (
+        {loading && users.length === 0 ? (
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                    <th className="p-4">Người dùng</th>
+                    <th className="p-4">Email</th>
+                    <th className="p-4">Số điện thoại</th>
+                    <th className="p-4">Vai trò</th>
+                    <th className="p-4 text-center">Trạng thái</th>
+                    <th className="p-4 text-center">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-sm">
+                  {[...Array(5)].map((_, i) => (
+                    <tr key={i} className="hover:bg-slate-50">
+                      <td className="p-4 flex items-center gap-3">
+                        <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+                        <Skeleton className="w-32 h-4" />
+                      </td>
+                      <td className="p-4"><Skeleton className="w-40 h-4" /></td>
+                      <td className="p-4"><Skeleton className="w-24 h-4" /></td>
+                      <td className="p-4"><Skeleton className="w-24 h-4" /></td>
+                      <td className="p-4 text-center"><Skeleton className="w-20 h-6 mx-auto rounded" /></td>
+                      <td className="p-4"><Skeleton className="w-24 h-6 mx-auto rounded" /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="md:hidden flex flex-col divide-y divide-slate-100 p-4 gap-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex flex-col gap-3">
+                  <Skeleton className="w-full h-12" />
+                  <Skeleton className="w-full h-20" />
+                  <Skeleton className="w-full h-10" />
+                </div>
+              ))}
+            </div>
+          </>
+        ) : filteredUsers.length === 0 ? (
           <div className="p-12 text-center text-slate-500">Không tìm thấy người dùng phù hợp</div>
         ) : (
           <>

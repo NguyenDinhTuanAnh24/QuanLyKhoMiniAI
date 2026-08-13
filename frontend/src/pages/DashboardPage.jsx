@@ -25,7 +25,7 @@ import { useToast } from '../contexts/ToastContext';
 import { getUser } from '../services/authService';
 import LazyRevealSection from '../components/common/LazyRevealSection';
 import PageContainer from '../components/layout/PageContainer';
-import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
+import { Skeleton } from '../components/ui/Skeleton';
 
 const DashboardPage = ({ onNavigate }) => {
   const navigate = useNavigate();
@@ -82,34 +82,32 @@ const DashboardPage = ({ onNavigate }) => {
 
   const todayStr = new Date().toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  if (loading) {
+  if (error) {
     return (
       <PageContainer>
-        <DashboardSkeleton />
+        <div className="p-8 text-center text-red-500 mt-20">
+          <h2 className="text-2xl font-bold mb-4">Lỗi tải dữ liệu</h2>
+          <p>{error}</p>
+          <button 
+            onClick={() => fetchDashboardData()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Thử lại
+          </button>
+        </div>
       </PageContainer>
     );
   }
 
-  if (error) {
-    return (
-      <div className="p-8 text-center text-red-500 mt-20">
-        <h2 className="text-2xl font-bold mb-4">Lỗi tải dữ liệu</h2>
-        <p>{error}</p>
-        <button 
-          onClick={fetchDashboardData}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Thử lại
-        </button>
-      </div>
-    );
-  }
+  // Khai báo an toàn kể cả khi data chưa fetch xong
+  const summary = data?.summary || {};
+  const revenue_7_days = data?.revenue_7_days || [];
+  const top_selling = data?.top_selling || [];
+  const low_stock_products = data?.low_stock_products || [];
+  const ai_insight = data?.ai_insight || null;
+  const recent_activities = data?.recent_activities || [];
 
-  if (!data) return null;
-
-  const { summary, revenue_7_days, top_selling, low_stock_products, ai_insight, recent_activities } = data;
-
-  const maxRevenue = revenue_7_days && revenue_7_days.length > 0 
+  const maxRevenue = revenue_7_days.length > 0 
     ? Math.max(...revenue_7_days.map(d => d.revenue)) 
     : 0;
 
@@ -117,7 +115,7 @@ const DashboardPage = ({ onNavigate }) => {
   return (
     <PageContainer>
       {/* Header (Figma style) */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 mb-2">Tổng quan hệ thống</h1>
           <p className="text-slate-500 text-sm">Xin chào, {userName}! Đây là tóm tắt hoạt động hôm nay.</p>
@@ -128,126 +126,189 @@ const DashboardPage = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Summary Cards (Figma style: Doanh thu, Đơn hàng, Sắp hết, Tồn kho) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" data-testid="dashboard-stats">
         
         {/* Doanh thu hôm nay */}
         {!isStaff && (
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3 min-h-[116px]">
             <div className="flex justify-between items-start">
               <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
                 <DollarSign size={20} />
               </div>
-              <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
+              {loading ? (
+                <Skeleton className="w-12 h-6 rounded-md" />
+              ) : (
+                <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
+              )}
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary?.today_revenue)}</h3>
-              <p className="text-xs text-slate-500 font-medium mt-1">Doanh thu hôm nay</p>
+              {loading ? (
+                <>
+                  <Skeleton className="w-24 h-8 mb-1" />
+                  <Skeleton className="w-32 h-4" />
+                </>
+              ) : (
+                <>
+                  <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary.today_revenue)}</h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Doanh thu hôm nay</p>
+                </>
+              )}
             </div>
           </div>
         )}
 
         {/* Đơn hàng hôm nay */}
-        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
+        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3 min-h-[116px]">
           <div className="flex justify-between items-start">
             <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500">
               <ShoppingBag size={20} />
             </div>
-            <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+{summary?.today_orders || 0} đơn</span>
+            {loading ? (
+              <Skeleton className="w-12 h-6 rounded-md" />
+            ) : (
+              <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+{summary.today_orders || 0} đơn</span>
+            )}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{summary?.today_orders || 0}</h3>
-            <p className="text-xs text-slate-500 font-medium mt-1">Đơn hàng hôm nay</p>
+            {loading ? (
+              <>
+                <Skeleton className="w-16 h-8 mb-1" />
+                <Skeleton className="w-32 h-4" />
+              </>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold text-slate-800">{summary.today_orders || 0}</h3>
+                <p className="text-xs text-slate-500 font-medium mt-1">Đơn hàng hôm nay</p>
+              </>
+            )}
           </div>
         </div>
 
         {/* Sản phẩm sắp hết */}
-        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
+        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3 min-h-[116px]">
           <div className="flex justify-between items-start">
             <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">
               <AlertTriangle size={20} />
             </div>
-            <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md">Cần nhập</span>
+            {loading ? (
+              <Skeleton className="w-12 h-6 rounded-md" />
+            ) : (
+              <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md">Cần nhập</span>
+            )}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{summary?.low_stock_count || 0}</h3>
-            <p className="text-xs text-slate-500 font-medium mt-1">Sản phẩm sắp hết</p>
+            {loading ? (
+              <>
+                <Skeleton className="w-16 h-8 mb-1" />
+                <Skeleton className="w-32 h-4" />
+              </>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold text-slate-800">{summary.low_stock_count || 0}</h3>
+                <p className="text-xs text-slate-500 font-medium mt-1">Sản phẩm sắp hết</p>
+              </>
+            )}
           </div>
         </div>
 
         {/* Giá trị tồn kho */}
         {!isStaff && (
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3">
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-3 min-h-[116px]">
             <div className="flex justify-between items-start">
               <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
                 <Warehouse size={20} />
               </div>
-              <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
+              {loading ? (
+                <Skeleton className="w-12 h-6 rounded-md" />
+              ) : (
+                <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0%</span>
+              )}
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary?.inventory_value)}</h3>
-              <p className="text-xs text-slate-500 font-medium mt-1">Giá trị tồn kho</p>
+              {loading ? (
+                <>
+                  <Skeleton className="w-24 h-8 mb-1" />
+                  <Skeleton className="w-32 h-4" />
+                </>
+              ) : (
+                <>
+                  <h3 className="text-2xl font-bold text-slate-800">₫ {formatCurrencyShort(summary.inventory_value)}</h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Giá trị tồn kho</p>
+                </>
+              )}
             </div>
           </div>
         )}
       </div>
 
       {/* Row 2: Chart & AI Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6" data-testid="dashboard-main-grid">
         
         {/* Doanh thu 7 ngày gần nhất (span 2) */}
         {!isStaff && (
-          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6 flex flex-col">
+          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6 flex flex-col min-h-[350px]">
             <div className="mb-6">
               <h3 className="text-base font-bold text-slate-800">Doanh thu 7 ngày gần nhất</h3>
               <p className="text-xs text-slate-500 mt-1">Cập nhật đến hôm nay</p>
             </div>
             
             <div className="flex-1 flex items-end gap-4 relative pt-8">
-              {/* Y-axis simple guides */}
-              <div className="absolute inset-0 flex flex-col justify-between text-[10px] font-medium text-slate-400 pb-6 pointer-events-none">
-                <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
-                  <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue)}</span>
+              {loading ? (
+                <div className="absolute inset-0 flex items-end justify-around pb-6 pl-8">
+                  <Skeleton className="w-[8%] h-[30%] rounded-t-sm" />
+                  <Skeleton className="w-[8%] h-[50%] rounded-t-sm" />
+                  <Skeleton className="w-[8%] h-[40%] rounded-t-sm" />
+                  <Skeleton className="w-[8%] h-[70%] rounded-t-sm" />
+                  <Skeleton className="w-[8%] h-[90%] rounded-t-sm" />
+                  <Skeleton className="w-[8%] h-[60%] rounded-t-sm" />
+                  <Skeleton className="w-[8%] h-[80%] rounded-t-sm" />
                 </div>
-                <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
-                  <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue / 2)}</span>
-                </div>
-                <div className="border-b border-slate-200 w-full h-0 flex items-end justify-start">
-                  <span className="-translate-y-2 bg-white pr-2">0</span>
-                </div>
-              </div>
-
-              {/* Bars */}
-              <div className="w-full flex justify-around items-end h-full pl-8 pb-6 z-10">
-                {revenue_7_days?.map((item, index) => {
-                  const heightPercentage = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
-                  return (
-                    <div key={index} className="flex flex-col items-center group w-full px-2 relative h-full justify-end">
-                      {/* Value on top of bar */}
-                      {item.revenue > 0 && (
-                        <span className="text-[10px] font-bold text-blue-600 mb-1 absolute" style={{ bottom: `${heightPercentage}%` }}>
-                          {formatCurrencyShort(item.revenue)}
-                        </span>
-                      )}
-                      {/* Bar */}
-                      <div 
-                        className="w-full max-w-[40px] bg-blue-500 hover:bg-blue-600 rounded-t transition-all duration-300 min-h-[4px]"
-                        style={{ height: `${heightPercentage}%` }}
-                      ></div>
-                      {/* Label */}
-                      <div className="absolute -bottom-5 text-xs font-medium text-slate-500 whitespace-nowrap">
-                        {item.label}
-                      </div>
+              ) : (
+                <>
+                  {/* Y-axis simple guides */}
+                  <div className="absolute inset-0 flex flex-col justify-between text-[10px] font-medium text-slate-400 pb-6 pointer-events-none">
+                    <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
+                      <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue)}</span>
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="border-b border-slate-100 w-full h-0 flex items-end justify-start">
+                      <span className="-translate-y-2 bg-white pr-2">{formatCurrencyShort(maxRevenue / 2)}</span>
+                    </div>
+                    <div className="border-b border-slate-200 w-full h-0 flex items-end justify-start">
+                      <span className="-translate-y-2 bg-white pr-2">0</span>
+                    </div>
+                  </div>
+
+                  {/* Bars */}
+                  <div className="w-full flex justify-around items-end h-full pl-8 pb-6 z-10">
+                    {revenue_7_days.map((item, index) => {
+                      const heightPercentage = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
+                      return (
+                        <div key={index} className="flex flex-col items-center group w-full px-2 relative h-full justify-end">
+                          {item.revenue > 0 && (
+                            <span className="text-[10px] font-bold text-blue-600 mb-1 absolute" style={{ bottom: `${heightPercentage}%` }}>
+                              {formatCurrencyShort(item.revenue)}
+                            </span>
+                          )}
+                          <div 
+                            className="w-full max-w-[40px] bg-blue-500 hover:bg-blue-600 rounded-t transition-all duration-300 min-h-[4px]"
+                            style={{ height: `${heightPercentage}%` }}
+                          ></div>
+                          <div className="absolute -bottom-5 text-xs font-medium text-slate-500 whitespace-nowrap">
+                            {item.label}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
 
         {/* AI Insights hôm nay */}
-        <div className={`${isStaff ? 'lg:col-span-3' : ''} bg-[#f8faff] rounded-xl border border-blue-100 shadow-sm p-6 flex flex-col`}>
+        <div className={`${isStaff ? 'lg:col-span-3' : ''} bg-[#f8faff] rounded-xl border border-blue-100 shadow-sm p-6 flex flex-col min-h-[350px]`}>
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
               <Sparkles className="text-blue-600" size={18} />
@@ -257,31 +318,41 @@ const DashboardPage = ({ onNavigate }) => {
           </div>
 
           <div className="flex-1 space-y-4">
-            {/* Tweak our AI data to match Figma's list format */}
-            <div className="flex items-start gap-3 bg-white p-3 rounded-lg border border-blue-50">
-              <ArrowUpRight className="text-blue-500 mt-0.5" size={16} />
-              <p className="text-sm text-slate-700">{ai_insight?.message || "Đang phân tích dữ liệu kho..."}</p>
-            </div>
-            
-            {ai_insight?.suggestions?.slice(0, 2).map((item, idx) => (
-              <div key={idx} className="flex items-start gap-3 bg-white p-3 rounded-lg border border-blue-50">
-                <Trophy className="text-orange-500 mt-0.5" size={16} />
-                <p className="text-sm text-slate-700">Nên nhập thêm <span className="font-bold">{item.suggested_import_quantity} {item.unit_name}</span> {item.product_name}</p>
-              </div>
-            ))}
+            {loading ? (
+              <>
+                <Skeleton className="w-full h-[60px] rounded-lg" />
+                <Skeleton className="w-full h-[60px] rounded-lg" />
+                <Skeleton className="w-full h-[60px] rounded-lg" />
+              </>
+            ) : (
+              <>
+                <div className="flex items-start gap-3 bg-white p-3 rounded-lg border border-blue-50">
+                  <ArrowUpRight className="text-blue-500 mt-0.5" size={16} />
+                  <p className="text-sm text-slate-700">{ai_insight?.message || "Đang phân tích dữ liệu kho..."}</p>
+                </div>
+                
+                {ai_insight?.suggestions?.slice(0, 2).map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-3 bg-white p-3 rounded-lg border border-blue-50">
+                    <Trophy className="text-orange-500 mt-0.5" size={16} />
+                    <p className="text-sm text-slate-700">Nên nhập thêm <span className="font-bold">{item.suggested_import_quantity} {item.unit_name}</span> {item.product_name}</p>
+                  </div>
+                ))}
 
-            {summary?.low_stock_count > 0 && (
-              <div className="flex items-start gap-3 bg-white p-3 rounded-lg border border-red-50">
-                <AlertTriangle className="text-red-500 mt-0.5" size={16} />
-                <p className="text-sm text-slate-700"><span className="font-bold text-red-600">{summary.low_stock_count} sản phẩm</span> sắp hết hàng, cần xử lý ngay</p>
-              </div>
+                {summary?.low_stock_count > 0 && (
+                  <div className="flex items-start gap-3 bg-white p-3 rounded-lg border border-red-50">
+                    <AlertTriangle className="text-red-500 mt-0.5" size={16} />
+                    <p className="text-sm text-slate-700"><span className="font-bold text-red-600">{summary.low_stock_count} sản phẩm</span> sắp hết hàng, cần xử lý ngay</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
           {!isStaff && (
             <button 
               onClick={() => onNavigate ? onNavigate('ai-insights') : navigate('/ai-insights')}
-              className="w-full mt-6 py-2.5 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 font-medium rounded-lg transition-colors flex justify-center items-center gap-2 text-sm"
+              disabled={loading}
+              className="w-full mt-6 py-2.5 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 font-medium rounded-lg transition-colors flex justify-center items-center gap-2 text-sm disabled:opacity-50"
             >
               <Sparkles size={14} /> Xem phân tích đầy đủ <ArrowRight size={14} />
             </button>
@@ -290,11 +361,11 @@ const DashboardPage = ({ onNavigate }) => {
       </div>
 
       {/* Row 3: Giao dịch gần đây & Cảnh báo tồn kho */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         
         {/* Giao dịch gần đây (span 2) */}
         <LazyRevealSection minHeight={300} className="lg:col-span-2">
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-0 overflow-hidden flex flex-col h-full">
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-0 overflow-hidden flex flex-col h-full min-h-[300px]">
           <div className="p-5 border-b border-slate-100 flex justify-between items-center">
             <h3 className="text-base font-bold text-slate-800">Giao dịch gần đây</h3>
             <button 
@@ -306,7 +377,14 @@ const DashboardPage = ({ onNavigate }) => {
           </div>
           
           <div className="overflow-x-auto flex-1 p-5">
-            {(!recent_activities || recent_activities.length === 0) ? (
+            {loading ? (
+              <div className="space-y-4">
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+              </div>
+            ) : (!recent_activities || recent_activities.length === 0) ? (
               <div className="text-center py-8 text-slate-500 italic text-sm">Chưa có giao dịch gần đây</div>
             ) : (
               <table className="w-full text-left text-sm text-slate-600">
@@ -342,11 +420,11 @@ const DashboardPage = ({ onNavigate }) => {
 
         {/* Cảnh báo tồn kho */}
         <LazyRevealSection minHeight={300} className="h-full">
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 flex flex-col h-full">
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 flex flex-col h-full min-h-[300px]">
           <div className="flex justify-between items-center mb-4">
             <div>
               <h3 className="text-base font-bold text-slate-800">Cảnh báo tồn kho</h3>
-              <p className="text-xs text-slate-500 mt-0.5">{summary?.low_stock_count || 0} sản phẩm cần chú ý</p>
+              <p className="text-xs text-slate-500 mt-0.5">{loading ? <Skeleton className="w-24 h-3 inline-block" /> : `${summary.low_stock_count || 0} sản phẩm cần chú ý`}</p>
             </div>
             <button 
               onClick={() => onNavigate ? onNavigate('alerts') : navigate('/alerts')}
@@ -357,7 +435,13 @@ const DashboardPage = ({ onNavigate }) => {
           </div>
 
           <div className="flex-1 space-y-4 mt-2">
-            {(!low_stock_products || low_stock_products.length === 0) ? (
+            {loading ? (
+              <>
+                <Skeleton className="w-full h-12" />
+                <Skeleton className="w-full h-12" />
+                <Skeleton className="w-full h-12" />
+              </>
+            ) : (!low_stock_products || low_stock_products.length === 0) ? (
               <div className="text-center py-8 text-slate-500 italic text-sm">Không có sản phẩm sắp hết</div>
             ) : (
               low_stock_products.map((item, idx) => {
@@ -389,7 +473,8 @@ const DashboardPage = ({ onNavigate }) => {
 
           <button 
             onClick={() => onNavigate ? onNavigate('import') : navigate('/inventory-ops')}
-            className="w-full mt-4 py-2.5 bg-blue-500 text-white hover:bg-blue-600 font-medium rounded-lg transition-colors flex justify-center items-center text-sm"
+            disabled={loading}
+            className="w-full mt-4 py-2.5 bg-blue-500 text-white hover:bg-blue-600 font-medium rounded-lg transition-colors flex justify-center items-center text-sm disabled:opacity-50"
           >
             + Tạo phiếu nhập hàng nhanh
           </button>
@@ -403,10 +488,16 @@ const DashboardPage = ({ onNavigate }) => {
         {/* Sản phẩm bán chạy hôm nay (span 2) */}
         {!isStaff && (
           <LazyRevealSection minHeight={300} className="lg:col-span-2">
-          <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 h-full">
+          <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 h-full min-h-[300px]">
             <h3 className="text-base font-bold text-slate-800 mb-6">Sản phẩm bán chạy hôm nay</h3>
             
-            {(!top_selling || top_selling.length === 0) ? (
+            {loading ? (
+              <div className="space-y-4">
+                <Skeleton className="w-full h-10" />
+                <Skeleton className="w-full h-10" />
+                <Skeleton className="w-full h-10" />
+              </div>
+            ) : (!top_selling || top_selling.length === 0) ? (
               <div className="text-center py-8 text-slate-500 italic text-sm">Chưa có dữ liệu bán hàng</div>
             ) : (
               <div className="space-y-4">
@@ -443,13 +534,14 @@ const DashboardPage = ({ onNavigate }) => {
 
         {/* Thao tác nhanh */}
         <LazyRevealSection minHeight={300} className={`${isStaff ? 'lg:col-span-3' : 'h-full'}`}>
-        <div className={`h-full grid ${isStaff ? 'grid-cols-1 md:grid-cols-3 gap-4' : 'grid-cols-1'} bg-white rounded-xl border border-slate-100 shadow-sm p-6`}>
+        <div className={`h-full grid ${isStaff ? 'grid-cols-1 md:grid-cols-3 gap-4' : 'grid-cols-1'} bg-white rounded-xl border border-slate-100 shadow-sm p-6 min-h-[300px]`}>
           <h3 className={`text-base font-bold text-slate-800 mb-4 ${isStaff ? 'col-span-full' : ''}`}>Thao tác nhanh</h3>
           
           <div className={`${isStaff ? 'contents' : 'space-y-3'}`}>
             <button 
               onClick={() => onNavigate ? onNavigate('sales') : navigate('/sales')}
-              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group"
+              disabled={loading}
+              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group disabled:opacity-50 disabled:pointer-events-none"
             >
               <div className="flex items-center gap-3">
                 <div className="p-1.5 bg-blue-50 text-blue-500 rounded-md group-hover:bg-blue-100">
@@ -462,7 +554,8 @@ const DashboardPage = ({ onNavigate }) => {
 
             <button 
               onClick={() => onNavigate ? onNavigate('import') : navigate('/inventory-ops')}
-              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition-colors group"
+              disabled={loading}
+              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition-colors group disabled:opacity-50 disabled:pointer-events-none"
             >
               <div className="flex items-center gap-3">
                 <div className="p-1.5 bg-emerald-50 text-emerald-500 rounded-md group-hover:bg-emerald-100">
@@ -475,7 +568,8 @@ const DashboardPage = ({ onNavigate }) => {
 
             <button 
               onClick={() => onNavigate ? onNavigate('products') : navigate('/products')}
-              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group"
+              disabled={loading}
+              className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group disabled:opacity-50 disabled:pointer-events-none"
             >
               <div className="flex items-center gap-3">
                 <div className="p-1.5 bg-blue-50 text-blue-500 rounded-md group-hover:bg-blue-100">
@@ -489,7 +583,8 @@ const DashboardPage = ({ onNavigate }) => {
             {!isStaff && (
               <button 
                 onClick={() => onNavigate ? onNavigate('ai-insights') : navigate('/ai-insights')}
-                className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-orange-200 hover:bg-orange-50/50 transition-colors group"
+                disabled={loading}
+                className="w-full flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-orange-200 hover:bg-orange-50/50 transition-colors group disabled:opacity-50 disabled:pointer-events-none"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-1.5 bg-orange-50 text-orange-500 rounded-md group-hover:bg-orange-100">

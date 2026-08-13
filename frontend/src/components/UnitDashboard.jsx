@@ -4,7 +4,6 @@ import { getUnits, createUnit, updateUnit, deleteUnit } from '../services/unitSe
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
 import PageContainer from './layout/PageContainer';
-import DataFoundationSkeleton from './skeletons/DataFoundationSkeleton';
 import { useToast } from '../contexts/ToastContext';
 
 export default function UnitDashboard() {
@@ -119,9 +118,7 @@ export default function UnitDashboard() {
   const activeCount = units.filter(u => (u.products?.[0]?.count || 0) > 0).length;
   const emptyCount = units.filter(u => (u.products?.[0]?.count || 0) === 0).length;
 
-  if (loading && units.length === 0 && !filters.search) {
-    return <DataFoundationSkeleton title="Đơn vị tính" subtitle="Quản lý các đơn vị đo lường cho sản phẩm" />;
-  }
+
 
   return (
     <PageContainer>

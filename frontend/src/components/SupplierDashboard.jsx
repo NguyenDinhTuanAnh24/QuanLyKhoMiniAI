@@ -4,7 +4,6 @@ import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '..
 import StatCard from './StatCard';
 import ConfirmModal from './ConfirmModal';
 import PageContainer from './layout/PageContainer';
-import DataFoundationSkeleton from './skeletons/DataFoundationSkeleton';
 import { StatCardSkeleton } from './ui/Skeletons';
 import { useToast } from '../contexts/ToastContext';
 
@@ -159,10 +158,6 @@ export default function SupplierDashboard() {
     if (val >= 1e6) return `đ ${(val / 1e6).toFixed(1)}M`;
     return formatCurrency(val);
   };
-
-  if (loading && suppliers.length === 0 && !filters.search) {
-    return <DataFoundationSkeleton title="Nhà cung cấp" subtitle="Quản lý thông tin đối tác cung cấp hàng hóa" />;
-  }
 
   return (
     <PageContainer>

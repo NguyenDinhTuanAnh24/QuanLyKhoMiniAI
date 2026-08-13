@@ -9,8 +9,7 @@ import StatCard from './StatCard';
 import ProductFormModal from './ProductFormPage';
 import { useToast } from '../contexts/ToastContext';
 import PageContainer from './layout/PageContainer';
-import ProductSkeleton from './skeletons/ProductSkeleton';
-import { StatCardSkeleton } from './ui/Skeletons';
+import { Skeleton } from './ui/Skeleton';
 
 export default function ProductDashboard({ onNavigate }) {
   const { showToast } = useToast();
@@ -415,19 +414,7 @@ export default function ProductDashboard({ onNavigate }) {
     );
   };
 
-  if (loading && products.length === 0 && !searchTerm && !selectedCategory && !selectedStatus && !selectedStockStatus) {
-    return (
-      <PageContainer>
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Sản phẩm</h1>
-            <p className="text-slate-500 text-sm mt-1">Quản lý toàn bộ sản phẩm trong hệ thống</p>
-          </div>
-        </div>
-        <ProductSkeleton />
-      </PageContainer>
-    );
-  }
+
 
   return (
     <PageContainer>
@@ -463,16 +450,10 @@ export default function ProductDashboard({ onNavigate }) {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {loading && products.length === 0 ? (
-          <><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></>
-        ) : (
-          <>
-            <StatCard icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={stats.totalProducts} trend="up" trendLabel="+4 mới" />
-            <StatCard icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={stats.activeProducts} trend="up" trendLabel="91%" />
-            <StatCard icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={stats.lowStockProducts} trend="down" trendLabel="9%" />
-            <StatCard icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
-          </>
-        )}
+        <StatCard isLoading={loading && products.length === 0} icon={Package} iconColorClass="bg-blue-50 text-blue-600" label="Tổng sản phẩm" value={stats.totalProducts} trend="up" trendLabel="+4 mới" />
+        <StatCard isLoading={loading && products.length === 0} icon={CheckCircle2} iconColorClass="bg-green-50 text-green-600" label="Đang bán" value={stats.activeProducts} trend="up" trendLabel="91%" />
+        <StatCard isLoading={loading && products.length === 0} icon={AlertTriangle} iconColorClass="bg-amber-50 text-amber-600" label="Cần nhập" value={stats.lowStockProducts} trend="down" trendLabel="9%" />
+        <StatCard isLoading={loading && products.length === 0} icon={DollarSign} iconColorClass="bg-blue-50 text-blue-600" label="Tổng giá trị" value={formatCompactCurrency(stats.totalInventoryValue)} trend="up" trendLabel="+5.2%" />
       </div>
 
       {/* Filter Bar */}
@@ -555,7 +536,77 @@ export default function ProductDashboard({ onNavigate }) {
             <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}
-        {products.length === 0 ? (
+        {loading && products.length === 0 ? (
+          viewMode === 'list' ? (
+            <>
+             <div className="hidden md:block overflow-x-auto">
+               <table className="w-full text-left border-collapse min-w-[900px]">
+                 <thead>
+                   <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                     <th className="p-4 w-12 text-center"><Skeleton className="w-4 h-4 rounded mx-auto" /></th>
+                     <th className="p-4">Sản phẩm</th>
+                     <th className="p-4">SKU</th>
+                     <th className="p-4">Danh mục</th>
+                     <th className="p-4 text-right">Giá nhập</th>
+                     <th className="p-4 text-right">Giá bán</th>
+                     <th className="p-4 text-center">Tồn kho</th>
+                     <th className="p-4 text-center">Trạng thái</th>
+                     <th className="p-4 text-center">Hành động</th>
+                   </tr>
+                 </thead>
+                 <tbody className="text-sm divide-y divide-slate-100">
+                    {[...Array(6)].map((_, i) => (
+                      <tr key={i} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-4 text-center"><Skeleton className="w-4 h-4 rounded mx-auto" /></td>
+                        <td className="p-4">
+                           <div className="flex items-center gap-3">
+                             <Skeleton className="w-10 h-10 rounded shrink-0" />
+                             <div className="space-y-2">
+                               <Skeleton className="w-32 h-4" />
+                               <Skeleton className="w-20 h-3" />
+                             </div>
+                           </div>
+                        </td>
+                        <td className="p-4"><Skeleton className="w-16 h-4" /></td>
+                        <td className="p-4"><Skeleton className="w-24 h-4" /></td>
+                        <td className="p-4"><Skeleton className="w-20 h-4 ml-auto" /></td>
+                        <td className="p-4"><Skeleton className="w-20 h-4 ml-auto" /></td>
+                        <td className="p-4"><Skeleton className="w-12 h-4 mx-auto" /></td>
+                        <td className="p-4"><Skeleton className="w-16 h-6 rounded-md mx-auto" /></td>
+                        <td className="p-4"><Skeleton className="w-32 h-4 mx-auto" /></td>
+                      </tr>
+                    ))}
+                 </tbody>
+               </table>
+             </div>
+             <div className="md:hidden p-4 grid grid-cols-1 gap-4 bg-slate-50">
+               {[...Array(4)].map((_, i) => (
+                  <div key={i} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[280px]">
+                    <Skeleton className="w-full h-32 rounded-none" />
+                    <div className="p-4 flex flex-col flex-1 gap-2">
+                       <Skeleton className="w-1/3 h-3" />
+                       <Skeleton className="w-3/4 h-5" />
+                       <Skeleton className="w-full h-8 mt-auto" />
+                    </div>
+                  </div>
+               ))}
+             </div>
+            </>
+          ) : (
+            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-slate-50">
+               {[...Array(10)].map((_, i) => (
+                  <div key={i} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[280px]">
+                    <Skeleton className="w-full h-32 rounded-none" />
+                    <div className="p-4 flex flex-col flex-1 gap-2">
+                       <Skeleton className="w-1/3 h-3" />
+                       <Skeleton className="w-3/4 h-5" />
+                       <Skeleton className="w-full h-8 mt-auto" />
+                    </div>
+                  </div>
+               ))}
+            </div>
+          )
+        ) : products.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
               <Package className="w-8 h-8 text-slate-400" />

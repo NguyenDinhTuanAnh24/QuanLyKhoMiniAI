@@ -10,7 +10,6 @@ import { useToast } from '../contexts/ToastContext';
 import { useBranding } from '../contexts/BrandingContext';
 import { processBrandLogo } from '../utils/processBrandLogo';
 import PageContainer from '../components/layout/PageContainer';
-import SettingsSkeleton from '../components/skeletons/SettingsSkeleton';
 
 export default function SettingsPage() {
   const { showToast } = useToast();
@@ -334,14 +333,6 @@ export default function SettingsPage() {
   
   const tabs = allTabs.filter(t => isStaff ? !t.adminOnly : true);
 
-  if (loading) {
-    return (
-      <PageContainer>
-        <SettingsSkeleton />
-      </PageContainer>
-    );
-  }
-
   return (
     <PageContainer>
       {/* Page Header */}
@@ -377,8 +368,14 @@ export default function SettingsPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="p-6">
-          <form onSubmit={handleSaveClick}>
+        <div className="p-6 relative min-h-[400px]">
+          {loading && (
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
+              <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span className="mt-2 text-sm text-slate-500 font-medium">Đang tải cài đặt...</span>
+            </div>
+          )}
+          <form onSubmit={handleSaveClick} className={loading ? 'opacity-50 pointer-events-none' : ''}>
             
             {activeTab === 'store' && (
               <div className="flex flex-col lg:flex-row gap-6">

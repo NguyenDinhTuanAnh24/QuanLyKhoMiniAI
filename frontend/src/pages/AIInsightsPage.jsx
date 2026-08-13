@@ -28,7 +28,6 @@ import LoadingState from '../components/shared/LoadingState';
 import EmptyState from '../components/shared/EmptyState';
 import LazyRevealSection from '../components/common/LazyRevealSection';
 import PageContainer from '../components/layout/PageContainer';
-import AIInsightsSkeleton from '../components/skeletons/AIInsightsSkeleton';
 import api from '../services/api';
 
 function parseReport(reportString) {
@@ -419,13 +418,7 @@ export default function AIInsightsPage() {
     setModalState({ isOpen: false, type: null, product: null });
   };
 
-  if (loading) {
-    return (
-      <PageContainer>
-        <AIInsightsSkeleton />
-      </PageContainer>
-    );
-  }
+
 
   const isEmpty = !rawData.items || rawData.items.length === 0;
 
@@ -472,7 +465,7 @@ export default function AIInsightsPage() {
           
           <button 
             onClick={handleAnalyzeClick}
-            disabled={analyzing}
+            disabled={analyzing || loading}
             title="Hệ thống sẽ phân tích lịch sử bán hàng, dự báo nhu cầu và đưa ra gợi ý nhập kho."
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed h-9 shadow-sm"
           >
@@ -481,6 +474,15 @@ export default function AIInsightsPage() {
           </button>
         </div>
       </div>
+
+      <div className="relative min-h-[500px]">
+        {loading && (
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl">
+            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            <span className="mt-2 text-sm text-slate-500 font-medium">Đang tải dữ liệu dự báo...</span>
+          </div>
+        )}
+        <div className={loading ? 'opacity-40 pointer-events-none select-none blur-[2px]' : ''}>
 
       {isEmpty ? (
         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center flex flex-col items-center shadow-sm">
@@ -569,6 +571,8 @@ export default function AIInsightsPage() {
           </div>
         </div>
       )}
+      </div>
+    </div>
 
       <ConfirmModal
         isOpen={modalState.isOpen}
