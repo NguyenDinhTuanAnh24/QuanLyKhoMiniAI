@@ -59,9 +59,13 @@ const DashboardPage = ({ onNavigate }) => {
       const overview = await dashboardService.getDashboardOverview();
       setData(overview);
     } catch (err) {
-      console.error('Error fetching dashboard data:', err);
-      setError('Không thể tải dữ liệu tổng quan. Vui lòng thử lại.');
-      showToast('Không thể tải dữ liệu tổng quan. Vui lòng thử lại.', 'error');
+      if (err.code !== 'ERR_NETWORK' && !err.message?.includes('Network Error')) {
+        console.error('Error fetching dashboard data:', err);
+      }
+      setError('Không thể tải dữ liệu tổng quan. Vui lòng kiểm tra kết nối.');
+      if (!isSilent) {
+        showToast('Không thể tải dữ liệu tổng quan. Vui lòng kiểm tra kết nối.', 'error');
+      }
     } finally {
       setLoading(false);
     }
@@ -424,7 +428,7 @@ const DashboardPage = ({ onNavigate }) => {
           <div className="flex justify-between items-center mb-4">
             <div>
               <h3 className="text-base font-bold text-slate-800">Cảnh báo tồn kho</h3>
-              <p className="text-xs text-slate-500 mt-0.5">{loading ? <Skeleton className="w-24 h-3 inline-block" /> : `${summary.low_stock_count || 0} sản phẩm cần chú ý`}</p>
+              <div className="text-xs text-slate-500 mt-0.5">{loading ? <Skeleton className="w-24 h-3 inline-block" /> : `${summary.low_stock_count || 0} sản phẩm cần chú ý`}</div>
             </div>
             <button 
               onClick={() => onNavigate ? onNavigate('alerts') : navigate('/alerts')}

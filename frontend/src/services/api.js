@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}/api` : 'http://localhost:5000/api';
+const envUrl = import.meta.env.VITE_API_BASE_URL;
+const baseURL = envUrl 
+  ? (envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`) 
+  : 'http://localhost:5000/api';
 
 let isHandlingUnauthorized = false;
 let isHandlingForbidden = false;

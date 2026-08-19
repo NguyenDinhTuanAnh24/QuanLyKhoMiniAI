@@ -35,7 +35,7 @@ export default function MainLayout({ children, activePage, activePayload, onNavi
           isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-60'
         }`}
       >
-        <Topbar activePage={activePage} activePayload={activePayload} onNavigate={onNavigate} toggleSidebar={toggleSidebar} />
+        <Topbar activePage={activePage} activePayload={activePayload} onNavigate={onNavigate} toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
         <main className="flex-1 p-4 sm:p-6 overflow-y-auto w-full min-w-0 flex flex-col">
           {children}
         </main>

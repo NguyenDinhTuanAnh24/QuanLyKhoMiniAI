@@ -29,7 +29,9 @@ export const BrandingProvider = ({ children }) => {
         });
       }
     } catch (error) {
-      console.error('Lỗi khi tải branding:', error);
+      if (error.code !== 'ERR_NETWORK' && !error.message?.includes('Network Error')) {
+        console.error('Lỗi khi tải branding:', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -54,7 +56,7 @@ export const BrandingProvider = ({ children }) => {
       const version = branding.updatedAt || '1';
       link.href = `${branding.logoUrl}${branding.logoUrl.includes('?') ? '&' : '?'}v=${version}`;
     } else {
-      link.href = '/favicon.ico';
+      link.href = '/favicon.svg';
     }
   }, [branding?.storeName, branding?.logoUrl, branding?.updatedAt]);
 

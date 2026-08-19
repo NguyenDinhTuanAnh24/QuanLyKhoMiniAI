@@ -38,7 +38,9 @@ export function NotificationProvider({ children }) {
         }
       }
     } catch (err) {
-      console.error('Failed to fetch notifications:', err);
+      if (err.code !== 'ERR_NETWORK' && !err.message?.includes('Network Error')) {
+        console.error('Failed to fetch notifications:', err);
+      }
     } finally {
       requestInFlightRef.current = false;
       if (!silent) setLoading(false);
